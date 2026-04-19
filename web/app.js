@@ -310,16 +310,18 @@ function getPinPositions(metrics) {
       label:  { x: safeSide, y: 0.14 },
     },
     'Sharpness & Focus': {
-      anchor: { x: metrics.leftEyeCenter.x, y: metrics.leftEyeCenter.y },
-      label:  { x: pinSide, y: eyeMidY + 0.08 },
+      // Anchor to cheek area below eyes, not on the eyes
+      anchor: { x: faceCX + (faceLeft ? 0.03 : -0.03), y: faceCY + 0.05 },
+      label:  { x: pinSide, y: faceCY + 0.10 },
     },
     'Background': {
       anchor: { x: faceLeft ? 0.85 : 0.15, y: 0.15 },
       label:  { x: safeSide, y: 0.26 },
     },
     'Eye Contact & Gaze': {
-      anchor: { x: metrics.rightEyeCenter.x, y: metrics.rightEyeCenter.y },
-      label:  { x: pinSide, y: metrics.rightEyeCenter.y - 0.10 },
+      // Anchor to forehead/brow area, not directly on eyes
+      anchor: { x: eyeMidX, y: eyeMidY - 0.06 },
+      label:  { x: pinSide, y: eyeMidY - 0.14 },
     },
   });
 }

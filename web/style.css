@@ -53,13 +53,13 @@ nav { display: none; }
 #upload-zone.mode-cloud  { border-color: rgba(88,166,255,0.5); background: rgba(56,139,253,0.14); }
 
 /* ── Page layout — mobile-first, always ── */
-.page { max-width: 430px; margin: 0 auto; padding: 24px 16px 48px; }
+.page { max-width: 430px; margin: 0 auto; padding: 12px 16px 48px; }
 
 /* ── Upload zone ── */
 #upload-zone {
   border: 1px solid var(--border);
   border-radius: 24px;
-  padding: 28px 20px 24px;
+  padding: 24px 20px 20px;
   text-align: center;
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
@@ -73,66 +73,25 @@ nav { display: none; }
   border-color: var(--pink);
   box-shadow: 0 24px 60px rgba(0,0,0,0.26);
 }
-#upload-zone .hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.03);
-  color: var(--muted);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 14px;
-}
 #upload-zone .app-name {
-  font-size: 44px; font-weight: 800; letter-spacing: -0.03em;
+  font-size: 36px; font-weight: 800; letter-spacing: -0.03em;
   background: linear-gradient(135deg, var(--text) 0%, var(--pink) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; margin-bottom: 10px;
+  background-clip: text; margin-bottom: 6px;
 }
 #upload-zone .app-tagline {
-  font-size: 17px; color: var(--text); font-weight: 500;
-  margin: 0 auto 18px;
-  max-width: 340px;
+  font-size: 15px; color: var(--muted); font-weight: 400;
+  margin: 0 auto 16px;
+  max-width: 340px; line-height: 1.5;
 }
-#upload-zone p { color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 380px; margin: 0 auto 24px; }
-
-.hero-highlights {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 22px;
-}
-.hero-chip {
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
-  color: var(--text);
-  font-size: 12px;
-}
-
 .hero-cta-block {
-  background: rgba(255,255,255,0.025);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 18px;
-  padding: 16px;
-  margin: 0 auto 18px;
-  max-width: 380px;
+  margin: 0 auto 14px;
+  max-width: 340px;
 }
 .cta-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-}
-.cta-note {
-  margin: 10px auto 0 !important;
-  font-size: 12px !important;
-  color: var(--muted) !important;
 }
 
 .btn-upload {
@@ -157,60 +116,10 @@ nav { display: none; }
 }
 .btn-upload-secondary:hover { background: rgba(255,255,255,0.07); }
 
-.mode-card {
-  text-align: left;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 18px;
-  padding: 16px;
-  margin: 0 auto 18px;
-  max-width: 380px;
-}
-.mode-copy { margin-bottom: 12px; }
-.mode-kicker {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-.mode-description {
-  margin: 0 !important;
-  font-size: 13px !important;
-  max-width: none !important;
-}
-
-.feature-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-  margin: 0 auto 22px;
-  max-width: 380px;
-}
-.feature-card {
-  text-align: left;
-  border-radius: 16px;
-  padding: 14px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
-}
-.feature-card strong {
-  display: block;
-  color: var(--text);
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-.feature-card span {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
-}
 
 /* ── Sample gallery ── */
 .sample-gallery {
   margin-top: 10px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(255,255,255,0.06);
 }
 .sample-label {
   color: var(--text);
@@ -223,13 +132,13 @@ nav { display: none; }
   flex-wrap: wrap; margin-bottom: 12px;
 }
 .sample-thumb {
-  width: 56px; height: 56px; border-radius: 50%; overflow: hidden;
-  border: 2px solid var(--border); background: none; padding: 0;
+  width: 52px; height: 52px; border-radius: 50%; overflow: hidden;
+  border: 2px solid var(--border); background: var(--surface); padding: 0;
   cursor: pointer; transition: border-color 0.2s, transform 0.15s;
   flex-shrink: 0;
 }
 .sample-thumb img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
+  width: 100%; height: 100%; object-fit: cover; object-position: center 20%; display: block;
 }
 .sample-thumb:hover { border-color: var(--muted); transform: scale(1.08); }
 .sample-thumb.active { border-color: var(--pink); box-shadow: 0 0 0 2px rgba(244,114,182,0.3); }
