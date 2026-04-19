@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OnFrame — Analyze Your Photo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <h1>OnFrame</h1>
+</nav>
+
+<div class="page">
+
+  <!-- ── Upload zone ── -->
+  <div id="upload-zone">
+    <div class="hero-eyebrow">Portrait feedback that tells you what to fix</div>
+    <h1 class="app-name">OnFrame</h1>
+    <p class="app-tagline">Get clear coaching on lighting, pose, framing, focus, and expression from a single photo.</p>
+
+    <div class="hero-highlights" aria-label="Product highlights">
+      <div class="hero-chip">Local-first</div>
+      <div class="hero-chip">No signup</div>
+      <div class="hero-chip">Headshots to full-length</div>
+    </div>
+
+    <div class="hero-cta-block">
+      <div class="cta-row">
+        <button class="btn-upload btn-upload-primary" id="btn-choose">Choose photo</button>
+        <button class="btn-upload btn-upload-secondary" id="btn-camera">Camera</button>
+      </div>
+      <p class="cta-note">Works best with one clearly visible person. Drag and drop also works on desktop.</p>
+    </div>
+
+    <div class="mode-card">
+      <div class="mode-copy">
+        <div class="mode-kicker">Choose analysis mode</div>
+        <p class="mode-description">Start offline for private on-device feedback, or switch to cloud for AI-written coaching from the measured results.</p>
+      </div>
+      <div class="mode-toggle-wrap">
+        <div class="mode-toggle" id="mode-toggle">
+          <button class="active" data-mode="local">Offline</button>
+          <button data-mode="cloud">Cloud</button>
+        </div>
+      </div>
+    </div>
+
+    <input id="file-input"   type="file" accept="image/*" style="display:none">
+    <input id="camera-input" type="file" accept="image/*" capture style="display:none">
+
+    <div class="feature-grid" aria-label="What OnFrame checks">
+      <div class="feature-card">
+        <strong>Lighting</strong>
+        <span>Catchlights, exposure, balance, and whether the face reads flat or shaped.</span>
+      </div>
+      <div class="feature-card">
+        <strong>Pose</strong>
+        <span>Head angle, posture, and whether the shot feels confident instead of stiff.</span>
+      </div>
+      <div class="feature-card">
+        <strong>Framing</strong>
+        <span>Crop safety, headroom, subject placement, and background distraction.</span>
+      </div>
+    </div>
+
+    <div class="sample-gallery">
+      <p class="sample-label">Try a sample first</p>
+      <div class="sample-thumbs" id="sample-thumbs">
+        <button class="sample-thumb active" data-sample="sample1.jpg" aria-label="Sample portrait 1"><img src="sample/sample1.jpg" alt="Sample 1"></button>
+        <button class="sample-thumb" data-sample="sample2.jpg" aria-label="Sample portrait 2"><img src="sample/sample2.jpg" alt="Sample 2"></button>
+        <button class="sample-thumb" data-sample="sample3.jpg" aria-label="Sample portrait 3"><img src="sample/sample3.jpg" alt="Sample 3"></button>
+        <button class="sample-thumb" data-sample="sample4.jpg" aria-label="Sample portrait 4"><img src="sample/sample4.jpg" alt="Sample 4"></button>
+        <button class="sample-thumb" data-sample="sample5.jpg" aria-label="Sample portrait 5"><img src="sample/sample5.jpg" alt="Sample 5"></button>
+        <button class="sample-thumb" data-sample="sample6.jpg" aria-label="Sample portrait 6"><img src="sample/sample6.jpg" alt="Sample 6"></button>
+        <button class="sample-thumb" data-sample="sample7.jpg" aria-label="Sample portrait 7"><img src="sample/sample7.jpg" alt="Sample 7"></button>
+        <button class="sample-thumb" data-sample="sample8.jpg" aria-label="Sample portrait 8"><img src="sample/sample8.jpg" alt="Sample 8"></button>
+        <button class="sample-thumb" data-sample="sample9.jpg" aria-label="Sample portrait 9"><img src="sample/sample9.jpg" alt="Sample 9"></button>
+        <button class="sample-thumb" data-sample="sample10.jpg" aria-label="Sample half-length"><img src="sample/sample10.jpg" alt="Sample 10"></button>
+        <button class="sample-thumb" data-sample="sample11.jpg" aria-label="Sample three-quarter"><img src="sample/sample11.jpg" alt="Sample 11"></button>
+        <button class="sample-thumb" data-sample="sample12.jpg" aria-label="Sample full-length"><img src="sample/sample12.jpg" alt="Sample 12"></button>
+      </div>
+    </div>
+
+    <div class="privacy-note" id="privacy-note">
+      <span class="lock">🔒</span>
+      <span id="privacy-text">Your photos never leave your device. All analysis runs locally in your browser.</span>
+    </div>
+  </div>
+
+  <!-- ── Analyzing ── -->
+  <div id="analyzing-panel" aria-live="polite">
+    <div class="spinner"></div>
+    <p id="analyzing-label">Analyzing locally…</p>
+  </div>
+
+  <!-- ── Error ── -->
+  <div id="error-panel" aria-live="assertive" role="alert">
+    <p id="error-msg">Something went wrong.</p>
+    <button class="btn-retry">Try again</button>
+    <div class="error-report">
+      <button class="btn-error-report" id="btn-error-report">Report this issue</button>
+      <div class="report-form" id="error-report-form" style="display:none">
+        <textarea id="error-report-text" rows="2" placeholder="Any details? (optional)"></textarea>
+        <p class="report-note">Only device and error info is sent — no photos.</p>
+        <div class="report-actions">
+          <button class="btn-report-send" id="btn-error-report-send">Send</button>
+          <button class="btn-report-cancel" id="btn-error-report-cancel">Cancel</button>
+        </div>
+        <p class="report-result" id="error-report-result"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Results ── -->
+  <div id="results-panel">
+    <!-- Photo with hotspot pins -->
+    <div class="photo-overlay">
+      <div class="photo-overlay-wrap">
+        <img id="photo-thumb" alt="Your photo" src="">
+        <div id="hotspot-pins"></div>
+      </div>
+      <button class="btn-back-overlay" id="btn-back-results" aria-label="Back">←</button>
+    </div>
+
+    <!-- Bottom sheet -->
+    <div class="bottom-sheet" id="bottom-sheet">
+      <div class="sheet-handle" id="sheet-handle"></div>
+
+      <!-- Score header -->
+      <div class="sheet-header">
+        <div class="sheet-score">
+          <span class="number" id="overall-num">—</span><span class="denom">/100</span>
+        </div>
+        <div class="sheet-meta">
+          <div class="photo-type-label" id="photo-type-label"></div>
+          <div id="ai-summary-box" class="ai-summary-inline" style="display:none">
+            <span id="ai-summary-label">Quick take</span>
+            <p id="ai-summary-text"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coaching cards -->
+      <div class="analysis-section">
+        <div class="cards-section-label">Top fixes</div>
+        <div class="priority-cards" id="priority-cards"></div>
+      </div>
+      <div class="analysis-section" id="secondary-cards-section">
+        <div class="cards-section-label">Everything else</div>
+        <div class="secondary-cards" id="secondary-cards"></div>
+      </div>
+
+      <!-- Report section -->
+      <div class="report-section" id="report-section">
+        <button class="btn-report" id="btn-report">Report an issue</button>
+        <div class="report-form" id="report-form" style="display:none">
+          <textarea id="report-text" rows="3" placeholder="What looks wrong? (optional)"></textarea>
+          <p class="report-note">Only measurement data is sent — no photos.</p>
+          <div class="report-actions">
+            <button class="btn-report-send" id="btn-report-send">Send report</button>
+            <button class="btn-report-cancel" id="btn-report-cancel">Cancel</button>
+          </div>
+          <p class="report-result" id="report-result"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
