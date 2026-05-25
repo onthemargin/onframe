@@ -422,23 +422,13 @@ function buildCardElement(card, compact = false) {
   const el = document.createElement('article');
   const severityClass = scoreClass(card.score);
   const priorityLabel = PRIORITY_LABELS[card.priority] || 'Note';
-  const gear = card.gearNeeded || [];
-  const gearTag = gear.length
-    ? `<span class="card-tag tag-gear">Needs: ${escapeHtml(gear.join(', '))}</span>`
-    : '';
 
-  // AI delta badge — appears next to the score when the cloud adjusted this
-  // category. Sign + magnitude only; reason text is rendered separately below
-  // the tip so the badge stays compact.
-  const delta = (typeof card.localScore === 'number' && typeof card.score === 'number')
-    ? card.score - card.localScore
-    : 0;
-  const badgeTag = (card.aiReason && delta !== 0)
-    ? `<span class="card-ai-badge ${aiBadgeClass(delta)}">${delta > 0 ? '+' : '−'}${Math.abs(delta)} AI</span>`
-    : '';
-  const reasonTag = card.aiReason
-    ? `<p class="card-ai-reason">${escapeHtml(card.aiReason)}</p>`
-    : '';
+  // One score + one text per card. When the photo-specific observation is
+  // available, prepend it to the generic actionable tip so the user gets
+  // both 'what's wrong with this photo' and 'how to fix it' in one sentence.
+  const text = card.aiReason
+    ? `${card.aiReason} — ${card.tip}`
+    : card.tip;
 
   el.className = `card ${compact ? 'card-compact' : 'card-primary'} ${severityClass}`;
   el.dataset.category = card.category;
@@ -448,13 +438,7 @@ function buildCardElement(card, compact = false) {
       <span class="card-priority priority-${card.priority}">${priorityLabel}</span>
     </div>
     <div class="card-header">
-      <div class="card-title-wrap">
-        <h3 class="card-title">${escapeHtml(card.title)}</h3>
-      </div>
-      <div class="card-score-wrap">
-        ${badgeTag}
-        <span class="card-score ${severityClass}">${card.score}</span>
-      </div>
+      <span class="card-score ${severityClass}">${card.score}</span>
     </div>
     <div class="card-bar">
       <div class="score-bar-track">
@@ -462,9 +446,7 @@ function buildCardElement(card, compact = false) {
       </div>
     </div>
     <div class="card-body">
-      <p class="card-tip">${escapeHtml(card.tip)}</p>
-      ${reasonTag}
-      ${gearTag}
+      <p class="card-tip">${escapeHtml(text)}</p>
     </div>
   `;
 
@@ -503,11 +485,11 @@ function renderResults(file, result, aiSummary) {
     typeLabel.textContent = result.photoType.label;
   }
 
-  // AI summary (inline in sheet header)
+  // Top-level coaching summary — no label, just the text. The lead sentence
+  // is the most-important observation; treat it as the headline of the read.
   if (aiSummaryBox && aiSummaryText) {
     const text = aiSummary || result.summary || '';
     if (text) {
-      document.getElementById('ai-summary-label').textContent = aiSummary ? '☁️ AI Summary' : 'Quick take';
       aiSummaryText.textContent = text;
       aiSummaryBox.style.display = 'block';
     } else {
@@ -777,11 +759,6 @@ function scoreClass(s) {
 }
 function barClass(s) {
   return s >= 75 ? 'bar-great' : s >= 55 ? 'bar-ok' : 'bar-poor';
-}
-function aiBadgeClass(delta) {
-  if (delta > 0) return 'ai-badge-up';
-  if (delta < 0) return 'ai-badge-down';
-  return 'ai-badge-neutral';
 }
 function escapeHtml(s) {
   return String(s)
