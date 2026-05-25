@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OnFrame — Analyze Your Photo</title>
+  <script>
+    // Synchronous mobile gate: matches device.js logic. Runs before <body>
+    // paints so desktop visitors never see a flash of the mobile UI.
+    // maxTouchPoints catches iPad in desktop-site mode, where Safari lies
+    // about pointer type and viewport width.
+    (function () {
+      var mm = window.matchMedia;
+      var touchPoints = (navigator && navigator.maxTouchPoints) || 0;
+      var isMobile = !!mm && (
+        mm('(max-width: 820px)').matches ||
+        mm('(pointer: coarse)').matches ||
+        touchPoints > 0
+      );
+      if (!isMobile) document.documentElement.classList.add('is-desktop');
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── Desktop block (shown only when html.is-desktop is set) ── -->
+<div id="desktop-only">
+  <div class="desktop-only-card">
+    <h1>OnFrame is mobile-only</h1>
+    <p>OnFrame uses your phone's camera and runs analysis on-device. Open this page on a phone to get started.</p>
+    <p class="desktop-only-url">app.gyatso.me/onframe/web</p>
+  </div>
+</div>
+
+<nav>
+  <h1>OnFrame</h1>
+</nav>
+
+<div class="page">
+
+  <!-- ── Upload zone ── -->
+  <div id="upload-zone">
+    <h1 class="app-name">OnFrame</h1>
+    <p class="app-tagline">Find out what's working and what to fix — lighting, pose, framing, focus, and expression — from a single photo.</p>
+
+    <div class="hero-cta-block">
+      <div class="cta-row">
+        <button class="btn-upload btn-upload-primary" id="btn-choose">Choose photo</button>
+        <button class="btn-upload btn-upload-secondary" id="btn-camera">Camera</button>
+      </div>
+    </div>
+
+    <input id="file-input"   type="file" accept="image/*" style="display:none">
+    <input id="camera-input" type="file" accept="image/*" capture style="display:none">
+
+    <div class="sample-gallery">
+      <p class="sample-label">Want to try a sample first?</p>
+      <div class="sample-thumbs" id="sample-thumbs">
+        <button class="sample-thumb active" data-sample="sample1.jpg" aria-label="Sample portrait 1"><img src="sample/sample1.jpg" alt="Sample 1"></button>
+        <button class="sample-thumb" data-sample="sample2.jpg" aria-label="Sample portrait 2"><img src="sample/sample2.jpg" alt="Sample 2"></button>
+        <button class="sample-thumb" data-sample="sample3.jpg" aria-label="Sample portrait 3"><img src="sample/sample3.jpg" alt="Sample 3"></button>
+        <button class="sample-thumb" data-sample="sample4.jpg" aria-label="Sample portrait 4"><img src="sample/sample4.jpg" alt="Sample 4"></button>
+        <button class="sample-thumb" data-sample="sample5.jpg" aria-label="Sample portrait 5"><img src="sample/sample5.jpg" alt="Sample 5"></button>
+        <button class="sample-thumb" data-sample="sample6.jpg" aria-label="Sample portrait 6"><img src="sample/sample6.jpg" alt="Sample 6"></button>
+        <button class="sample-thumb" data-sample="sample7.jpg" aria-label="Sample portrait 7"><img src="sample/sample7.jpg" alt="Sample 7"></button>
+        <button class="sample-thumb" data-sample="sample8.jpg" aria-label="Sample portrait 8"><img src="sample/sample8.jpg" alt="Sample 8"></button>
+        <button class="sample-thumb" data-sample="sample9.jpg" aria-label="Sample portrait 9"><img src="sample/sample9.jpg" alt="Sample 9"></button>
+        <button class="sample-thumb" data-sample="sample10.jpg" aria-label="Sample half-length"><img src="sample/sample10.jpg" alt="Sample 10"></button>
+        <button class="sample-thumb" data-sample="sample11.jpg" aria-label="Sample three-quarter"><img src="sample/sample11.jpg" alt="Sample 11"></button>
+        <button class="sample-thumb" data-sample="sample12.jpg" aria-label="Sample full-length"><img src="sample/sample12.jpg" alt="Sample 12"></button>
+      </div>
+    </div>
+
+    <div class="privacy-note" id="privacy-note">
+      <span class="lock">🔒</span>
+      <span id="privacy-text">OnFrame doesn't retain your photo — it's sent to Google Vertex AI for coaching and discarded after the response. Google's handling: <a href="https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance" target="_blank" rel="noopener noreferrer">abuse monitoring docs</a>.</span>
+    </div>
+  </div>
+
+  <!-- ── Analyzing ── -->
+  <div id="analyzing-panel" aria-live="polite">
+    <div class="spinner"></div>
+    <p id="analyzing-label">Analyzing locally…</p>
+  </div>
+
+  <!-- ── Error ── -->
+  <div id="error-panel" aria-live="assertive" role="alert">
+    <p id="error-msg">Something went wrong.</p>
+    <button class="btn-retry">Try again</button>
+    <div class="error-report">
+      <button class="btn-error-report" id="btn-error-report">Report this issue</button>
+      <div class="report-form" id="error-report-form" style="display:none">
+        <textarea id="error-report-text" rows="2" placeholder="Any details? (optional)"></textarea>
+        <p class="report-note">Only device and error info is sent — no photos.</p>
+        <div class="report-actions">
+          <button class="btn-report-send" id="btn-error-report-send">Send</button>
+          <button class="btn-report-cancel" id="btn-error-report-cancel">Cancel</button>
+        </div>
+        <p class="report-result" id="error-report-result"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Results ── -->
+  <div id="results-panel">
+    <!-- Photo with hotspot pins -->
+    <div class="photo-overlay">
+      <div class="photo-overlay-wrap">
+        <img id="photo-thumb" alt="Your photo" src="">
+        <div id="hotspot-pins"></div>
+      </div>
+      <button class="btn-back-overlay" id="btn-back-results" aria-label="Back">←</button>
+
+      <!-- Score overlay at bottom of photo -->
+      <div class="photo-score-overlay">
+        <div class="photo-score-row">
+          <span class="number" id="overall-num">—</span><span class="denom">/100</span>
+          <span class="photo-type-label" id="photo-type-label"></span>
+        </div>
+        <p id="ai-unavailable-banner" class="ai-unavailable-banner" style="display:none">
+          AI coaching unavailable — showing measured analysis.
+        </p>
+        <div id="ai-summary-box" class="ai-summary-inline" style="display:none">
+          <span id="ai-summary-label">Quick take</span>
+          <p id="ai-summary-text"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards below photo: horizontal carousel -->
+    <div class="bottom-sheet" id="bottom-sheet">
+
+      <!-- Coaching carousel -->
+      <div class="card-carousel" id="card-carousel" role="region" aria-label="Coaching cards" tabindex="0"></div>
+
+      <!-- Page indicators -->
+      <div class="carousel-dots" id="carousel-dots" aria-hidden="true"></div>
+
+      <!-- Report section -->
+      <div class="report-section" id="report-section">
+        <button class="btn-report" id="btn-report">Report an issue</button>
+        <div class="report-form" id="report-form" style="display:none">
+          <textarea id="report-text" rows="3" placeholder="What looks wrong? (optional)"></textarea>
+          <p class="report-note">Only measurement data is sent — no photos.</p>
+          <div class="report-actions">
+            <button class="btn-report-send" id="btn-report-send">Send report</button>
+            <button class="btn-report-cancel" id="btn-report-cancel">Cancel</button>
+          </div>
+          <p class="report-result" id="report-result"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

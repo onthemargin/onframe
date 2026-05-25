@@ -1,0 +1,14 @@
+{
+  "name": "onframe-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vite": "^5.4.10",
+    "vitest": "^4.1.2"
+  }
+}

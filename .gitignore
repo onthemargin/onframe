@@ -1,0 +1,21 @@
+node_modules/
+*.log
+.env
+.DS_Store
+
+# Claude Code
+CLAUDE.md
+.claude/
+.claudeignore
+
+# Build output — built by Vite during Docker build
+web/dist/
+
+# MediaPipe models — downloaded during Docker build
+web/public/models/
+
+# MediaPipe WASM in public/ — duplicated from web/mediapipe/, copied at build time
+web/public/mediapipe/
+
+# Private notes
+PRIVATE-*.md
