@@ -114,7 +114,11 @@ function buildRequestBody({ photoBuffer, metricsText, photoMimeType }) {
       // same photo to a tight range.
       temperature: 0.1,
       seed: 1,
-      maxOutputTokens: 2048,
+      // 4096 caps output budget so a verbose reason can't truncate the JSON.
+      // Pricing is per actual output so a higher cap costs nothing when the
+      // response is short; saw a parse failure at 2048 ("Unterminated string
+      // at position 255") that this prevents.
+      maxOutputTokens: 4096,
       topP: 0.95,
       responseMimeType: 'application/json',
       // responseSchema is the real fix for ~20% parse failures the eval
@@ -234,10 +238,24 @@ function createVertexClient({
       throw new Error(`Vertex AI returned status ${response.status}`);
     }
 
-    // Pull only the text content out of the response; let the rest of the
-    // parsed payload go out of scope immediately.
-    const content = extractContent(await response.json());
-    return parseVertexOutput(content);
+    // Capture diagnostic context before extracting the text so that when
+    // extractContent/parseVertexOutput throws (truncated JSON, safety block,
+    // shape mismatch), we can attach Vertex's own finishReason + the raw
+    // content length to the error for structured logging upstream.
+    const payload = await response.json();
+    const candidate = payload?.candidates?.[0];
+    const finishReason = candidate?.finishReason || null;
+    const rawText = candidate?.content?.parts?.[0]?.text;
+    const contentLength = typeof rawText === 'string' ? rawText.length : 0;
+    try {
+      const content = extractContent(payload);
+      return parseVertexOutput(content);
+    } catch (parseErr) {
+      const err = new Error(parseErr.message);
+      err.finishReason = finishReason;
+      err.contentLength = contentLength;
+      throw err;
+    }
   }
 
   return { analyze };
