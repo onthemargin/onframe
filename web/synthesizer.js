@@ -392,7 +392,7 @@ function scoreBackground(m) {
     category: 'Background',
     score,
     title: score >= 75 ? 'Background works well' : score >= 55 ? 'Background needs attention' : 'Background is distracting',
-    tip: tips.join(' ') || '',
+    tip: tips.join(' ') || 'Background looks clean — your face stays the focus.',
     priority: score < 50 ? 2 : 3,
     gearNeeded: score < 50 ? ['backdrop'] : [],
   };

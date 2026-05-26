@@ -467,9 +467,12 @@ describe('scoreBackground (via synthesize)', () => {
     expect(card.tip).toContain('Dark background');
   });
 
-  it('gives no tip for neutral background', () => {
+  it('gives a positive default tip for a neutral background (never empty)', () => {
     const card = bgScore({ backgroundBrightness: 0.20 });
-    expect(card.tip).toBe('');
+    // Card text in the UI is `aiReason || tip`; an empty tip + no aiReason
+    // would render an empty card. Background must always emit a non-empty tip.
+    expect(card.tip.length).toBeGreaterThan(0);
+    expect(card.tip).toMatch(/background/i);
     expect(card.score).toBeGreaterThanOrEqual(75);
   });
 
