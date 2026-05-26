@@ -162,7 +162,9 @@ async function handleFile(file) {
   };
   const analysisToken = ++activeAnalysisToken;
   showState('analyzing');
-  analyzingLabel.textContent = 'Analyzing your photo…';
+  // Single stable label — local analysis is too fast to register a separate
+  // 'analyzing' state, so use one message that covers both phases.
+  analyzingLabel.textContent = 'Coaching your photo…';
 
   let currentStage = 'init';
   try {
@@ -199,7 +201,6 @@ async function handleFile(file) {
     const result = synthesize(metrics);
 
     currentStage = 'cloudCoaching';
-    analyzingLabel.textContent = 'Asking AI for coaching…';
     const cloudPayload = {
       summary: metrics.humanReadableSummary,
       photoType: result.photoType?.type ?? null,
@@ -423,12 +424,11 @@ function buildCardElement(card, compact = false) {
   const severityClass = scoreClass(card.score);
   const priorityLabel = PRIORITY_LABELS[card.priority] || 'Note';
 
-  // One score + one text per card. When the photo-specific observation is
-  // available, prepend it to the generic actionable tip so the user gets
-  // both 'what's wrong with this photo' and 'how to fix it' in one sentence.
-  const text = card.aiReason
-    ? `${card.aiReason} — ${card.tip}`
-    : card.tip;
+  // One score + one text per card. The AI's photo-specific reason takes
+  // precedence when present (it's already actionable and specific to this
+  // image). Fall back to the local synthesizer's generic tip otherwise
+  // (Sharpness, or any category Vertex didn't move).
+  const text = card.aiReason || card.tip;
 
   el.className = `card ${compact ? 'card-compact' : 'card-primary'} ${severityClass}`;
   el.dataset.category = card.category;
@@ -502,6 +502,22 @@ function renderResults(file, result, aiSummary) {
   const aiUnavailableBanner = document.getElementById('ai-unavailable-banner');
   if (aiUnavailableBanner) {
     aiUnavailableBanner.style.display = result.aiUnavailable ? 'block' : 'none';
+  }
+
+  // Correlation id — server stamps a short id + ISO timestamp on every
+  // /analyze response. Surfaced here so a user sharing a screenshot can
+  // include the id, and we can grep it directly in Cloud Logging.
+  const resultIdEl = document.getElementById('result-id');
+  if (resultIdEl) {
+    if (result.id && result.ts) {
+      // Friendlier compact format: "id a8f3b2k4 · 2026-05-26 22:58 UTC"
+      const ts = new Date(result.ts);
+      const tsLabel = isNaN(ts) ? result.ts : ts.toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+      resultIdEl.textContent = `id ${result.id} · ${tsLabel}`;
+      resultIdEl.style.display = 'block';
+    } else {
+      resultIdEl.style.display = 'none';
+    }
   }
 
   // Worst score first so the user sees the most-pressing fix when the
@@ -733,6 +749,8 @@ function reset() {
   if (aiSummaryText) aiSummaryText.textContent = '';
   const aiUnavailableBanner = document.getElementById('ai-unavailable-banner');
   if (aiUnavailableBanner) aiUnavailableBanner.style.display = 'none';
+  const resultIdEl = document.getElementById('result-id');
+  if (resultIdEl) { resultIdEl.textContent = ''; resultIdEl.style.display = 'none'; }
   // Clear pins and sheet state
   document.getElementById('hotspot-pins').innerHTML = '';
   const sheet = document.getElementById('bottom-sheet');

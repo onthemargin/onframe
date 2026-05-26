@@ -53,6 +53,11 @@ export function mergeCoachingResult(localResult, cloudResponse) {
     return base;
   }
 
+  // Correlation id + timestamp flow through every cloud response shape
+  // (success, summary-only, aiUnavailable). UI uses them for the trace tag.
+  if (hasNonEmptyString(cloudResponse.id)) base.id = cloudResponse.id;
+  if (hasNonEmptyString(cloudResponse.ts)) base.ts = cloudResponse.ts;
+
   if (cloudResponse.aiUnavailable) {
     base.aiUnavailable = true;
     return base;

@@ -302,6 +302,12 @@ function createApp({
   const analyzeUpload = upload.single('photo');
 
   app.post(`${apiRoot}/analyze`, limiter, (req, res) => {
+    // Short correlation id stamped on every log line for this request and
+    // returned in the response so the client can render it. When a user
+    // shares a screenshot, the id is the trace key into Cloud Logging.
+    const requestId = require('crypto').randomUUID().slice(0, 8);
+    const requestTs = new Date().toISOString();
+
     analyzeUpload(req, res, async (err) => {
       if (err) {
         return handleMulterError(err, req, res);
@@ -332,11 +338,12 @@ function createApp({
         return res.status(400).json({ error: 'request payload too large' });
       }
 
-      console.log(`[onframe] analyze request — ${new Date().toISOString()} bytes=${req.file.buffer.length}`);
+      console.log(`[onframe] analyze request id=${requestId} ts=${requestTs} bytes=${req.file.buffer.length}`);
 
       const client = getVertexClient();
       if (!client) {
-        return res.json({ aiUnavailable: true });
+        console.log(`[onframe] analyze unavailable id=${requestId} reason=no-client`);
+        return res.json({ id: requestId, ts: requestTs, aiUnavailable: true });
       }
 
       try {
@@ -346,7 +353,8 @@ function createApp({
           photoMimeType: req.file.mimetype,
         });
         if (!result || typeof result.aiSummary !== 'string' || !result.aiSummary.length) {
-          return res.json({ aiUnavailable: true });
+          console.log(`[onframe] analyze unavailable id=${requestId} reason=empty-summary`);
+          return res.json({ id: requestId, ts: requestTs, aiUnavailable: true });
         }
         const aiSummary = result.aiSummary.slice(0, 500);
 
@@ -361,13 +369,13 @@ function createApp({
         if (hasFindings && Array.isArray(localCards) && localCards.length > 0) {
           const merged = mergePerceptualFindings({ localCards, findings });
           if (merged) {
-            console.log('[onframe] analyze OK (merged)');
-            return res.json({ aiSummary, cards: merged.cards, overallScore: merged.overallScore });
+            console.log(`[onframe] analyze OK id=${requestId} merged=true overallScore=${merged.overallScore}`);
+            return res.json({ id: requestId, ts: requestTs, aiSummary, cards: merged.cards, overallScore: merged.overallScore });
           }
         }
 
-        console.log('[onframe] analyze OK');
-        return res.json({ aiSummary });
+        console.log(`[onframe] analyze OK id=${requestId} merged=false`);
+        return res.json({ id: requestId, ts: requestTs, aiSummary });
       } catch (vertexErr) {
         // Structured warning so we can observe the parse-failure rate over
         // time without ever logging photo bytes or response content.
@@ -375,6 +383,8 @@ function createApp({
         console.error(JSON.stringify({
           severity: 'WARNING',
           type: 'onframe_vertex_error',
+          id: requestId,
+          ts: requestTs,
           kind: /not valid JSON|missing aiSummary|empty content|missing candidates|missing content parts|missing text content|exceeds maximum length/i.test(errMsg)
             ? 'parse_or_shape'
             : /timeout|abort|failed/i.test(errMsg)
@@ -382,7 +392,7 @@ function createApp({
               : 'other',
           message: errMsg.slice(0, 200),
         }));
-        return res.json({ aiUnavailable: true });
+        return res.json({ id: requestId, ts: requestTs, aiUnavailable: true });
       } finally {
         // Zero-fill the photo bytes before dropping the reference so memory
         // pages don't retain readable pixel data until GC + page reuse.

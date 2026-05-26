@@ -286,6 +286,13 @@ nav { display: none; }
   color: rgba(255,255,255,0.55);
   font-style: italic;
 }
+.photo-score-overlay .result-id {
+  margin-top: 6px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.02em;
+}
 
 /* ── Bottom area: sized to content; photo expands above ── */
 .bottom-sheet {
