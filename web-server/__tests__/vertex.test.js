@@ -7,13 +7,13 @@ const MODEL = 'gemini-2.5-flash';
 const PHOTO_BUFFER = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10]);
 const METRICS_TEXT = '{"summary":"portrait","photoType":"head-and-shoulders"}';
 
-function generateContentResponse(text) {
+function generateContentResponse(text, finishReason = 'STOP') {
   return {
     ok: true,
     status: 200,
     json: async () => ({
       candidates: [
-        { content: { role: 'model', parts: [{ text }] }, finishReason: 'STOP' },
+        { content: { role: 'model', parts: [{ text }] }, finishReason },
       ],
     }),
   };
@@ -155,6 +155,26 @@ describe('createVertexClient.analyze', () => {
       metricsText: METRICS_TEXT,
       photoMimeType: 'image/jpeg',
     })).rejects.toThrow();
+  });
+
+  it('attaches finishReason and contentLength to parse-failure errors', async () => {
+    // Truncated JSON simulates MAX_TOKENS cutoff mid-string.
+    const truncated = '{"aiSummary":"Lorem ipsum dolor sit amet, consectetur adip';
+    const client = makeClient({
+      fetchImpl: vi.fn().mockResolvedValue(generateContentResponse(truncated, 'MAX_TOKENS')),
+    });
+    try {
+      await client.analyze({
+        photoBuffer: PHOTO_BUFFER,
+        metricsText: METRICS_TEXT,
+        photoMimeType: 'image/jpeg',
+      });
+      throw new Error('analyze should have thrown');
+    } catch (err) {
+      expect(err.finishReason).toBe('MAX_TOKENS');
+      expect(err.contentLength).toBe(truncated.length);
+      expect(err.message).toMatch(/not valid JSON/i);
+    }
   });
 
   it('throws when aiSummary is missing', async () => {

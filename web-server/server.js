@@ -391,6 +391,12 @@ function createApp({
               ? 'transport'
               : 'other',
           message: errMsg.slice(0, 200),
+          // Vertex's own finishReason (STOP / MAX_TOKENS / SAFETY / RECITATION
+          // / OTHER) + the byte length of what the model managed to emit.
+          // Lets us tell "Gemini hit the token cap" apart from "safety
+          // filter cut us off" apart from "model produced garbage."
+          finishReason: vertexErr?.finishReason ?? null,
+          contentLength: vertexErr?.contentLength ?? null,
         }));
         return res.json({ id: requestId, ts: requestTs, aiUnavailable: true });
       } finally {
