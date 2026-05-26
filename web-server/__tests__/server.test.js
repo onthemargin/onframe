@@ -329,6 +329,11 @@ describe('POST /onframe/api/analyze', () => {
     expect(res.status).toBe(200);
     expect(res.body.aiSummary).toBe('Friendly summary.');
     expect(res.body.aiUnavailable).toBeFalsy();
+    // Correlation id + timestamp must accompany every analyze response so
+    // the client can render them and shared screenshots can be traced back
+    // to a specific Cloud Logging entry.
+    expect(res.body.id).toMatch(/^[0-9a-f]{8}$/);
+    expect(res.body.ts).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     expect(vertexClient.analyze).toHaveBeenCalledTimes(1);
     const call = vertexClient.analyze.mock.calls[0][0];
     expect(Buffer.isBuffer(call.photoBuffer)).toBe(true);
@@ -352,6 +357,10 @@ describe('POST /onframe/api/analyze', () => {
     expect(res.status).toBe(200);
     expect(res.body.aiUnavailable).toBe(true);
     expect(res.body.aiSummary).toBeUndefined();
+    // Even failure responses carry the trace id so the user can report
+    // "this request failed" with a specific id.
+    expect(res.body.id).toMatch(/^[0-9a-f]{8}$/);
+    expect(res.body.ts).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     errSpy.mockRestore();
   });
 
