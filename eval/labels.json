@@ -1,123 +1,135 @@
 {
-  "_note": "STARTER PLACEHOLDER LABELS. These are first-pass guesses written by Claude from a visual scan of the sample images, not authoritative human ground truth. Revise the 'expected' deltas (per-category, integer in -10..10 for lighting/composition/background/eyecontact, -5..5 for headpose) based on your own portrait-photo intuition before drawing strong conclusions from the eval.",
+  "_note": "Labels written by Claude (vision-enabled) as a consistent grader for the eval set. NOT professional portraitist ground truth — Claude is applying portrait-photography heuristics (Hurley/Bryce/Adler vocabulary, classical lighting patterns, headroom + eyeline rules) consistently across all 12 photos. The point is consistency + traceability: every delta has a one-line reason so a human reviewer can disagree with specific items, not just the abstract result. Replace per-photo deltas when a real photographer reviews. Scale: -10..10 per category (-5..5 for headpose). 0 = matches the baseline (avg portrait at the synthesizer's default score). Positive = noticeably better than baseline; negative = noticeable problem.",
+
   "sample1.jpg": {
-    "note": "NASA studio portrait of Kalpana Chawla in orange flight suit; US flag on left edge intrudes; flat studio lighting; direct smile; muted backdrop.",
+    "note": "NASA studio portrait of Kalpana Chawla in orange flight suit. US flag intrudes from left edge. Flat agency studio lighting. Direct warm smile. Mottled gray backdrop.",
     "expected": {
-      "lighting":    { "delta": -2 },
-      "composition": { "delta": -3 },
-      "background":  { "delta": -5 },
-      "eyecontact":  { "delta":  4 },
-      "headpose":    { "delta":  1 }
+      "lighting":    { "delta": -1, "reason": "Competent studio key but flat — no modeling, no flattering shape on face." },
+      "composition": { "delta":  0, "reason": "Three-quarter framing acceptable; head close to top edge but not clipped." },
+      "background":  { "delta": -6, "reason": "Two competing elements: cropped flag on left + mottled studio backdrop; subject doesn't pop." },
+      "eyecontact":  { "delta":  4, "reason": "Direct warm smile with engaged eyes; natural agency-portrait confidence." },
+      "headpose":    { "delta":  1, "reason": "Subtle right turn, slight chin-tuck — approachable." }
     }
   },
+
   "sample2.jpg": {
-    "note": "Tight headshot of smiling man against grey marble wall; soft window light with clear catchlights; head clipped near top; warm, natural skin.",
+    "note": "Tight headshot of smiling man on grey marble wall. Soft directional light with clear catchlights. Top of head clipped (intentional headshot crop). Warm natural skin.",
     "expected": {
-      "lighting":    { "delta":  4 },
-      "composition": { "delta": -3 },
-      "background":  { "delta":  1 },
-      "eyecontact":  { "delta":  5 },
-      "headpose":    { "delta":  1 }
+      "lighting":    { "delta":  6, "reason": "Soft directional key, strong catchlights, natural skin texture — top-quality natural-light portrait." },
+      "composition": { "delta":  2, "reason": "Eyes on upper third; tight crop is the correct casting-headshot pattern even with hair clipped." },
+      "background":  { "delta":  2, "reason": "Mottled marble blurred enough not to compete; neutral and works with subject." },
+      "eyecontact":  { "delta":  5, "reason": "Direct, warm, friendly; catchlights make eyes pop." },
+      "headpose":    { "delta":  2, "reason": "Slight angle, relaxed natural smile." }
     }
   },
+
   "sample3.jpg": {
-    "note": "Studio beauty portrait of young woman with topknot bun on solid pink seamless; flat even light; direct gaze; frontal symmetric pose.",
+    "note": "Young woman with hair bun and freckles on solid pink background. Even soft beauty light. Direct neutral expression, slightly parted lips. Natural makeup.",
     "expected": {
-      "lighting":    { "delta":  1 },
-      "composition": { "delta":  2 },
-      "background":  { "delta":  3 },
-      "eyecontact":  { "delta":  5 },
-      "headpose":    { "delta":  0 }
+      "lighting":    { "delta":  2, "reason": "Even soft beauty light with catchlights; slight shadow under jaw but flattering overall." },
+      "composition": { "delta":  4, "reason": "Tight crop, eyes upper third, bun creates pleasing shape at top of frame." },
+      "background":  { "delta":  5, "reason": "Solid clean pink complements skin/hair — strong styling choice that doesn't compete." },
+      "eyecontact":  { "delta":  3, "reason": "Direct engaging gaze; neutral expression rather than warm smile — confident but cooler." },
+      "headpose":    { "delta":  0, "reason": "Frontal, neutral — pleasant but unremarkable pose." }
     }
   },
+
   "sample4.jpg": {
-    "note": "Moody low-key male portrait in chunky knit on black background; directional side key creates shape; serious neutral expression; frontal.",
+    "note": "Brooding man in grey knit shawl-collar sweater on black backdrop. Stylized moody low-key lighting with one shadowed eye. Intense neutral expression.",
     "expected": {
-      "lighting":    { "delta":  5 },
-      "composition": { "delta":  1 },
-      "background":  { "delta":  3 },
-      "eyecontact":  { "delta":  0 },
-      "headpose":    { "delta":  0 }
+      "lighting":    { "delta":  3, "reason": "Intentional moody low-key style; one eye partly in shadow is genre-appropriate, not a flaw." },
+      "composition": { "delta":  5, "reason": "Tight headshot, ideal headroom, head centered; sweater texture adds interest below." },
+      "background":  { "delta":  6, "reason": "Pure black, subject pops crisply; absolute clean separation." },
+      "eyecontact":  { "delta":  3, "reason": "Direct piercing gaze, neutral — works for the editorial vibe even without smile." },
+      "headpose":    { "delta":  1, "reason": "Frontal with slight downward look that adds gravity." }
     }
   },
+
   "sample5.jpg": {
-    "note": "Golden-hour outdoor portrait of woman with rim light from sunset; shallow DOF blurred field; slight head turn, soft closed-lip smile.",
+    "note": "Golden-hour outdoor portrait, woman in striped shirt. Warm rim/side light. Dark out-of-focus landscape background. Half-length, slight 3/4 pose.",
     "expected": {
-      "lighting":    { "delta":  6 },
-      "composition": { "delta":  2 },
-      "background":  { "delta":  5 },
-      "eyecontact":  { "delta":  3 },
-      "headpose":    { "delta":  2 }
+      "lighting":    { "delta":  6, "reason": "Beautiful golden-hour direction; flattering warm rim with romantic modeling on face." },
+      "composition": { "delta":  5, "reason": "Well-placed, eyes upper third, hair frames jawline, half-length crop is strong." },
+      "background":  { "delta":  3, "reason": "Heavy bokeh dark landscape — could be brighter but separation is generous." },
+      "eyecontact":  { "delta":  5, "reason": "Direct, slight closed-lip smile, strong catchlights — very engaging." },
+      "headpose":    { "delta":  3, "reason": "Subtle 3/4 angle, natural; slight chin-tuck adds intimacy." }
     }
   },
+
   "sample6.jpg": {
-    "note": "B&W studio headshot of bald bearded man smiling; clean grey gradient sweep; even soft key; frontal pose; warm crinkled eyes.",
+    "note": "B&W heavy-bearded man on plain medium-grey backdrop. Soft even studio light. Warm smile through beard.",
     "expected": {
-      "lighting":    { "delta":  4 },
-      "composition": { "delta":  2 },
-      "background":  { "delta":  4 },
-      "eyecontact":  { "delta":  5 },
-      "headpose":    { "delta":  1 }
+      "lighting":    { "delta":  2, "reason": "Soft even studio light; flat in B&W but exposure is clean and skin reads natural." },
+      "composition": { "delta":  4, "reason": "Tight headshot, eyes upper third, head fills frame well." },
+      "background":  { "delta":  3, "reason": "Plain grey gradient — clean, doesn't compete." },
+      "eyecontact":  { "delta":  4, "reason": "Direct, warm smile through beard, engaging eyes." },
+      "headpose":    { "delta":  1, "reason": "Frontal with very slight tilt — natural." }
     }
   },
+
   "sample7.jpg": {
-    "note": "Headshot of young man framed hard against right edge of frame; grey studio wall; flat even light; neutral closed-mouth expression.",
+    "note": "Young Asian man on plain grey. Subject heavily off-center to right with empty negative space on left. Direct neutral expression, no smile.",
     "expected": {
-      "lighting":    { "delta":  0 },
-      "composition": { "delta": -6 },
-      "background":  { "delta":  2 },
-      "eyecontact":  { "delta":  1 },
-      "headpose":    { "delta":  0 }
+      "lighting":    { "delta":  1, "reason": "Soft directional from upper-right, lights nose and forehead; flat-ish but clean." },
+      "composition": { "delta": -4, "reason": "Subject too far right with awkward dead space on left; not deliberate lead room since subject looks straight at camera." },
+      "background":  { "delta":  1, "reason": "Plain grey is clean but the empty half highlights the framing problem rather than separates subject." },
+      "eyecontact":  { "delta":  0, "reason": "Direct gaze but neutral/disengaged expression — not unfriendly, not warm." },
+      "headpose":    { "delta":  0, "reason": "Subtle tilt toward the empty space — neutral overall." }
     }
   },
+
   "sample8.jpg": {
-    "note": "Editorial portrait with heavy blue gel lighting; magenta/violet falloff on background; strong color cast on skin; flat neutral expression.",
+    "note": "Stylized blue-gel + magenta-rim lighting, young woman, lavender backdrop. Editorial/fashion lighting setup, not standard portrait. Direct confident gaze, neutral expression.",
     "expected": {
-      "lighting":    { "delta": -3 },
-      "composition": { "delta":  1 },
-      "background":  { "delta":  2 },
-      "eyecontact":  { "delta":  1 },
-      "headpose":    { "delta":  0 }
+      "lighting":    { "delta":  2, "reason": "Intentional artistic colored gels — striking but heavy color cast moves it away from a flattering classical portrait." },
+      "composition": { "delta":  3, "reason": "Centered, head fills frame well; clean crop." },
+      "background":  { "delta":  5, "reason": "Clean lavender gradient complements the gel lighting — strong cohesive styling." },
+      "eyecontact":  { "delta":  3, "reason": "Direct intense gaze, confident; neutral expression works for the editorial register." },
+      "headpose":    { "delta":  0, "reason": "Frontal with very slight tilt — neutral." }
     }
   },
+
   "sample9.jpg": {
-    "note": "Corporate environmental portrait of smiling woman in striped jacket; office glass wall background with horizontal lines; soft natural light.",
+    "note": "Office-style headshot, woman in striped blazer. Soft window/key light from front-left. Glass wall background with reflections and window squares. Direct warm smile.",
     "expected": {
-      "lighting":    { "delta":  3 },
-      "composition": { "delta":  1 },
-      "background":  { "delta": -2 },
-      "eyecontact":  { "delta":  5 },
-      "headpose":    { "delta":  1 }
+      "lighting":    { "delta":  3, "reason": "Soft even window light, gentle modeling on cheek, natural skin." },
+      "composition": { "delta":  5, "reason": "Three-quarter framing well-balanced, slight body angle adds dynamism, eyes upper third." },
+      "background":  { "delta": -3, "reason": "Glass wall with mottled reflections and window square pattern — patterned and distracting." },
+      "eyecontact":  { "delta":  5, "reason": "Direct, warm full smile, natural connection — strong engagement." },
+      "headpose":    { "delta":  3, "reason": "Slight 3/4 angle, confident, natural." }
     }
   },
+
   "sample10.jpg": {
-    "note": "Outdoor laughing portrait of woman in red top; gorgeous bokeh background; warm light; full open-mouth laugh but eyes nearly closed.",
+    "note": "Laughing woman in red mock-neck, urban heavy-bokeh background. Soft diffused natural light. Big genuine smile with teeth, eyes squinting from laughter.",
     "expected": {
-      "lighting":    { "delta":  5 },
-      "composition": { "delta":  3 },
-      "background":  { "delta":  6 },
-      "eyecontact":  { "delta": -1 },
-      "headpose":    { "delta":  1 }
+      "lighting":    { "delta":  5, "reason": "Soft natural diffused light, strong catchlights, even exposure with slight warmth." },
+      "composition": { "delta":  5, "reason": "Half-length well-balanced, hair flow adds motion, eyes upper third." },
+      "background":  { "delta":  3, "reason": "Heavy urban bokeh, strong separation; slight busyness at edges keeps it from +5." },
+      "eyecontact":  { "delta":  7, "reason": "Genuine laugh, big authentic smile, eyes engaged through the squint — unusually strong connection." },
+      "headpose":    { "delta":  2, "reason": "Frontal, slight right tilt, very natural relaxed." }
     }
   },
+
   "sample11.jpg": {
-    "note": "Businessman in dark suit with red tie, arms crossed; moody urban background with bare trees; flat overcast light; serious closed-mouth.",
+    "note": "Suited man in dark suit + red tie, arms crossed, urban dusk backdrop with bare branches. Low-key moody lighting. Confident slight-smirk expression.",
     "expected": {
-      "lighting":    { "delta":  0 },
-      "composition": { "delta":  2 },
-      "background":  { "delta":  0 },
-      "eyecontact":  { "delta":  2 },
-      "headpose":    { "delta":  1 }
+      "lighting":    { "delta":  1, "reason": "Low-key dusk lighting, fairly flat with mild shadow on face; eyes are well-lit." },
+      "composition": { "delta":  4, "reason": "Three-quarter to full-body framing, vertical aspect strong, formal pose composed well." },
+      "background":  { "delta":  1, "reason": "Urban backdrop slightly busy with branches but toned down — doesn't pull focus." },
+      "eyecontact":  { "delta":  2, "reason": "Direct neutral-confident gaze with slight smirk; commanding but not warm." },
+      "headpose":    { "delta":  1, "reason": "Frontal with very slight tilt, formal stance." }
     }
   },
+
   "sample12.jpg": {
-    "note": "Outdoor portrait of young man in field at golden hour; strong backlight rim through teasels; big smile; subject looking off-camera, not at lens.",
+    "note": "Young man in field with bare teasels, golden-hour backlight. Big joyful smile. NOT looking at camera (eyes up-left). Candid lifestyle shot rather than headshot.",
     "expected": {
-      "lighting":    { "delta":  5 },
-      "composition": { "delta":  2 },
-      "background":  { "delta":  4 },
-      "eyecontact":  { "delta": -4 },
-      "headpose":    { "delta":  1 }
+      "lighting":    { "delta":  7, "reason": "Beautiful golden-hour rim light, warm tones, well-exposed face despite backlight — exceptional." },
+      "composition": { "delta":  6, "reason": "Off-center subject with negative space + lead room into where he's looking; natural lifestyle composition." },
+      "background":  { "delta":  5, "reason": "Wild grass + teasels with sunset glow and strong bokeh — natural and beautiful." },
+      "eyecontact":  { "delta": -4, "reason": "Not making eye contact with camera — judged by strict portrait standard, this is a deduction even though the moment is genuine." },
+      "headpose":    { "delta":  3, "reason": "Natural relaxed 3/4 looking up-left, joyful candid." }
     }
   }
 }
