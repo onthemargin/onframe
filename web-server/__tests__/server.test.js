@@ -13,7 +13,19 @@ const {
   sanitizeCard,
   sanitizeGearNeeded,
   secureClearBuffer,
+  sniffImageMime,
+  sanitizeReportDevice,
+  sanitizeReportFileInfo,
 } = serverModule;
+
+// Minimal valid magic-byte headers for sniff tests.
+const TINY_WEBP = Buffer.concat([
+  Buffer.from('RIFF'),
+  Buffer.from([0x1a, 0x00, 0x00, 0x00]), // little-endian file size (ignored by sniff)
+  Buffer.from('WEBP'),
+  Buffer.from('VP8 '),
+]);
+const NOT_AN_IMAGE = Buffer.from('this is plainly not an image payload at all');
 
 function makeLocalCards(overrides = {}) {
   const base = [
@@ -553,18 +565,22 @@ describe('mergePerceptualFindings', () => {
   });
 });
 
-describe('POST /onframe/api/analyze — Phase 2 merge', () => {
+// Full cloud-scored card set, in the shape vertex.js now returns.
+const CLOUD_CARDS = [
+  { category: 'Lighting',              score: 82, title: 'Lighting',              tip: 'Soft key, clean catchlights.',  priority: 3 },
+  { category: 'Head Angle & Pose',     score: 78, title: 'Head Angle & Pose',     tip: 'Slight turn reads natural.',     priority: 3 },
+  { category: 'Composition & Framing', score: 74, title: 'Composition & Framing', tip: 'Eyes on the upper third.',       priority: 3 },
+  { category: 'Sharpness & Focus',     score: 90, title: 'Sharpness & Focus',     tip: 'Eyes and lips crisply in focus.', priority: 3 },
+  { category: 'Background',            score: 60, title: 'Background',            tip: 'Mild edge clutter.',             priority: 3 },
+  { category: 'Eye Contact & Gaze',    score: 88, title: 'Eye Contact & Gaze',    tip: 'Direct, engaged gaze.',          priority: 3 },
+];
+
+describe('POST /onframe/api/analyze — cloud-primary scoring', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('returns aiSummary + cards + overallScore when vertex provides findings and metrics has localCards', async () => {
+  it('returns aiSummary + 6 cards + overallScore from Gemini full scores', async () => {
     const vertexClient = {
-      analyze: vi.fn().mockResolvedValue({
-        aiSummary: 'Looks engaged.',
-        perceptualFindings: {
-          lighting: { delta: 5, reason: 'soft and flattering' },
-          composition: { delta: -3, reason: 'a touch tight' },
-        },
-      }),
+      analyze: vi.fn().mockResolvedValue({ aiSummary: 'Sharp eyes carry it.', cards: CLOUD_CARDS }),
     };
     const app = createApp({
       vertexClient,
@@ -574,89 +590,93 @@ describe('POST /onframe/api/analyze — Phase 2 merge', () => {
     });
     const res = await request(app)
       .post(ANALYZE_PATH)
-      .field('metrics', VALID_METRICS_WITH_CARDS)
+      .field('metrics', VALID_METRICS)
       .attach('photo', TINY_JPEG, { filename: 'p.jpg', contentType: 'image/jpeg' });
 
     expect(res.status).toBe(200);
-    expect(res.body.aiSummary).toBe('Looks engaged.');
-    expect(Array.isArray(res.body.cards)).toBe(true);
+    expect(res.body.aiSummary).toBe('Sharp eyes carry it.');
+    expect(res.body.cards).toHaveLength(6);
+    // Gemini now owns sharpness — its score flows straight through.
+    const sharp = res.body.cards.find((c) => c.category === 'Sharpness & Focus');
+    expect(sharp.score).toBe(90);
+    expect(sharp.tip).toMatch(/in focus/i);
+    // Weighted overall: 82*.30 + 78*.25 + 74*.20 + 90*.15 + 60*.05 + 88*.05 = 79.8 → 80
+    expect(res.body.overallScore).toBe(80);
+  });
+
+  it('does not depend on client localCards (server no longer merges)', async () => {
+    const vertexClient = {
+      analyze: vi.fn().mockResolvedValue({ aiSummary: 'OK.', cards: CLOUD_CARDS }),
+    };
+    const app = createApp({
+      vertexClient, vertexModel: 'gemini-2.5-flash', vertexProject: 'p', vertexLocation: 'us-central1',
+    });
+    const res = await request(app)
+      .post(ANALYZE_PATH)
+      .field('metrics', VALID_METRICS) // intentionally no localCards
+      .attach('photo', TINY_JPEG, { filename: 'p.jpg', contentType: 'image/jpeg' });
+
+    expect(res.status).toBe(200);
     expect(res.body.cards).toHaveLength(6);
     expect(typeof res.body.overallScore).toBe('number');
-    const lighting = res.body.cards.find((c) => c.category === 'Lighting');
-    expect(lighting.score).toBe(75);
-    expect(lighting.aiReason).toBe('soft and flattering');
   });
 
-  it('returns only aiSummary when vertex returns no findings (Phase 1 shape)', async () => {
+  it('fills a fallback card for any category Gemini omits', async () => {
+    const partial = CLOUD_CARDS.filter((c) => c.category !== 'Background');
     const vertexClient = {
-      analyze: vi.fn().mockResolvedValue({ aiSummary: 'No findings.' }),
+      analyze: vi.fn().mockResolvedValue({ aiSummary: 'Five only.', cards: partial }),
     };
     const app = createApp({
-      vertexClient,
-      vertexModel: 'gemini-2.5-flash',
-      vertexProject: 'p',
-      vertexLocation: 'us-central1',
+      vertexClient, vertexModel: 'gemini-2.5-flash', vertexProject: 'p', vertexLocation: 'us-central1',
     });
     const res = await request(app)
       .post(ANALYZE_PATH)
-      .field('metrics', VALID_METRICS_WITH_CARDS)
+      .field('metrics', VALID_METRICS)
       .attach('photo', TINY_JPEG, { filename: 'p.jpg', contentType: 'image/jpeg' });
 
     expect(res.status).toBe(200);
-    expect(res.body.aiSummary).toBe('No findings.');
+    expect(res.body.cards).toHaveLength(6);
+    const bg = res.body.cards.find((c) => c.category === 'Background');
+    expect(bg).toBeTruthy();
+    expect(bg.score).toBe(0); // fallback card
+  });
+
+  it('returns only aiSummary when vertex returns no cards', async () => {
+    const vertexClient = {
+      analyze: vi.fn().mockResolvedValue({ aiSummary: 'Summary only.' }),
+    };
+    const app = createApp({
+      vertexClient, vertexModel: 'gemini-2.5-flash', vertexProject: 'p', vertexLocation: 'us-central1',
+    });
+    const res = await request(app)
+      .post(ANALYZE_PATH)
+      .field('metrics', VALID_METRICS)
+      .attach('photo', TINY_JPEG, { filename: 'p.jpg', contentType: 'image/jpeg' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.aiSummary).toBe('Summary only.');
     expect(res.body.cards).toBeUndefined();
     expect(res.body.overallScore).toBeUndefined();
   });
 
-  it('returns only aiSummary when vertex returns findings but metrics has no localCards', async () => {
-    const vertexClient = {
-      analyze: vi.fn().mockResolvedValue({
-        aiSummary: 'Photo reads warm.',
-        perceptualFindings: { lighting: { delta: 5, reason: 'soft' } },
-      }),
-    };
-    const app = createApp({
-      vertexClient,
-      vertexModel: 'gemini-2.5-flash',
-      vertexProject: 'p',
-      vertexLocation: 'us-central1',
-    });
-    const res = await request(app)
-      .post(ANALYZE_PATH)
-      .field('metrics', VALID_METRICS) // no localCards
-      .attach('photo', TINY_JPEG, { filename: 'p.jpg', contentType: 'image/jpeg' });
-
-    expect(res.status).toBe(200);
-    expect(res.body.aiSummary).toBe('Photo reads warm.');
-    expect(res.body.cards).toBeUndefined();
-    expect(res.body.overallScore).toBeUndefined();
-  });
-
-  it('zeroes the photo buffer in finally even when merge runs', async () => {
+  it('zeroes the photo buffer in finally even when cloud scoring runs', async () => {
     let capturedBuffer = null;
     const vertexClient = {
       analyze: vi.fn().mockImplementation(async ({ photoBuffer }) => {
         capturedBuffer = photoBuffer;
-        return {
-          aiSummary: 'OK.',
-          perceptualFindings: { lighting: { delta: 4, reason: 'soft' } },
-        };
+        return { aiSummary: 'OK.', cards: CLOUD_CARDS };
       }),
     };
     const app = createApp({
-      vertexClient,
-      vertexModel: 'gemini-2.5-flash',
-      vertexProject: 'p',
-      vertexLocation: 'us-central1',
+      vertexClient, vertexModel: 'gemini-2.5-flash', vertexProject: 'p', vertexLocation: 'us-central1',
     });
     const res = await request(app)
       .post(ANALYZE_PATH)
-      .field('metrics', VALID_METRICS_WITH_CARDS)
+      .field('metrics', VALID_METRICS)
       .attach('photo', TINY_JPEG, { filename: 'p.jpg', contentType: 'image/jpeg' });
 
     expect(res.status).toBe(200);
     expect(capturedBuffer).not.toBeNull();
-    // After the route handler returned, every byte of the buffer should be zero.
     expect(Array.from(capturedBuffer)).toEqual(new Array(capturedBuffer.length).fill(0));
   });
 });
@@ -686,5 +706,131 @@ describe('POST /onframe/api/report', () => {
     expect(logged).not.toContain('BASE64IMAGEDATA_SHOULD_NOT_LOG');
     expect(logged).not.toContain('DO_NOT_LOG_METRICS');
     logSpy.mockRestore();
+  });
+
+  it('never logs the original filename from fileInfo (PII)', async () => {
+    const app = createApp({ vertexClient: stubVertexSuccess() });
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    const res = await request(app)
+      .post(REPORT_PATH)
+      .set('Content-Type', 'application/json')
+      .send({
+        id: 'r2',
+        userText: 'broke',
+        context: 'error',
+        fileInfo: { size: 1234, type: 'image/jpeg', name: 'JaneDoe-passport-selfie.jpg', ext: '.jpg' },
+        error: { stage: 'analyzeImage', message: 'boom', fileInfo: { name: 'JaneDoe-passport-selfie.jpg' } },
+        device: { ua: 'x'.repeat(5000), screen: '1x1', dpr: 2, memory: 8, cores: 8 },
+      });
+
+    expect(res.status).toBe(200);
+    const logged = logSpy.mock.calls.map((args) => args.join(' ')).join('\n');
+    // Filename (and any basename) must never reach the logs, top-level or nested in error.
+    expect(logged).not.toContain('JaneDoe-passport-selfie');
+    // Oversized UA must be truncated, not logged verbatim.
+    expect(logged).not.toContain('x'.repeat(5000));
+    logSpy.mockRestore();
+  });
+});
+
+describe('sniffImageMime', () => {
+  it('identifies JPEG by FF D8 FF magic bytes', () => {
+    expect(sniffImageMime(TINY_JPEG)).toBe('image/jpeg');
+  });
+  it('identifies WEBP by RIFF....WEBP magic bytes', () => {
+    expect(sniffImageMime(TINY_WEBP)).toBe('image/webp');
+  });
+  it('returns null for non-image bytes', () => {
+    expect(sniffImageMime(NOT_AN_IMAGE)).toBeNull();
+  });
+  it('returns null for non-buffer / empty input', () => {
+    expect(sniffImageMime(null)).toBeNull();
+    expect(sniffImageMime(Buffer.alloc(0))).toBeNull();
+  });
+});
+
+describe('POST /onframe/api/analyze — content sniffing', () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it('returns 400 when bytes do not match an allowed image despite image/jpeg content type', async () => {
+    const vertexClient = stubVertexSuccess();
+    const app = createApp({
+      vertexClient,
+      vertexModel: 'gemini-2.5-flash',
+      vertexProject: 'p',
+      vertexLocation: 'us-central1',
+    });
+    const res = await request(app)
+      .post(ANALYZE_PATH)
+      .field('metrics', VALID_METRICS)
+      .attach('photo', NOT_AN_IMAGE, { filename: 'p.jpg', contentType: 'image/jpeg' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBeTruthy();
+    // Must reject before spending a Vertex call.
+    expect(vertexClient.analyze).not.toHaveBeenCalled();
+  });
+
+  it('accepts a real WEBP payload labelled image/webp', async () => {
+    const app = createApp({
+      vertexClient: stubVertexSuccess(),
+      vertexModel: 'gemini-2.5-flash',
+      vertexProject: 'p',
+      vertexLocation: 'us-central1',
+    });
+    const res = await request(app)
+      .post(ANALYZE_PATH)
+      .field('metrics', VALID_METRICS)
+      .attach('photo', TINY_WEBP, { filename: 'p.webp', contentType: 'image/webp' });
+    expect(res.status).toBe(200);
+  });
+});
+
+describe('sanitizeReportFileInfo / sanitizeReportDevice', () => {
+  it('drops the filename and keeps only size/type/ext', () => {
+    const out = sanitizeReportFileInfo({ size: 99, type: 'image/jpeg', name: 'secret-name.jpg', ext: '.jpg' });
+    expect(out).toEqual({ size: 99, type: 'image/jpeg', ext: '.jpg' });
+    expect(out).not.toHaveProperty('name');
+  });
+  it('caps device fields and coerces numerics', () => {
+    const out = sanitizeReportDevice({ ua: 'a'.repeat(1000), screen: '1920x1080', dpr: '2', memory: 8, cores: 'x' });
+    expect(out.ua.length).toBeLessThanOrEqual(256);
+    expect(out.dpr).toBe(2);
+    expect(out.cores).toBeNull();
+  });
+  it('returns null for non-object input', () => {
+    expect(sanitizeReportFileInfo(null)).toBeNull();
+    expect(sanitizeReportDevice('nope')).toBeNull();
+  });
+});
+
+describe('POST /onframe/api/analyze — global cost cap', () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it('returns 429 once the global cap is hit, regardless of client IP', async () => {
+    const app = createApp({
+      vertexClient: stubVertexSuccess(),
+      vertexModel: 'gemini-2.5-flash',
+      vertexProject: 'p',
+      vertexLocation: 'us-central1',
+      trustProxy: true,
+      globalRateMax: 2,
+    });
+    const fire = (ip) => request(app)
+      .post(ANALYZE_PATH)
+      .set('X-Forwarded-For', ip)
+      .field('metrics', VALID_METRICS)
+      .attach('photo', TINY_JPEG, { filename: 'p.jpg', contentType: 'image/jpeg' });
+
+    // Three distinct IPs: per-IP limiter (max 10) would let all through, but
+    // the global cap of 2 must reject the third.
+    const r1 = await fire('1.1.1.1');
+    const r2 = await fire('2.2.2.2');
+    const r3 = await fire('3.3.3.3');
+    expect(r1.status).toBe(200);
+    expect(r2.status).toBe(200);
+    expect(r3.status).toBe(429);
+    expect(r3.body.error).toBeTruthy();
   });
 });

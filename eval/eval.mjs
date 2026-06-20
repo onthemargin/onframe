@@ -16,6 +16,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname, resolve, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import { mean, stddev, mae, spearman } from './lib.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,6 +27,9 @@ const require = createRequire(
   join(__dirname, '..', 'web-server', 'package.json')
 );
 const { GoogleAuth } = require('google-auth-library');
+// Import the LIVE production prompt + builder so the harness always evaluates
+// exactly what ships (no hand-copied duplicate to drift out of sync).
+const { buildPrompt } = require(resolve(__dirname, '..', 'web-server', 'vertex.js'));
 
 // ---------- config ----------
 
@@ -37,56 +41,12 @@ const VERTEX_URL = `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${
 const SAMPLE_DIR = resolve(__dirname, '..', 'web', 'sample');
 const LABELS_PATH = resolve(__dirname, 'labels.json');
 
-const CATEGORIES = ['lighting', 'composition', 'background', 'eyecontact', 'headpose'];
+const CATEGORIES = ['lighting', 'headpose', 'composition', 'sharpness', 'background', 'eyecontact'];
 
-// Production SYSTEM_PROMPT pasted verbatim from web-server/vertex.js so the
-// harness keeps evaluating the *current* production prompt even if vertex.js
-// later evolves. Do not edit to "improve" — that would defeat the purpose.
-const SYSTEM_PROMPT = `You are a senior portrait photographer giving honest critique a beginner can act on. The output renders inside small mobile cards — be terse.
-
-Input: a portrait photo + a JSON of locally-measured numbers (treat as authoritative for sharpness/framing/crop).
-
-Output ONLY a JSON object (no markdown, no commentary):
-
-{
-  "aiSummary": "<MAX 200 chars. Two short sentences. Lead with the biggest issue. End with one genuine strength. State things directly — no 'consider' / 'try' / 'might'.>",
-  "perceptualFindings": {
-    "lighting":     { "delta": <integer -10..10>, "reason": "<MAX 70 chars. One short observation naming the specific thing.>" },
-    "composition":  { "delta": <integer -10..10>, "reason": "<MAX 70 chars>" },
-    "background":   { "delta": <integer -10..10>, "reason": "<MAX 70 chars>" },
-    "eyecontact":   { "delta": <integer -10..10>, "reason": "<MAX 70 chars>" },
-    "headpose":     { "delta": <integer  -5..5>,  "reason": "<MAX 70 chars>" }
-  }
-}
-
-Calibration:
-  +8/+10 : exceptional. Rare.
-  +3/+5  : noticeably better than baseline.
-  0/+1   : on par with baseline.
-  -3/-5  : noticeable problem a viewer registers.
-  -8/-10 : serious issue dominating perception.
-
-Rules:
-- Return a delta for ALL FIVE categories. No silent omissions.
-- Numbers are plain integers, no leading '+' sign.
-- Reasons name the specific thing visible (the flag, shadow under chin, cropped fingertip, lens glare). No generic praise ("engaging" / "natural" / "warm"). No hedging ("could" / "might" / "consider").
-- Be as willing to deduct as to add. Average photo nets near zero.
-- Beginner vocabulary — no "Rembrandt", no f-stops, no clock positions.
-
-Good reasons (this length, this specificity):
-- "Hard shadow cuts across cheek from overhead key."
-- "Top of head clipped; eyeline sits too low."
-- "Reflection in right lens pulls focus from eye."
-- "Hands at wrist read tense, not relaxed."
-
-Bad reasons (DO NOT write these):
-- "Natural and engaging." (no cause)
-- "The lighting is flat and creates distinct shadows under the chin and nose, lacking dimension." (too long; one observation should be ~50 chars)`;
-
-// Baseline metrics payload sent for every photo. Vertex returns *deltas*
-// relative to its own perception of the photo, not relative to these numbers,
-// so the absolute values mostly serve as a stable, realistic-looking input.
-// Weights match the production scoring categories (see plan.md).
+// Grounding metrics payload sent for every photo. Under cloud-primary scoring
+// Vertex returns *absolute* 0–100 scores judged from the image; this payload is
+// just stable, realistic-looking geometry/grounding input (no live MediaPipe
+// here). Weights match the production scoring categories (see plan.md).
 const BASELINE_METRICS = JSON.stringify({
   summary: 'Portrait analysis (eval harness baseline).',
   photoType: 'head-and-shoulders',
@@ -109,15 +69,6 @@ const BASELINE_METRICS = JSON.stringify({
 });
 
 // ---------- vertex client ----------
-
-function buildPrompt(metricsText) {
-  return `${SYSTEM_PROMPT}
-
-Local measurement payload (JSON):
-${metricsText}
-
-Now analyze the attached photo and return the JSON object described above.`;
-}
 
 // Same safety belt as production vertex.js: Gemini occasionally emits "+3"
 // (explicit sign) inside JSON, which is not valid JSON. Strip leading +
@@ -149,8 +100,10 @@ async function callVertex({ token, photoBuffer, metricsText }) {
       },
     ],
     generationConfig: {
-      temperature: 0.3,
-      maxOutputTokens: 2048,
+      // Mirror production vertex.js: near-deterministic, full output budget.
+      temperature: 0.1,
+      seed: 1,
+      maxOutputTokens: 4096,
       topP: 0.95,
       responseMimeType: 'application/json',
     },
@@ -190,80 +143,17 @@ function readPhoto(sampleFile) {
   return readFileSync(p);
 }
 
-function extractDeltas(parsed) {
+function extractScores(parsed) {
   const out = {};
-  const pf = parsed?.perceptualFindings || {};
+  const s = parsed?.scores || {};
   for (const cat of CATEGORIES) {
-    const v = pf[cat]?.delta;
+    const v = s[cat]?.score;
     out[cat] = Number.isFinite(v) ? v : null;
   }
   return out;
 }
 
-// ---------- stats ----------
-
-function mean(arr) {
-  const xs = arr.filter((x) => Number.isFinite(x));
-  if (!xs.length) return NaN;
-  return xs.reduce((a, b) => a + b, 0) / xs.length;
-}
-
-function stddev(arr) {
-  const xs = arr.filter((x) => Number.isFinite(x));
-  if (xs.length < 2) return NaN;
-  const m = mean(xs);
-  const v = xs.reduce((a, b) => a + (b - m) ** 2, 0) / (xs.length - 1);
-  return Math.sqrt(v);
-}
-
-function mae(predicted, expected) {
-  const pairs = predicted
-    .map((p, i) => [p, expected[i]])
-    .filter(([p, e]) => Number.isFinite(p) && Number.isFinite(e));
-  if (!pairs.length) return NaN;
-  return pairs.reduce((acc, [p, e]) => acc + Math.abs(p - e), 0) / pairs.length;
-}
-
-// Spearman rank correlation. Average ranks for ties.
-function spearman(a, b) {
-  const pairs = a
-    .map((x, i) => [x, b[i]])
-    .filter(([x, y]) => Number.isFinite(x) && Number.isFinite(y));
-  const n = pairs.length;
-  if (n < 2) return NaN;
-  const ranks = (vals) => {
-    const indexed = vals.map((v, i) => [v, i]);
-    indexed.sort((p, q) => p[0] - q[0]);
-    const r = new Array(vals.length);
-    let i = 0;
-    while (i < indexed.length) {
-      let j = i;
-      while (j + 1 < indexed.length && indexed[j + 1][0] === indexed[i][0]) j++;
-      const avgRank = (i + j) / 2 + 1; // 1-based
-      for (let k = i; k <= j; k++) r[indexed[k][1]] = avgRank;
-      i = j + 1;
-    }
-    return r;
-  };
-  const ax = pairs.map((p) => p[0]);
-  const bx = pairs.map((p) => p[1]);
-  const ra = ranks(ax);
-  const rb = ranks(bx);
-  const mra = mean(ra);
-  const mrb = mean(rb);
-  let num = 0;
-  let da = 0;
-  let db = 0;
-  for (let i = 0; i < n; i++) {
-    const x = ra[i] - mra;
-    const y = rb[i] - mrb;
-    num += x * y;
-    da += x * x;
-    db += y * y;
-  }
-  if (da === 0 || db === 0) return NaN; // constant vector — undefined corr
-  return num / Math.sqrt(da * db);
-}
+// ---------- stats (shared, unit-tested in eval/__tests__/lib.test.mjs) ----------
 
 // ---------- table formatting ----------
 
@@ -299,9 +189,9 @@ async function modeQuality(token) {
       try {
         const photo = readPhoto(sample);
         const parsed = await callVertex({ token, photoBuffer: photo, metricsText: BASELINE_METRICS });
-        const predicted = extractDeltas(parsed);
+        const predicted = extractScores(parsed);
         const expected = {};
-        for (const cat of CATEGORIES) expected[cat] = labels[sample].expected?.[cat]?.delta ?? null;
+        for (const cat of CATEGORIES) expected[cat] = labels[sample].expected?.[cat]?.score ?? null;
         return { sample, predicted, expected, aiSummary: parsed?.aiSummary || '', ok: true };
       } catch (err) {
         return { sample, error: err.message, ok: false };
@@ -325,7 +215,7 @@ async function modeQuality(token) {
     }
     rows.push(row);
   }
-  console.log('Per-sample predicted (.p) vs labeled (.l) deltas:');
+  console.log('Per-sample predicted (.p) vs labeled (.l) scores:');
   console.log(table(rows, headers));
 
   // Errors
@@ -380,7 +270,7 @@ async function modeDeterminism(token, sample) {
     Array.from({ length: RUNS }, async (_, i) => {
       try {
         const parsed = await callVertex({ token, photoBuffer: photo, metricsText: BASELINE_METRICS });
-        return { run: i + 1, predicted: extractDeltas(parsed), ok: true };
+        return { run: i + 1, predicted: extractScores(parsed), ok: true };
       } catch (err) {
         return { run: i + 1, error: err.message, ok: false };
       }
@@ -400,7 +290,7 @@ async function modeDeterminism(token, sample) {
   const rows = results.map((r) =>
     r.ok ? [String(r.run), ...CATEGORIES.map((c) => fmt(r.predicted[c], 4, 0).trim())] : [String(r.run), ...CATEGORIES.map(() => 'ERR')]
   );
-  console.log('Per-run deltas:');
+  console.log('Per-run scores:');
   console.log(table(rows, headers));
 
   // Stats per category

@@ -1,49 +1,108 @@
 'use strict';
 
-const SYSTEM_PROMPT = `You are a senior portrait photographer giving honest critique a beginner can act on. The output renders inside small mobile cards — be terse.
+const SYSTEM_PROMPT = `You are a working professional portrait photographer doing a portfolio review. Judge like a pro, NOT a corporate-headshot vendor. The output renders inside small mobile cards — be terse and specific.
 
-Input: a portrait photo + a JSON of locally-measured numbers (treat as authoritative for sharpness/framing/crop).
+Input: a portrait photo + a JSON of locally-measured geometry. Treat the geometry numbers (head angle, eyeline, crop/framing, face box) as AUTHORITATIVE — don't second-guess them. Judge lighting, sharpness/focus, background, and eye contact perceptually from the image.
 
-Output ONLY a JSON object (no markdown, no commentary):
+Score ALL SIX categories 0–100 (absolute). Use the FULL range — reward real craft, don't fear low scores, and do NOT cluster everything in the 80s–90s:
+  90–100 : portfolio-grade. Intentional and well-executed.
+  75–89  : strong; only minor nits.
+  60–74  : competent; one clear, nameable weakness.
+  40–59  : a problem a viewer registers immediately.
+  0–39   : a serious fault that defines the photo.
+If a photo is average on an axis, score it average. Standouts earn 90+; weak work earns below 50.
+
+LIGHTING — judge INTENT and execution, not brightness. This is where most graders go wrong in BOTH directions:
+- First read the intent: soft/even, dramatic low-key, hard/directional, creative-gel, flat on-camera, or underexposed.
+- Shadow and contrast are TOOLS, not errors. Deliberate dramatic / short / split / low-key / gel lighting scores 85+ ONLY when the face stays READABLE and the shadow is clearly SHAPED — you can see modeling, a catchlight, and intentional, controlled falloff across the face. Mood or darkness alone is NOT enough.
+- Judge the exposure of the FACE, not the overall brightness of the frame. A well-lit, modeled face on a black or dark background is excellent low-key (85+) — a dark background is not a fault. The test is whether the FACE itself is correctly exposed and shaped.
+- CRITICAL — do not over-reward mere darkness. If the FACE ITSELF is largely buried in shadow, underexposed, muddy, or just dark because it was under-lit (ambient dark, not sculpted), cap it 55–70 no matter how "moody" it looks. That is underexposure, not low-key craft. A dusk/backlit shot where the face loses detail is ~60, not 90 — but a deliberately lit face against darkness is not penalized.
+- Deduct for genuine faults: unflattering placement (raccoon-eye sockets, hotspots, blown/clipped highlights), a muddy or sickly color cast on skin, truly flat dimensionless on-camera light, or underexposure that buries facial detail.
+- "Even and bright" with no shaping is merely competent — cap flat, modeling-free light around 70 unless it's genuinely beautiful soft light with clear catchlights.
+
+POSE/HEADPOSE — a dead-straight frontal pose is NOT automatically strong. Judge whether the angle and chin height flatter THIS subject: reward an angle that adds dimension or suits the mood; mark frontal as merely fine (≈70) when it reads static.
+
+SHARPNESS — judge whether the EYES/face are in focus, NOT how much skin texture there is. A smooth, evenly-lit, in-focus face is sharp (high). Intentional background blur (bokeh) is good craft, never a focus problem. Deduct only when the face/eyes are genuinely soft or missed-focus.
+
+EYE CONTACT — score the GEOMETRY of the gaze, not the warmth of the expression. A direct, neutral, or even stern gaze INTO the lens is still strong eye contact — do NOT lower it for a serious/unsmiling face (expression is not this axis). Anchors:
+  90–100 : eyes meet the lens, open, with visible catchlights.
+  75–89  : gaze essentially at the lens / very slightly off-axis but still connecting; or direct but catchlights are weak.
+  55–70  : clearly looking off-camera (candid or profile) — a valid style, but it is not eye contact with the viewer.
+  0–40   : eyes closed, squinted shut, or obscured (sunglasses, hair, deep shadow).
+Judge ONLY where the eyes point and whether they're open/lit — never confuse a confident neutral look with weak contact.
+
+Output ONLY this JSON object (no markdown, no commentary):
 
 {
-  "aiSummary": "<MAX 200 chars. Two short sentences. Lead with the biggest issue. End with one genuine strength. State things directly — no 'consider' / 'try' / 'might'.>",
-  "perceptualFindings": {
-    "lighting":     { "delta": <integer -10..10>, "reason": "<MAX 70 chars. One short observation naming the specific thing.>" },
-    "composition":  { "delta": <integer -10..10>, "reason": "<MAX 70 chars>" },
-    "background":   { "delta": <integer -10..10>, "reason": "<MAX 70 chars>" },
-    "eyecontact":   { "delta": <integer -10..10>, "reason": "<MAX 70 chars>" },
-    "headpose":     { "delta": <integer  -5..5>,  "reason": "<MAX 70 chars>" }
+  "aiSummary": "<MAX 200 chars. Two short sentences. Lead with the biggest real issue, end with the strongest genuine quality. State directly — no 'consider' / 'try' / 'might'.>",
+  "scores": {
+    "lighting":    { "score": <int 0-100>, "tip": "<see TIP RULES>" },
+    "headpose":    { "score": <int 0-100>, "tip": "..." },
+    "composition": { "score": <int 0-100>, "tip": "..." },
+    "sharpness":   { "score": <int 0-100>, "tip": "..." },
+    "background":  { "score": <int 0-100>, "tip": "..." },
+    "eyecontact":  { "score": <int 0-100>, "tip": "..." }
   }
 }
 
-Calibration:
-  +8/+10 : exceptional. Rare.
-  +3/+5  : noticeably better than baseline.
-  0/+1   : on par with baseline.
-  -3/-5  : noticeable problem a viewer registers.
-  -8/-10 : serious issue dominating perception.
+TIP RULES (MAX 90 chars each):
+- Name the SPECIFIC thing visible in THIS photo (the shadow under the chin, the cropped fingertip, the catchlight in the iris, the bright sign over the left shoulder).
+- All six tips must be DISTINCT. Never reuse the same praise across categories.
+- If a category is genuinely excellent with nothing to fix, say so concretely ("Crisp catchlights, clean falloff — leave it") — do NOT pad with generic praise ("natural", "engaging", "draws the viewer in").
+- No hedging ("could" / "might" / "consider"). Beginner vocabulary — no "Rembrandt", no f-stops, no clock positions.
 
-Rules:
-- Return a delta for ALL FIVE categories. No silent omissions.
-- Numbers are plain integers, no leading '+' sign.
-- Reasons name the specific thing visible (the flag, shadow under chin, cropped fingertip, lens glare). No generic praise ("engaging" / "natural" / "warm"). No hedging ("could" / "might" / "consider").
-- Be as willing to deduct as to add. Average photo nets near zero.
-- Beginner vocabulary — no "Rembrandt", no f-stops, no clock positions.
-
-Good reasons (this length, this specificity):
+Good tips:
 - "Hard shadow cuts across cheek from overhead key."
 - "Top of head clipped; eyeline sits too low."
-- "Reflection in right lens pulls focus from eye."
-- "Hands at wrist read tense, not relaxed."
-
-Bad reasons (DO NOT write these):
-- "Natural and engaging." (no cause)
-- "The lighting is flat and creates distinct shadows under the chin and nose, lacking dimension." (too long; one observation should be ~50 chars)`;
+- "Deliberate low-key falloff models the face well — leave it."
+Bad tips: "Natural and engaging." (no cause) · the same eye-contact praise on three cards.`;
 
 const VERTEX_TIMEOUT_MS = 25_000;
 const MAX_AI_SUMMARY_LENGTH = 220;
+const MAX_TIP_LENGTH = 120;
 const DEFAULT_MODEL = 'gemini-2.5-flash';
+
+// Gemini's short score keys → the canonical category names the synthesizer +
+// UI use. Order here is irrelevant; the server re-orders by category weight.
+const SCORE_KEY_TO_CATEGORY = [
+  ['lighting',    'Lighting'],
+  ['headpose',    'Head Angle & Pose'],
+  ['composition', 'Composition & Framing'],
+  ['sharpness',   'Sharpness & Focus'],
+  ['background',  'Background'],
+  ['eyecontact',  'Eye Contact & Gaze'],
+];
+
+// Low score = surface it first ("Fix now"); high score = "Working".
+function priorityForScore(score) {
+  if (score < 50) return 1;
+  if (score < 70) return 2;
+  return 3;
+}
+
+// Turn Gemini's { lighting: {score,tip}, ... } into the canonical card array
+// the server's normalizeAiResponse expects ({ category, score, title, tip,
+// priority }). Missing/malformed entries are skipped; the server fills any
+// gaps with fallback cards. title is used only in the overlay pin's aria-label.
+function buildCardsFromScores(scores) {
+  if (!scores || typeof scores !== 'object') return [];
+  const cards = [];
+  for (const [key, category] of SCORE_KEY_TO_CATEGORY) {
+    const entry = scores[key];
+    if (!entry || typeof entry !== 'object') continue;
+    const raw = Number(entry.score);
+    if (!Number.isFinite(raw)) continue;
+    const score = Math.max(0, Math.min(100, Math.round(raw)));
+    cards.push({
+      category,
+      score,
+      title: category,
+      tip: (typeof entry.tip === 'string' ? entry.tip.trim() : '').slice(0, MAX_TIP_LENGTH),
+      priority: priorityForScore(score),
+    });
+  }
+  return cards;
+}
 
 function stripCodeFences(text) {
   if (typeof text !== 'string') return text;
@@ -65,31 +124,32 @@ Now analyze the attached photo and return the JSON object described above.`;
 // Gemini response schema. Schema-enforced JSON dramatically reduces parse
 // failures vs responseMimeType alone — Gemini guarantees a JSON object of
 // this exact shape with valid types.
-const FINDING_SCHEMA = {
+const SCORE_ENTRY_SCHEMA = {
   type: 'object',
   properties: {
-    delta: { type: 'integer' },
-    reason: { type: 'string' },
+    score: { type: 'integer' },
+    tip: { type: 'string' },
   },
-  required: ['delta', 'reason'],
+  required: ['score', 'tip'],
 };
 const RESPONSE_SCHEMA = {
   type: 'object',
   properties: {
     aiSummary: { type: 'string' },
-    perceptualFindings: {
+    scores: {
       type: 'object',
       properties: {
-        lighting: FINDING_SCHEMA,
-        composition: FINDING_SCHEMA,
-        background: FINDING_SCHEMA,
-        eyecontact: FINDING_SCHEMA,
-        headpose: FINDING_SCHEMA,
+        lighting: SCORE_ENTRY_SCHEMA,
+        headpose: SCORE_ENTRY_SCHEMA,
+        composition: SCORE_ENTRY_SCHEMA,
+        sharpness: SCORE_ENTRY_SCHEMA,
+        background: SCORE_ENTRY_SCHEMA,
+        eyecontact: SCORE_ENTRY_SCHEMA,
       },
-      required: ['lighting', 'composition', 'background', 'eyecontact', 'headpose'],
+      required: ['lighting', 'headpose', 'composition', 'sharpness', 'background', 'eyecontact'],
     },
   },
-  required: ['aiSummary', 'perceptualFindings'],
+  required: ['aiSummary', 'scores'],
 };
 
 function buildRequestBody({ photoBuffer, metricsText, photoMimeType }) {
@@ -174,9 +234,8 @@ function parseVertexOutput(rawContent) {
     throw new Error('Vertex aiSummary exceeds maximum length');
   }
   const result = { aiSummary: aiSummary.trim() };
-  if (parsed.perceptualFindings && typeof parsed.perceptualFindings === 'object') {
-    result.perceptualFindings = parsed.perceptualFindings;
-  }
+  const cards = buildCardsFromScores(parsed.scores);
+  if (cards.length) result.cards = cards;
   return result;
 }
 
@@ -266,6 +325,10 @@ module.exports = {
   parseVertexOutput,
   stripCodeFences,
   stripPlusSignedIntegers,
+  // Exported so the eval harness evaluates the LIVE production prompt rather
+  // than a hand-copied duplicate that can silently drift out of sync.
+  SYSTEM_PROMPT,
+  buildPrompt,
   MAX_AI_SUMMARY_LENGTH,
   DEFAULT_MODEL,
 };

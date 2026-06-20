@@ -19,7 +19,7 @@ AI-powered portrait photo coaching — analyzes lighting, pose, composition, sha
 4. Rules-based scoring engine produces 6 coaching cards with specific feedback
 5. Results shown as an interactive overlay with hotspot pins on the photo
 
-**Privacy:** Local MediaPipe face/pose analysis runs on-device. OnFrame doesn't retain your photo — it's forwarded to Google Vertex AI in-memory for coaching and discarded after the response. Google's handling of the request is governed by [Vertex AI data governance](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance).
+**Privacy:** Local MediaPipe face/pose analysis runs on-device. OnFrame doesn't retain your photo — it's forwarded to Google Vertex AI in-memory for coaching and discarded after the response. Google's handling of the request is governed by [Vertex AI data governance](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance). If you tap "Report an issue," a diagnostic record (scores, coarse device info, and any text you type — never the photo or its filename) is written to server logs so the problem can be traced.
 
 ## Tech Stack
 

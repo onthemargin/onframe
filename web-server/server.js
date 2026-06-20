@@ -198,6 +198,60 @@ function isAllowedImageMime(mime) {
   return mime === 'image/jpeg' || mime === 'image/webp';
 }
 
+// Content-sniff the first bytes so a client can't smuggle a non-image past the
+// declared Content-Type. JPEG starts FF D8 FF; WEBP is a RIFF container whose
+// bytes 0-3 are "RIFF" and bytes 8-11 are "WEBP". Returns the detected mime or
+// null. We never decode the image server-side, so this is defence-in-depth: it
+// keeps non-images from ever reaching (and being billed by) Vertex.
+function sniffImageMime(buffer) {
+  if (!Buffer.isBuffer(buffer) || buffer.length < 12) return null;
+  if (buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) {
+    return 'image/jpeg';
+  }
+  if (
+    buffer.toString('latin1', 0, 4) === 'RIFF' &&
+    buffer.toString('latin1', 8, 12) === 'WEBP'
+  ) {
+    return 'image/webp';
+  }
+  return null;
+}
+
+// Whitelist + cap the diagnostic fields the client attaches to a report.
+// The original filename is intentionally dropped — it can carry PII (names,
+// case numbers) — keeping only size/type/ext, which are all we need to debug.
+function sanitizeReportFileInfo(fileInfo) {
+  if (!fileInfo || typeof fileInfo !== 'object') return null;
+  const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : null);
+  return {
+    size: num(fileInfo.size),
+    type: String(fileInfo.type || '').slice(0, 40),
+    ext: String(fileInfo.ext || '').slice(0, 10),
+  };
+}
+
+function sanitizeReportDevice(device) {
+  if (!device || typeof device !== 'object') return null;
+  const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : null);
+  return {
+    ua: String(device.ua || '').slice(0, 256),
+    screen: String(device.screen || '').slice(0, 32),
+    dpr: num(device.dpr),
+    memory: num(device.memory),
+    cores: num(device.cores),
+  };
+}
+
+function sanitizeReportError(error) {
+  if (!error || typeof error !== 'object') return null;
+  return {
+    stage: String(error.stage || '').slice(0, 60),
+    message: String(error.message || '').slice(0, 300),
+    stack: String(error.stack || '').slice(0, 300),
+    fileInfo: sanitizeReportFileInfo(error.fileInfo),
+  };
+}
+
 function buildUpload() {
   return multer({
     storage: multer.memoryStorage(),
@@ -226,6 +280,7 @@ function createApp({
   vertexModel = process.env.VERTEX_MODEL || DEFAULT_MODEL,
   basePath = process.env.BASE_PATH || '',
   trustProxy = process.env.TRUST_PROXY,
+  globalRateMax = Number(process.env.GLOBAL_RATE_MAX) || 120,
 } = {}) {
   const app  = express();
   const normalizedBasePath = normalizeBasePath(basePath);
@@ -272,6 +327,21 @@ function createApp({
     legacyHeaders: false,
     message: { error: 'Too many requests — please wait a minute.' },
   });
+  // Per-instance global circuit breaker on the (paid) Vertex path. The per-IP
+  // limiter above can't bound spend under a distributed flood — many IPs each
+  // staying under 10/min still add up. This caps total analyze throughput per
+  // instance (maxScale bounds the instance count) as a cost backstop. A
+  // constant key makes it deliberately IP-agnostic; validate:false silences
+  // express-rate-limit's trust-proxy check, which doesn't apply to a fixed key.
+  const globalLimiter = rateLimit({
+    windowMs: 60_000,
+    max: globalRateMax,
+    keyGenerator: () => 'global',
+    standardHeaders: false,
+    legacyHeaders: false,
+    validate: false,
+    message: { error: 'Service is busy — please try again shortly.' },
+  });
   const reportLimiter = rateLimit({
     windowMs: 60_000,
     max: 20,
@@ -301,7 +371,7 @@ function createApp({
 
   const analyzeUpload = upload.single('photo');
 
-  app.post(`${apiRoot}/analyze`, limiter, (req, res) => {
+  app.post(`${apiRoot}/analyze`, globalLimiter, limiter, (req, res) => {
     // Short correlation id stamped on every log line for this request and
     // returned in the response so the client can render it. When a user
     // shares a screenshot, the id is the trace key into Cloud Logging.
@@ -319,6 +389,11 @@ function createApp({
       }
       if (!isAllowedImageMime(req.file.mimetype)) {
         return res.status(400).json({ error: 'photo must be image/jpeg or image/webp' });
+      }
+      // Defence-in-depth: the declared MIME is client-controlled, so confirm the
+      // actual bytes are a JPEG/WEBP before spending a Vertex call on them.
+      if (!sniffImageMime(req.file.buffer)) {
+        return res.status(400).json({ error: 'photo content is not a valid JPEG or WEBP image' });
       }
       const metricsRaw = req.body?.metrics;
       if (typeof metricsRaw !== 'string' || !metricsRaw.length) {
@@ -356,25 +431,20 @@ function createApp({
           console.log(`[onframe] analyze unavailable id=${requestId} reason=empty-summary`);
           return res.json({ id: requestId, ts: requestTs, aiUnavailable: true });
         }
-        const aiSummary = result.aiSummary.slice(0, 500);
-
-        // Phase 2: if vertex returned perceptualFindings AND the client passed
-        // localCards in metrics, merge bounded deltas server-side and return
-        // the cards + recomputed overall score. Otherwise return aiSummary only.
-        const findings = result.perceptualFindings;
-        const hasFindings = findings && typeof findings === 'object' && Object.keys(findings).length > 0;
-        let metricsParsed = null;
-        try { metricsParsed = JSON.parse(metricsRaw); } catch { /* validated earlier */ }
-        const localCards = metricsParsed?.localCards;
-        if (hasFindings && Array.isArray(localCards) && localCards.length > 0) {
-          const merged = mergePerceptualFindings({ localCards, findings });
-          if (merged) {
-            console.log(`[onframe] analyze OK id=${requestId} merged=true overallScore=${merged.overallScore}`);
-            return res.json({ id: requestId, ts: requestTs, aiSummary, cards: merged.cards, overallScore: merged.overallScore });
-          }
+        // Cloud-primary scoring: Gemini scores all six categories directly
+        // (including Sharpness). Normalize the cards — clamp scores, fill any
+        // category Gemini omitted with a fallback card, recompute the weighted
+        // overall — and return the full result. The local synthesizer's cards
+        // are only a client-side fallback for when this path yields no cards
+        // (summary-only response, or Vertex unavailable).
+        if (Array.isArray(result.cards) && result.cards.length > 0) {
+          const normalized = normalizeAiResponse({ cards: result.cards, aiSummary: result.aiSummary });
+          console.log(`[onframe] analyze OK id=${requestId} cloudScored=true overallScore=${normalized.overallScore}`);
+          return res.json({ id: requestId, ts: requestTs, aiSummary: normalized.aiSummary, cards: normalized.cards, overallScore: normalized.overallScore });
         }
 
-        console.log(`[onframe] analyze OK id=${requestId} merged=false`);
+        const aiSummary = result.aiSummary.slice(0, 500);
+        console.log(`[onframe] analyze OK id=${requestId} cloudScored=false`);
         return res.json({ id: requestId, ts: requestTs, aiSummary });
       } catch (vertexErr) {
         // Structured warning so we can observe the parse-failure rate over
@@ -414,7 +484,9 @@ function createApp({
     const { id, ts, userText, overallScore, photoType, cardScores, error, context, fileInfo, device } = req.body || {};
     const safeContext = context === 'error' ? 'error' : 'results';
     const severity = safeContext === 'error' ? 'WARNING' : 'INFO';
-    // Whitelist-only logging: photo and metrics keys are never reflected.
+    // Whitelist-only logging: photo and metrics keys are never reflected, and
+    // the error/fileInfo/device sub-objects are sanitized so a client can't
+    // smuggle the original filename (PII) or an oversized field into the logs.
     console.log(JSON.stringify({
       severity,
       type: 'onframe_report',
@@ -422,12 +494,12 @@ function createApp({
       ts: normalizeSummary(ts) || new Date().toISOString(),
       context: safeContext,
       userText: String(userText || '').slice(0, 500),
-      error,
-      fileInfo,
+      error: sanitizeReportError(error),
+      fileInfo: sanitizeReportFileInfo(fileInfo),
       overallScore: Math.max(0, Math.min(100, Number(overallScore) || 0)),
-      photoType,
+      photoType: String(photoType || '').slice(0, 40) || null,
       cardScores: Array.isArray(cardScores) ? cardScores.slice(0, CATEGORY_CONFIG.length) : [],
-      device,
+      device: sanitizeReportDevice(device),
     }));
     res.json({ ok: true, id: String(id || '').slice(0, 64) });
   });
@@ -467,6 +539,10 @@ module.exports = {
   parseTrustProxy,
   sanitizeCard,
   sanitizeGearNeeded,
+  sanitizeReportDevice,
+  sanitizeReportError,
+  sanitizeReportFileInfo,
   secureClearBuffer,
+  sniffImageMime,
   startServer,
 };

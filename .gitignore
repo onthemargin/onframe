@@ -19,3 +19,7 @@ web/public/mediapipe/
 
 # Private notes
 PRIVATE-*.md
+
+# Python venvs (eval data-pull tooling)
+.venv/
+eval/.venv/

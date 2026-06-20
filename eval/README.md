@@ -4,23 +4,27 @@ A self-contained local script for evaluating the quality and determinism of the
 production Vertex AI Gemini prompt used in OnFrame photo coaching.
 
 This directory is **not** part of the production build. It is never copied into
-the Docker image, never deployed, and never imported from `web/`, `web-server/`,
-or `deploy/`. The harness duplicates the production `SYSTEM_PROMPT` verbatim so
-it keeps measuring the prompt currently in production even if the script is run
-months from now — review `eval.mjs` if `web-server/vertex.js` changes and the
-two should drift back into sync.
+the Docker image, never deployed, and is never imported *by* `web/`,
+`web-server/`, or `deploy/`. It does, however, `require()` the production
+`buildPrompt`/`SYSTEM_PROMPT` from `web-server/vertex.js` (one-way, eval → prod)
+so the harness always evaluates exactly the prompt that ships — there is no
+hand-copied duplicate to drift out of sync.
 
 ## What it does
 
 Two modes:
 
 1. **Quality (default)** — for each sample listed in `labels.json`, calls Vertex
-   once with the production prompt, compares predicted per-category delta
-   against the labeled expected delta, and prints:
-     - per-sample table of predicted (`.p`) vs labeled (`.l`) deltas
+   once with the production prompt, compares the predicted per-category
+   **absolute 0–100 score** against the labeled expected score, and prints:
+     - per-sample table of predicted (`.p`) vs labeled (`.l`) scores
      - per-category MAE (mean absolute error) and Spearman rank correlation
      - a summary line: `MAE avg: X.XX, ρ avg: 0.XXX`
      - a one-line `aiSummary` preview per sample
+
+   The six categories scored are `lighting`, `headpose`, `composition`,
+   `sharpness`, `background`, `eyecontact`. Under cloud-primary scoring Gemini
+   owns **all six** (including sharpness — local heuristics no longer score it).
 
 2. **Determinism** — runs the same sample 5 times in parallel and reports the
    per-category mean and stddev across those 5 runs. Any category whose stddev
@@ -45,60 +49,59 @@ the `your-gcp-project` GCP project**. Don't loop on it.
 
 ## Updating labels
 
-`labels.json` is the human-labeled expected delta per sample.
+`labels.json` is the AI-labeled expected **absolute 0–100 score** per sample
+(was relative deltas before the cloud-primary rewrite).
 
 **The current labels are starter placeholders** written by an AI based on a
 visual scan of the sample images — they are not authoritative ground truth.
-Skim them, adjust per-category deltas to match your own portrait-photo
+Skim them, adjust per-category scores to match your own portrait-photo
 intuition, and re-run the harness.
 
-Schema per entry:
+Schema per entry (all six categories, each `{ score, reason }`):
 
 ```json
 "sample1.jpg": {
   "note": "one-line description of the photo",
   "expected": {
-    "lighting":    { "delta":  -2 },
-    "composition": { "delta":  -3 },
-    "background":  { "delta":  -5 },
-    "eyecontact":  { "delta":   4 },
-    "headpose":    { "delta":   1 }
+    "lighting":    { "score": 70, "reason": "..." },
+    "headpose":    { "score": 76, "reason": "..." },
+    "composition": { "score": 72, "reason": "..." },
+    "sharpness":   { "score": 85, "reason": "..." },
+    "background":  { "score": 58, "reason": "..." },
+    "eyecontact":  { "score": 81, "reason": "..." }
   }
 }
 ```
 
-Delta range:
-- `lighting`, `composition`, `background`, `eyecontact`: integer `-10..10`
-- `headpose`: integer `-5..5`
-- `0` means "on par with baseline". Positive = above baseline, negative = below.
-
-Reasonable labeling heuristic: imagine the average iPhone snapshot a friend
-takes; that's roughly zero on every axis. Studio-quality work earns +3 to +5,
-serious problems earn -3 to -5, and the extremes (`+8`/`+10` or `-8`/`-10`)
-should be rare.
+Score band (matches the production prompt rubric):
+- `90–100` exceptional · `75–89` strong · `60–74` acceptable ·
+  `40–59` a problem a viewer registers · `0–39` serious issue.
+- An average iPhone snapshot lands in the 60s on most axes.
 
 ## Files
 
 ```
 eval/
-  eval.mjs       harness script (ESM, Node 20+)
-  labels.json    expected deltas per sample (12 entries)
-  README.md      this file
+  eval.mjs              harness script (ESM, Node 20+)
+  gen-sample-cache.mjs  one-time pull → web/sampleCoaching.data.json (re-run after prompt changes)
+  labels.json           expected absolute scores per sample (12 entries)
+  README.md             this file
 ```
 
 ## Interpreting results
 
-- **MAE** = average absolute distance between predicted and labeled delta. Lower
-  is better. With deltas in `-10..10`, a MAE of `~3` means Gemini is typically
-  within 3 points of the human label — not bad. MAE of `~6+` means Gemini and
-  the human are largely talking past each other on that category.
+- **MAE** = average absolute distance between predicted and labeled score (both
+  `0..100`). Lower is better. A MAE of `~5` means Gemini is typically within 5
+  points of the label. Note scores cluster in a fairly narrow band (most decent
+  portraits land 70–95), so MAE matters more than raw rank here.
 - **Spearman ρ** = rank correlation between predicted and labeled across the 12
   samples. `+1` = Gemini and the human rank the samples identically on that
-  axis. `0` = no relationship. Negative = Gemini ranks them in roughly the
-  opposite order from the human — that's the signal a category is broken.
-- **Determinism stddev** = how much the same photo's per-category delta jitters
-  across repeated calls at `temperature=0.3`. Anything above `~2` is loud
-  enough that A/B comparisons across prompt versions will be hard to read.
+  axis. `0` = no relationship. Negative = opposite order — the signal a
+  category is broken. (With N=12 and compressed scores, ρ is noisy; read it as
+  directional, not precise.)
+- **Determinism stddev** = how much the same photo's per-category score jitters
+  across repeated calls at `temperature=0.1, seed=1`. Anything above `~2` is
+  loud enough that A/B comparisons across prompt versions will be hard to read.
 
 ## Hard rules
 

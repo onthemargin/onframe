@@ -232,3 +232,77 @@ describe('createVertexClient.analyze', () => {
     })).rejects.toThrow();
   });
 });
+
+const FULL_SCORES = {
+  aiSummary: 'Sharp eyes carry it. Background slightly busy.',
+  scores: {
+    lighting:    { score: 82, tip: 'Soft key, clean catchlights.' },
+    headpose:    { score: 78, tip: 'Slight turn reads natural.' },
+    composition: { score: 74, tip: 'Eyes on upper third.' },
+    sharpness:   { score: 90, tip: 'Eyes and lips crisply in focus.' },
+    background:  { score: 60, tip: 'Mild edge clutter.' },
+    eyecontact:  { score: 88, tip: 'Direct, engaged gaze.' },
+  },
+};
+
+describe('createVertexClient.analyze — full 6-category scoring', () => {
+  it('returns absolute-scored cards for all six canonical categories', async () => {
+    const client = makeClient({
+      fetchImpl: vi.fn().mockResolvedValue(generateContentResponse(JSON.stringify(FULL_SCORES))),
+    });
+    const result = await client.analyze({
+      photoBuffer: PHOTO_BUFFER, metricsText: METRICS_TEXT, photoMimeType: 'image/jpeg',
+    });
+    expect(result.aiSummary).toMatch(/Sharp eyes/);
+    expect(Array.isArray(result.cards)).toBe(true);
+    const byCat = Object.fromEntries(result.cards.map((c) => [c.category, c]));
+    expect(Object.keys(byCat).sort()).toEqual([
+      'Background', 'Composition & Framing', 'Eye Contact & Gaze',
+      'Head Angle & Pose', 'Lighting', 'Sharpness & Focus',
+    ]);
+    // Gemini now OWNS sharpness; its score + tip flow straight through.
+    expect(byCat['Sharpness & Focus'].score).toBe(90);
+    expect(byCat['Sharpness & Focus'].tip).toMatch(/in focus/i);
+  });
+
+  it('derives priority from score (low score => fix-now priority 1)', async () => {
+    const lowBg = JSON.parse(JSON.stringify(FULL_SCORES));
+    lowBg.scores.background.score = 35;
+    const client = makeClient({
+      fetchImpl: vi.fn().mockResolvedValue(generateContentResponse(JSON.stringify(lowBg))),
+    });
+    const result = await client.analyze({
+      photoBuffer: PHOTO_BUFFER, metricsText: METRICS_TEXT, photoMimeType: 'image/jpeg',
+    });
+    const bg = result.cards.find((c) => c.category === 'Background');
+    expect(bg.priority).toBe(1);
+    const eyes = result.cards.find((c) => c.category === 'Eye Contact & Gaze');
+    expect(eyes.priority).toBe(3); // score 88 => working
+  });
+
+  it('clamps out-of-range scores to 0..100', async () => {
+    const wild = JSON.parse(JSON.stringify(FULL_SCORES));
+    wild.scores.lighting.score = 140;
+    wild.scores.headpose.score = -20;
+    const client = makeClient({
+      fetchImpl: vi.fn().mockResolvedValue(generateContentResponse(JSON.stringify(wild))),
+    });
+    const result = await client.analyze({
+      photoBuffer: PHOTO_BUFFER, metricsText: METRICS_TEXT, photoMimeType: 'image/jpeg',
+    });
+    const byCat = Object.fromEntries(result.cards.map((c) => [c.category, c]));
+    expect(byCat['Lighting'].score).toBe(100);
+    expect(byCat['Head Angle & Pose'].score).toBe(0);
+  });
+
+  it('requests a responseSchema enforcing the six-score shape', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(generateContentResponse(JSON.stringify(FULL_SCORES)));
+    const client = makeClient({ fetchImpl });
+    await client.analyze({ photoBuffer: PHOTO_BUFFER, metricsText: METRICS_TEXT, photoMimeType: 'image/jpeg' });
+    const body = JSON.parse(fetchImpl.mock.calls[0][1].body);
+    const schema = body.generationConfig.responseSchema;
+    expect(schema.properties.scores.required).toEqual(
+      expect.arrayContaining(['lighting', 'headpose', 'composition', 'sharpness', 'background', 'eyecontact'])
+    );
+  });
+});

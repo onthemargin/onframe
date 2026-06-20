@@ -27,7 +27,11 @@ export function computeTargetSize(width, height, maxEdge) {
  * Returns a Blob. Throws on decode failure.
  */
 export async function downscaleImage(file, {
-  maxEdge = 1280,
+  // 1536 longest edge: Gemini tiles images at 768px, so 1280→1536 costs the
+  // same tile count (4 tiles for a 2:3 portrait) while giving the perceptual
+  // scorer — which now owns sharpness — a little more eye/edge detail. Going
+  // past ~1536 starts adding tiles (cost) for diminishing accuracy.
+  maxEdge = 1536,
   quality = 0.85,
   mimeType = 'image/jpeg',
 } = {}) {

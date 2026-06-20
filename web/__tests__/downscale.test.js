@@ -25,6 +25,22 @@ describe('computeTargetSize', () => {
   });
 });
 
+describe('downscaleImage default maxEdge', () => {
+  afterEach(() => {
+    uninstallCanvasStubs();
+    vi.restoreAllMocks();
+  });
+
+  it('defaults to a 1536px longest edge (Gemini 768-tile friendly)', async () => {
+    const seen = installCanvasStubs({ bitmapWidth: 3000, bitmapHeight: 2000 });
+    const fakeFile = new Blob([new Uint8Array([0, 1, 2, 3])], { type: 'image/jpeg' });
+
+    await downscaleImage(fakeFile); // no maxEdge → uses default
+
+    expect(Math.max(seen.width, seen.height)).toBe(1536);
+  });
+});
+
 // ---------------------------------------------------------------------------
 // downscaleImage — exercised against a tiny stubbed canvas pipeline.
 // jsdom is unavailable in this repo, so we stub the few APIs we touch:

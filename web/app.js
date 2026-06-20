@@ -7,6 +7,8 @@ import { synthesize } from './synthesizer.js';
 import { fetchCloudCoaching } from './cloud.js';
 import { mergeCoachingResult } from './merge.js';
 import { isMobileDevice } from './device.js';
+import { lookupCoaching } from './sampleCoaching.js';
+import sampleCoachingData from './sampleCoaching.data.json';
 
 // Mobile-only gate. Inline <script> in index.html applies this class
 // synchronously to prevent flash; this re-applies it from the canonical
@@ -123,7 +125,11 @@ async function loadSample(filename) {
     const res = await fetch(sampleUrl);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const blob = await res.blob();
-    handleFile(new File([blob], filename, { type: blob.type || 'image/jpeg' }));
+    // Samples are fixed, so their cloud coaching is pre-pulled and cached —
+    // skip the live (paid) Vertex call and reuse it. Uploads (new data) still
+    // go to Vertex. Local MediaPipe analysis still runs for the overlay pins.
+    const cached = lookupCoaching(sampleCoachingData, filename);
+    handleFile(new File([blob], filename, { type: blob.type || 'image/jpeg' }), cached);
   } catch (err) {
     showError('Could not load sample photo: ' + formatErrorMessage(err, 'sample photo load failed'));
   }
@@ -142,7 +148,7 @@ sampleThumbs?.addEventListener('click', (e) => {
 
 let isAnalyzing = false;
 
-async function handleFile(file) {
+async function handleFile(file, cachedCoaching = null) {
   if (isAnalyzing) return;
   if (file.type && !file.type.startsWith('image/')) {
     showError('Please select an image file (JPG, PNG, HEIC, etc.)');
@@ -158,7 +164,9 @@ async function handleFile(file) {
   lastFileInfo = {
     size: file.size,
     type: file.type || 'unknown',
-    name: file.name ? file.name.replace(/.*[/\\]/, '').slice(-20) : 'unknown',
+    // Extension only — never the filename itself, which can carry PII (names,
+    // case numbers) and ends up in server logs via reports.
+    ext: file.name ? (file.name.match(/\.[a-z0-9]+$/i)?.[0] || '').slice(0, 10) : '',
   };
   const analysisToken = ++activeAnalysisToken;
   showState('analyzing');
@@ -214,7 +222,8 @@ async function handleFile(file) {
         priority: c.priority,
       })),
     };
-    const cloudResponse = await fetchCloudCoaching(file, cloudPayload);
+    // Cached coaching for samples; live Vertex for uploads.
+    const cloudResponse = cachedCoaching || await fetchCloudCoaching(file, cloudPayload);
     const mergedResult = mergeCoachingResult(result, cloudResponse);
 
     if (analysisToken !== activeAnalysisToken) return;
@@ -789,14 +798,9 @@ function escapeHtml(s) {
 // ─── Report issue ────────────────────────────────────────────────────────────
 
 function buildReportPayload(userText) {
-  const safeMetrics = lastMetrics ? { ...lastMetrics } : null;
-  if (safeMetrics) {
-    delete safeMetrics.humanReadableSummary;
-    delete safeMetrics._debug;
-    delete safeMetrics.faceBoundingBox;
-    delete safeMetrics.leftEyeCenter;
-    delete safeMetrics.rightEyeCenter;
-  }
+  // Note: we deliberately do NOT send the local `metrics` object. The server's
+  // /report handler whitelists fields and discards metrics, so transmitting it
+  // would only leak extra data (device-shaped values) over the wire for nothing.
   return {
     id: crypto.randomUUID().slice(0, 8),
     ts: new Date().toISOString(),
@@ -809,7 +813,6 @@ function buildReportPayload(userText) {
     photoType: lastResult?.photoType ?? null,
     overallScore: lastResult?.overallScore ?? null,
     cardScores: lastResult?.cards?.map(c => ({ cat: c.category, score: c.score })) ?? [],
-    metrics: safeMetrics,
     device: {
       ua: navigator.userAgent,
       screen: `${screen.width}x${screen.height}`,
