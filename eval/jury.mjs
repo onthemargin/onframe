@@ -29,7 +29,9 @@ const CACHE = JSON.parse(readFileSync(resolve(__dirname, '..', 'web', 'sampleCoa
 const METRICS_TEXT = JSON.stringify({ summary: 'Sample portrait (cached coaching).' });
 const PRO_MODEL = process.argv[2] || 'gemini-2.5-pro';
 
-const pro = createVertexClient({ project: 'your-gcp-project', location: 'us-central1', model: PRO_MODEL });
+const PROJECT = process.env.VERTEX_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
+if (!PROJECT) { console.error('Set VERTEX_PROJECT (or GOOGLE_CLOUD_PROJECT) to your GCP project id.'); process.exit(2); }
+const pro = createVertexClient({ project: PROJECT, location: 'us-central1', model: PRO_MODEL });
 
 function cardsToRow(cards) { return Object.fromEntries(cards.map((c) => [c.category, c.score])); }
 

@@ -24,7 +24,9 @@ const { createVertexClient } = require(resolve(__dirname, '..', 'web-server', 'v
 const { normalizeAiResponse } = require(resolve(__dirname, '..', 'web-server', 'server.js'));
 
 const METRICS_TEXT = JSON.stringify({ summary: 'Degradation-test portrait.' });
-const client = createVertexClient({ project: 'your-gcp-project', location: 'us-central1', model: 'gemini-2.5-flash' });
+const PROJECT = process.env.VERTEX_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
+if (!PROJECT) { console.error('Set VERTEX_PROJECT (or GOOGLE_CLOUD_PROJECT) to your GCP project id.'); process.exit(2); }
+const client = createVertexClient({ project: PROJECT, location: 'us-central1', model: 'gemini-2.5-flash' });
 
 async function scoreFile(path) {
   const result = await client.analyze({ photoBuffer: readFileSync(path), metricsText: METRICS_TEXT, photoMimeType: 'image/jpeg' });

@@ -32,7 +32,9 @@ const { normalizeAiResponse } = require(resolve(__dirname, '..', 'web-server', '
 
 const CATS = ['Lighting', 'Background', 'Composition & Framing', 'Sharpness & Focus'];
 const METRICS_TEXT = JSON.stringify({ summary: 'External dataset image.' });
-const client = createVertexClient({ project: 'your-gcp-project', location: 'us-central1', model: 'gemini-2.5-flash' });
+const PROJECT = process.env.VERTEX_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
+if (!PROJECT) { console.error('Set VERTEX_PROJECT (or GOOGLE_CLOUD_PROJECT) to your GCP project id.'); process.exit(2); }
+const client = createVertexClient({ project: PROJECT, location: 'us-central1', model: 'gemini-2.5-flash' });
 
 async function main() {
   const manifestPath = process.argv[2];

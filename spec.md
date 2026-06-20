@@ -394,7 +394,7 @@ POST /onframe/web/api/analyze
 
 **Env vars (Cloud Run):**
 ```
-VERTEX_PROJECT=your-gcp-project
+VERTEX_PROJECT=<your-gcp-project-id>
 VERTEX_LOCATION=us-central1
 VERTEX_MODEL=gemini-2.5-flash   # default; any Gemini model id is fine
 PORT=3004

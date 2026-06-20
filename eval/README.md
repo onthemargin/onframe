@@ -33,19 +33,19 @@ Two modes:
 ## Run it
 
 ```
-# from anywhere
-node /home/user/app.gyatso.me/onframe/eval/eval.mjs
-node /home/user/app.gyatso.me/onframe/eval/eval.mjs -d sample5
-node /home/user/app.gyatso.me/onframe/eval/eval.mjs -h
+# from the onframe repo root
+VERTEX_PROJECT=<your-gcp-project> node eval/eval.mjs
+VERTEX_PROJECT=<your-gcp-project> node eval/eval.mjs -d sample5
+node eval/eval.mjs -h
 ```
 
-The script uses **Application Default Credentials** (the cloudbuild-deploy SA
-on this VM, which has `roles/editor` and therefore Vertex access). No env vars
-are required.
+Set `VERTEX_PROJECT` (or `GOOGLE_CLOUD_PROJECT`) to a GCP project with Vertex AI
+enabled, and have **Application Default Credentials** available (a service
+account or user with `roles/aiplatform.user`). No other env vars are required.
 
 A full quality run = 12 Vertex calls. A determinism run = 5 Vertex calls. Each
-includes one base64-encoded portrait image, so each run **costs a few cents on
-the `your-gcp-project` GCP project**. Don't loop on it.
+includes one base64-encoded portrait image, so each run **costs a few cents** on
+your GCP project. Don't loop on it.
 
 ## Updating labels
 

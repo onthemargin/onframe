@@ -8,9 +8,9 @@
 //   node eval.mjs -d sample5.jpg        determinism check (5 runs, one sample)
 //   node eval.mjs -h                    help
 //
-// Calls Vertex directly using ADC (the cloudbuild-deploy SA on this VM has
-// aiplatform access via roles/editor). Local-only script — does NOT touch
-// web/, web-server/, or deploy/. Each full run costs a few cents.
+// Calls Vertex directly using Application Default Credentials (needs a project
+// with Vertex AI enabled and a principal with roles/aiplatform.user). Local-only
+// script — does NOT touch web/ or web-server/. Each full run costs a few cents.
 
 import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname, resolve, basename } from 'node:path';
@@ -33,7 +33,8 @@ const { buildPrompt } = require(resolve(__dirname, '..', 'web-server', 'vertex.j
 
 // ---------- config ----------
 
-const PROJECT = 'your-gcp-project';
+const PROJECT = process.env.VERTEX_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
+if (!PROJECT) { console.error('Set VERTEX_PROJECT (or GOOGLE_CLOUD_PROJECT) to your GCP project id.'); process.exit(2); }
 const LOCATION = 'us-central1';
 const MODEL = 'gemini-2.5-flash';
 const VERTEX_URL = `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT}/locations/${LOCATION}/publishers/google/models/${MODEL}:generateContent`;

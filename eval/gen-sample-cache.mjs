@@ -27,7 +27,8 @@ const require = createRequire(join(__dirname, '..', 'web-server', 'package.json'
 const { createVertexClient } = require(resolve(__dirname, '..', 'web-server', 'vertex.js'));
 const { normalizeAiResponse } = require(resolve(__dirname, '..', 'web-server', 'server.js'));
 
-const PROJECT = 'your-gcp-project';
+const PROJECT = process.env.VERTEX_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
+if (!PROJECT) { console.error('Set VERTEX_PROJECT (or GOOGLE_CLOUD_PROJECT) to your GCP project id.'); process.exit(2); }
 const LOCATION = 'us-central1';
 const MODEL = 'gemini-2.5-flash';
 const SAMPLE_DIR = resolve(__dirname, '..', 'web', 'sample');
