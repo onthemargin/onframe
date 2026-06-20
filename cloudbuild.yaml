@@ -1,0 +1,36 @@
+# Standalone build + deploy of OnFrame as its own Cloud Run service.
+# (Within the app.gyatso.me monorepo, OnFrame is instead cloned and built into
+# the shared container — this file is for deploying OnFrame on its own.)
+#
+#   gcloud builds submit --config cloudbuild.yaml \
+#     --substitutions=_VERTEX_PROJECT=$PROJECT_ID .
+#
+# Leave _VERTEX_PROJECT empty to deploy with on-device local coaching only.
+
+substitutions:
+  _SERVICE: onframe
+  _REGION: us-central1
+  _VERTEX_PROJECT: ''          # set to enable Gemini scoring
+
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/onframe', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/onframe']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - '$_SERVICE'
+      - '--image=gcr.io/$PROJECT_ID/onframe'
+      - '--region=$_REGION'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars=VERTEX_PROJECT=$_VERTEX_PROJECT,VERTEX_LOCATION=$_REGION,TRUST_PROXY=1'
+
+images:
+  - 'gcr.io/$PROJECT_ID/onframe'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

@@ -281,6 +281,10 @@ function createApp({
   basePath = process.env.BASE_PATH || '',
   trustProxy = process.env.TRUST_PROXY,
   globalRateMax = Number(process.env.GLOBAL_RATE_MAX) || 120,
+  // When set (standalone container), Express serves the built Vite frontend from
+  // this dir. Left null in the monorepo, where nginx serves the static assets
+  // and only proxies the API to this process.
+  staticDir = process.env.STATIC_DIR || null,
 } = {}) {
   const app  = express();
   const normalizedBasePath = normalizeBasePath(basePath);
@@ -507,6 +511,22 @@ function createApp({
   app.get(`${apiRoot}/health`, (_req, res) => {
     res.json({ ok: true, vertexConfigured });
   });
+
+  // Standalone mode: serve the built frontend so onframe runs as a single
+  // self-contained Node container (no nginx needed). The API routes above are
+  // registered first, so they always take precedence over the static/SPA paths.
+  if (staticDir) {
+    const path = require('path');
+    const appRoot = `${normalizedBasePath}/onframe`;
+    app.use(appRoot, express.static(staticDir));
+    // SPA fallback: any non-API GET under the app root returns index.html.
+    app.get(`${appRoot}/*`, (req, res, next) => {
+      if (req.path.startsWith(apiRoot)) return next();
+      res.sendFile(path.join(staticDir, 'index.html'));
+    });
+    // Convenience redirect from the domain root to the app.
+    app.get('/', (_req, res) => res.redirect(`${appRoot}/`));
+  }
 
   app.use((err, req, res, next) => {
     if (err instanceof SyntaxError && err.status === 400 && 'body' in err && req.path.startsWith(apiRoot)) {

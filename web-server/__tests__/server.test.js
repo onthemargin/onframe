@@ -390,6 +390,55 @@ describe('POST /onframe/api/analyze', () => {
   });
 });
 
+describe('static frontend serving (standalone container mode)', () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  function makeStaticDir() {
+    const fs = require('node:fs');
+    const os = require('node:os');
+    const path = require('node:path');
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'onframe-static-'));
+    fs.writeFileSync(path.join(dir, 'index.html'), '<!doctype html><title>OnFrame App</title>');
+    fs.mkdirSync(path.join(dir, 'assets'));
+    fs.writeFileSync(path.join(dir, 'assets', 'app.js'), 'console.log(1)');
+    return dir;
+  }
+
+  it('serves index.html at the app base when staticDir is set', async () => {
+    const app = createApp({ staticDir: makeStaticDir() });
+    const res = await request(app).get('/onframe/');
+    expect(res.status).toBe(200);
+    expect(res.text).toMatch(/OnFrame App/);
+  });
+
+  it('serves built assets', async () => {
+    const app = createApp({ staticDir: makeStaticDir() });
+    const res = await request(app).get('/onframe/assets/app.js');
+    expect(res.status).toBe(200);
+    expect(res.text).toMatch(/console\.log/);
+  });
+
+  it('SPA-falls back unknown non-API GETs to index.html', async () => {
+    const app = createApp({ staticDir: makeStaticDir() });
+    const res = await request(app).get('/onframe/some/client/route');
+    expect(res.status).toBe(200);
+    expect(res.text).toMatch(/OnFrame App/);
+  });
+
+  it('still serves the API (health) when staticDir is set', async () => {
+    const app = createApp({ staticDir: makeStaticDir() });
+    const res = await request(app).get('/onframe/api/health');
+    expect(res.status).toBe(200);
+    expect(res.body.ok).toBe(true);
+  });
+
+  it('does NOT serve static when staticDir is null (monorepo mode — nginx serves)', async () => {
+    const app = createApp({});
+    const res = await request(app).get('/onframe/');
+    expect(res.status).toBe(404);
+  });
+});
+
 describe('GET /onframe/api/health', () => {
   it('reflects vertexConfigured=false when endpoint is absent', async () => {
     const app = createApp({});
