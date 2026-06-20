@@ -97,4 +97,4 @@ On Cloud Run, the runtime service account's ADC is used automatically — just g
 
 ## License
 
-This project is shared for educational and reference purposes. You may study, fork, and learn from the code. Commercial use, redistribution, or derivative works require explicit permission from the author.
+[MIT](LICENSE) © 2025-2026 On The Margin. Free to use, modify, and distribute — see the [LICENSE](LICENSE) file. (The disclaimers above still apply: it's experimental and provided "as is", with no warranty.)
