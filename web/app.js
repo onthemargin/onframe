@@ -6,6 +6,7 @@ import { loadMediaPipe, analyzeImage } from './analysis.js';
 import { synthesize } from './synthesizer.js';
 import { fetchCloudCoaching } from './cloud.js';
 import { mergeCoachingResult } from './merge.js';
+import { buildCloudPayload } from './cloudContext.js';
 import { evaluateInputGate } from './inputGate.js';
 import { isMobileDevice } from './device.js';
 import { lookupCoaching } from './sampleCoaching.js';
@@ -216,19 +217,10 @@ async function handleFile(file, cachedCoaching = null) {
     const result = synthesize(metrics);
 
     currentStage = 'cloudCoaching';
-    const cloudPayload = {
-      summary: metrics.humanReadableSummary,
-      photoType: result.photoType?.type ?? null,
-      localScores: Object.fromEntries(
-        (result.cards || []).map((c) => [c.category, c.score])
-      ),
-      localCards: (result.cards || []).map((c) => ({
-        category: c.category,
-        score: c.score,
-        title: c.title,
-        priority: c.priority,
-      })),
-    };
+    // Cloud-primary: send ONLY neutral geometry, never the local synthesizer's
+    // scores or quality metrics. Feeding the local (Laplacian) sharpness back to
+    // the prompt made Gemini anchor and parrot a wrong score — see cloudContext.js.
+    const cloudPayload = buildCloudPayload(metrics, result.photoType?.type);
     // Cached coaching for samples; live Vertex for uploads.
     const cloudResponse = cachedCoaching || await fetchCloudCoaching(file, cloudPayload);
     const mergedResult = mergeCoachingResult(result, cloudResponse);

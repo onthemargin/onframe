@@ -80,7 +80,7 @@ describe('fetchCloudCoaching', () => {
     expect(fd.has('metrics')).toBe(true);
   });
 
-  it('encodes the metrics field as JSON containing summary, photoType, localScores, localCards', async () => {
+  it('encodes the metrics field as JSON with summary + photoType only', async () => {
     const fetchMock = vi.fn(async () => jsonResponse({ aiSummary: 'ok' }));
     globalThis.fetch = fetchMock;
 
@@ -95,8 +95,9 @@ describe('fetchCloudCoaching', () => {
     const parsed = JSON.parse(fd.get('metrics'));
     expect(parsed.summary).toBe('Cool portrait.');
     expect(parsed.photoType).toBe('three-quarter');
-    expect(parsed.localScores).toEqual({ lighting: 65 });
-    expect(parsed.localCards).toEqual([{ category: 'Lighting', score: 65 }]);
+    // Cloud-primary: local scores must NOT travel — they anchor the scorer.
+    expect(parsed).not.toHaveProperty('localScores');
+    expect(parsed).not.toHaveProperty('localCards');
   });
 
   it('returns the parsed JSON on a 200 response', async () => {

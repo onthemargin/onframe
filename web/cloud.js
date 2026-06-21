@@ -46,11 +46,12 @@ export async function fetchCloudCoaching(file, metrics) {
       return { aiUnavailable: true };
     }
 
+    // Cloud-primary: only neutral geometry + framing class. We deliberately do
+    // NOT send local category scores/cards — they anchor the perceptual scorer
+    // (it parrots the local Laplacian sharpness back). See cloudContext.js.
     const metricsPayload = JSON.stringify({
       summary,
       photoType: metrics.photoType ?? null,
-      localScores: metrics.localScores ?? null,
-      localCards: metrics.localCards ?? null,
     });
 
     const form = new FormData();
