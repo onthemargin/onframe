@@ -22,8 +22,8 @@ const require = createRequire(join(__dirname, '..', 'web-server', 'package.json'
 const { createVertexClient } = require(resolve(__dirname, '..', 'web-server', 'vertex.js'));
 const { normalizeAiResponse } = require(resolve(__dirname, '..', 'web-server', 'server.js'));
 
-const CATS = ['Lighting', 'Head Angle & Pose', 'Composition & Framing', 'Sharpness & Focus', 'Background', 'Eye Contact & Gaze'];
-const SHORT = { 'Lighting': 'Light', 'Head Angle & Pose': 'Pose', 'Composition & Framing': 'Comp', 'Sharpness & Focus': 'Sharp', 'Background': 'Bg', 'Eye Contact & Gaze': 'Eyes' };
+const CATS = ['Lighting', 'Head Angle & Pose', 'Composition & Framing', 'Sharpness & Focus', 'Background', 'Expression & Mood'];
+const SHORT = { 'Lighting': 'Light', 'Head Angle & Pose': 'Pose', 'Composition & Framing': 'Comp', 'Sharpness & Focus': 'Sharp', 'Background': 'Bg', 'Expression & Mood': 'Eyes' };
 const SAMPLE_DIR = resolve(__dirname, '..', 'web', 'sample');
 const CACHE = JSON.parse(readFileSync(resolve(__dirname, '..', 'web', 'sampleCoaching.data.json'), 'utf8'));
 const METRICS_TEXT = JSON.stringify({ summary: 'Sample portrait (cached coaching).' });

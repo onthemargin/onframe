@@ -34,7 +34,7 @@ function makeLocalCards(overrides = {}) {
     { category: 'Composition & Framing', score: 80, title: 'Frame',   tip: 'Tip', priority: 2, gearNeeded: [] },
     { category: 'Sharpness & Focus',     score: 65, title: 'Sharp',   tip: 'Tip', priority: 2, gearNeeded: [] },
     { category: 'Background',            score: 60, title: 'Bg',      tip: 'Tip', priority: 2, gearNeeded: [] },
-    { category: 'Eye Contact & Gaze',    score: 72, title: 'Eyes',    tip: 'Tip', priority: 2, gearNeeded: [] },
+    { category: 'Expression & Mood',    score: 72, title: 'Eyes',    tip: 'Tip', priority: 2, gearNeeded: [] },
   ];
   return base.map((card) => {
     const override = overrides[card.category];
@@ -59,7 +59,7 @@ const VALID_LOCAL_CARDS = [
   { category: 'Composition & Framing', score: 80, title: 'Frame',   tip: 'Tip', priority: 2, gearNeeded: [] },
   { category: 'Sharpness & Focus',     score: 65, title: 'Sharp',   tip: 'Tip', priority: 2, gearNeeded: [] },
   { category: 'Background',            score: 60, title: 'Bg',      tip: 'Tip', priority: 2, gearNeeded: [] },
-  { category: 'Eye Contact & Gaze',    score: 72, title: 'Eyes',    tip: 'Tip', priority: 2, gearNeeded: [] },
+  { category: 'Expression & Mood',    score: 72, title: 'Eyes',    tip: 'Tip', priority: 2, gearNeeded: [] },
 ];
 
 const VALID_METRICS_WITH_CARDS = JSON.stringify({
@@ -159,15 +159,15 @@ describe('normalizeAiResponse', () => {
 
     expect(normalized.cards).toHaveLength(6);
     expect(normalized.cards.map((card) => card.category)).toEqual([
+      'Expression & Mood',
       'Lighting',
-      'Head Angle & Pose',
-      'Composition & Framing',
       'Sharpness & Focus',
+      'Composition & Framing',
       'Background',
-      'Eye Contact & Gaze',
+      'Head Angle & Pose',
     ]);
-    expect(normalized.cards[0].score).toBe(80);
-    expect(normalized.cards[1].score).toBe(0);
+    expect(normalized.cards[0].score).toBe(0);   // Expression — not provided → fallback
+    expect(normalized.cards[1].score).toBe(80);  // Lighting
     expect(normalized.aiSummary).toBe('Strong lighting.');
     expect(normalized.overallScore).toBe(computeOverallScore(normalized.cards));
   });
@@ -473,13 +473,13 @@ describe('mergePerceptualFindings', () => {
     expect(lighting.aiReason).toBe('Light is great');
   });
 
-  it('clamps negative deltas to per-category caps (Eye Contact −50 → −10)', () => {
-    const localCards = makeLocalCards({ 'Eye Contact & Gaze': { score: 80 } });
+  it('clamps negative deltas to per-category caps (Expression −50 → −10)', () => {
+    const localCards = makeLocalCards({ 'Expression & Mood': { score: 80 } });
     const merged = mergePerceptualFindings({
       localCards,
-      findings: { eyecontact: { delta: -50, reason: 'Gaze feels distant' } },
+      findings: { expression: { delta: -50, reason: 'Gaze feels distant' } },
     });
-    const eye = merged.cards.find((c) => c.category === 'Eye Contact & Gaze');
+    const eye = merged.cards.find((c) => c.category === 'Expression & Mood');
     expect(eye.score).toBe(70);
     expect(eye.aiReason).toBe('Gaze feels distant');
   });
@@ -602,14 +602,14 @@ describe('mergePerceptualFindings', () => {
         lighting: { delta: NaN, reason: 'nope' },
         composition: { delta: Infinity, reason: 'nope' },
         background: { delta: '5', reason: 'nope' },
-        eyecontact: { reason: 'nope' },               // missing delta
+        expression: { reason: 'nope' },               // missing delta
         headpose: { delta: 3, reason: 'good' },       // this one should apply
       },
     });
     expect(merged.cards.find((c) => c.category === 'Lighting').score).toBe(70);
     expect(merged.cards.find((c) => c.category === 'Composition & Framing').score).toBe(80);
     expect(merged.cards.find((c) => c.category === 'Background').score).toBe(60);
-    expect(merged.cards.find((c) => c.category === 'Eye Contact & Gaze').score).toBe(72);
+    expect(merged.cards.find((c) => c.category === 'Expression & Mood').score).toBe(72);
     expect(merged.cards.find((c) => c.category === 'Head Angle & Pose').score).toBe(78);
   });
 });
@@ -621,7 +621,7 @@ const CLOUD_CARDS = [
   { category: 'Composition & Framing', score: 74, title: 'Composition & Framing', tip: 'Eyes on the upper third.',       priority: 3 },
   { category: 'Sharpness & Focus',     score: 90, title: 'Sharpness & Focus',     tip: 'Eyes and lips crisply in focus.', priority: 3 },
   { category: 'Background',            score: 60, title: 'Background',            tip: 'Mild edge clutter.',             priority: 3 },
-  { category: 'Eye Contact & Gaze',    score: 88, title: 'Eye Contact & Gaze',    tip: 'Direct, engaged gaze.',          priority: 3 },
+  { category: 'Expression & Mood',    score: 88, title: 'Expression & Mood',    tip: 'Direct, engaged gaze.',          priority: 3 },
 ];
 
 describe('POST /onframe/api/analyze — cloud-primary scoring', () => {
@@ -649,8 +649,8 @@ describe('POST /onframe/api/analyze — cloud-primary scoring', () => {
     const sharp = res.body.cards.find((c) => c.category === 'Sharpness & Focus');
     expect(sharp.score).toBe(90);
     expect(sharp.tip).toMatch(/in focus/i);
-    // Weighted overall: 82*.30 + 78*.25 + 74*.20 + 90*.15 + 60*.05 + 88*.05 = 79.8 → 80
-    expect(res.body.overallScore).toBe(80);
+    // Weighted (family): Expr 88*.25 + Light 82*.20 + Sharp 90*.20 + Comp 74*.15 + Bg 60*.10 + Pose 78*.10 = 81.3 → 81
+    expect(res.body.overallScore).toBe(81);
   });
 
   it('does not depend on client localCards (server no longer merges)', async () => {

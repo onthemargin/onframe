@@ -5,13 +5,16 @@
 
 import { classifyPhotoType } from './composition.js';
 
+// Local fallback (used only when cloud coaching is unavailable). Mirrors the
+// cloud category set + weights; "Expression & Mood" is scored from gaze/openness
+// as a rough proxy when there's no model to read the moment.
 const CATEGORIES = [
-  { id: 'lighting',    label: 'Lighting',             weight: 0.30 },
-  { id: 'headpose',    label: 'Head Angle & Pose',    weight: 0.25 },
-  { id: 'composition', label: 'Composition & Framing',weight: 0.20 },
-  { id: 'sharpness',   label: 'Sharpness & Focus',    weight: 0.15 },
-  { id: 'background',  label: 'Background',           weight: 0.05 },
-  { id: 'eyecontact',  label: 'Eye Contact & Gaze',   weight: 0.05 },
+  { id: 'expression', label: 'Expression & Mood',     weight: 0.25 },
+  { id: 'lighting',    label: 'Lighting',             weight: 0.20 },
+  { id: 'sharpness',   label: 'Sharpness & Focus',    weight: 0.20 },
+  { id: 'composition', label: 'Composition & Framing',weight: 0.15 },
+  { id: 'background',  label: 'Background',           weight: 0.10 },
+  { id: 'headpose',    label: 'Head Angle & Pose',    weight: 0.10 },
 ];
 
 export function synthesize(m) {
@@ -40,8 +43,9 @@ export function synthesize(m) {
     scoreEyeContact(m),
   ];
 
+  const weightByLabel = Object.fromEntries(CATEGORIES.map((c) => [c.label, c.weight]));
   const overallScore = Math.round(
-    cards.reduce((sum, c, i) => sum + c.score * CATEGORIES[i].weight, 0)
+    cards.reduce((sum, c) => sum + c.score * (weightByLabel[c.category] || 0), 0)
   );
 
   const rawSummary = generateSummary(cards, overallScore);
@@ -407,7 +411,7 @@ function scoreEyeContact(m) {
   if (m.eyesObscured) {
     score = 75; // neutral — can't assess
     return {
-      category: 'Eye Contact & Gaze',
+      category: 'Expression & Mood',
       score,
       title: 'Eyes covered',
       tip: 'Can\'t assess eye contact through sunglasses. For the best coaching, try a photo without them.',
@@ -452,7 +456,7 @@ function scoreEyeContact(m) {
 
   score = clamp(score);
   return {
-    category: 'Eye Contact & Gaze',
+    category: 'Expression & Mood',
     score,
     title: score >= 80 ? 'Strong, engaging eye contact' : score >= 65 ? 'Eye contact is decent' : 'Expression needs work',
     tip: tips.join(' ') || 'Eyes look naturally engaged.',

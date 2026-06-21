@@ -17,7 +17,7 @@
 // PIQ23: https://github.com/DXOMARK-Research/PIQ2023 (portrait, expert; map face-detail→Sharpness, face-exposure→Lighting).
 //
 // Reports per-category Spearman ρ + MAE between model scores and human-derived
-// category scores. Pose / Eye Contact have no AADB equivalent and are skipped.
+// category scores. Pose / Expression have no AADB equivalent and are skipped.
 
 import { readFileSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';

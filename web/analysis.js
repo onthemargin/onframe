@@ -55,7 +55,7 @@ export async function loadMediaPipe() {
         runningMode: 'IMAGE',
         outputFaceBlendshapes: true,
         outputFacialTransformationMatrixes: true,
-        numFaces: 1,
+        numFaces: 5,
         minFaceDetectionConfidence: 0.25,
         minFacePresenceConfidence: 0.25,
       });
@@ -773,6 +773,7 @@ export async function analyzeImage(file) {
 
   const metrics = {
     faceDetected: true,
+    faceCount: result.faceLandmarks?.length || 1,
     faceBoundingBox: faceRect,
     faceYawAngle:   pose.yaw,
     facePitchAngle: pose.pitch,

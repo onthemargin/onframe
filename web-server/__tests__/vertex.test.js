@@ -241,7 +241,7 @@ const FULL_SCORES = {
     composition: { score: 74, tip: 'Eyes on upper third.' },
     sharpness:   { score: 90, tip: 'Eyes and lips crisply in focus.' },
     background:  { score: 60, tip: 'Mild edge clutter.' },
-    eyecontact:  { score: 88, tip: 'Direct, engaged gaze.' },
+    expression:  { score: 88, tip: 'Direct, engaged gaze.' },
   },
 };
 
@@ -257,7 +257,7 @@ describe('createVertexClient.analyze — full 6-category scoring', () => {
     expect(Array.isArray(result.cards)).toBe(true);
     const byCat = Object.fromEntries(result.cards.map((c) => [c.category, c]));
     expect(Object.keys(byCat).sort()).toEqual([
-      'Background', 'Composition & Framing', 'Eye Contact & Gaze',
+      'Background', 'Composition & Framing', 'Expression & Mood',
       'Head Angle & Pose', 'Lighting', 'Sharpness & Focus',
     ]);
     // Gemini now OWNS sharpness; its score + tip flow straight through.
@@ -276,7 +276,7 @@ describe('createVertexClient.analyze — full 6-category scoring', () => {
     });
     const bg = result.cards.find((c) => c.category === 'Background');
     expect(bg.priority).toBe(1);
-    const eyes = result.cards.find((c) => c.category === 'Eye Contact & Gaze');
+    const eyes = result.cards.find((c) => c.category === 'Expression & Mood');
     expect(eyes.priority).toBe(3); // score 88 => working
   });
 
@@ -302,7 +302,7 @@ describe('createVertexClient.analyze — full 6-category scoring', () => {
     const body = JSON.parse(fetchImpl.mock.calls[0][1].body);
     const schema = body.generationConfig.responseSchema;
     expect(schema.properties.scores.required).toEqual(
-      expect.arrayContaining(['lighting', 'headpose', 'composition', 'sharpness', 'background', 'eyecontact'])
+      expect.arrayContaining(['lighting', 'headpose', 'composition', 'sharpness', 'background', 'expression'])
     );
   });
 });

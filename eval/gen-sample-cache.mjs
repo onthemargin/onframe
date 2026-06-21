@@ -86,14 +86,14 @@ async function main() {
       const spread = runs.map((r) => r.overallScore).sort((a, b) => a - b);
       console.log(`  ${file.padEnd(14)} overall=${overallScore} (runs ${spread.join('/')})  "${aiSummary.slice(0, 50)}"`);
     } catch (err) {
-      console.error(`  ${file.padEnd(14)} FAILED: ${err.message}`);
-      process.exitCode = 1;
-      return;
+      // Skip a stubborn sample rather than abort the whole run; it falls back
+      // to a live Vertex call at runtime. Report it so it can be retried.
+      console.error(`  ${file.padEnd(14)} SKIPPED: ${err.message}`);
     }
   }
 
   writeFileSync(OUT_PATH, JSON.stringify(out, null, 2) + '\n');
-  console.log(`\nWrote ${Object.keys(out).length} entries to ${OUT_PATH}`);
+  console.log(`\nWrote ${Object.keys(out).length}/${samples.length} entries to ${OUT_PATH}`);
 }
 
 main().catch((err) => {

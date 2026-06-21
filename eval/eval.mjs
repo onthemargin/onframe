@@ -42,7 +42,7 @@ const VERTEX_URL = `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${
 const SAMPLE_DIR = resolve(__dirname, '..', 'web', 'sample');
 const LABELS_PATH = resolve(__dirname, 'labels.json');
 
-const CATEGORIES = ['lighting', 'headpose', 'composition', 'sharpness', 'background', 'eyecontact'];
+const CATEGORIES = ['lighting', 'headpose', 'composition', 'sharpness', 'background', 'expression'];
 
 // Grounding metrics payload sent for every photo. Under cloud-primary scoring
 // Vertex returns *absolute* 0–100 scores judged from the image; this payload is
@@ -57,7 +57,7 @@ const BASELINE_METRICS = JSON.stringify({
     composition: 80,
     sharpness: 75,
     background: 65,
-    eyecontact: 75,
+    expression: 75,
   },
   localCards: [
     { category: 'Lighting',              score: 70, weight: 0.30, title: 'Baseline', tip: 'x', priority: 2, gearNeeded: [] },
@@ -65,7 +65,7 @@ const BASELINE_METRICS = JSON.stringify({
     { category: 'Composition & Framing', score: 80, weight: 0.20, title: 'Baseline', tip: 'x', priority: 2, gearNeeded: [] },
     { category: 'Sharpness & Focus',     score: 75, weight: 0.15, title: 'Baseline', tip: 'x', priority: 2, gearNeeded: [] },
     { category: 'Background',            score: 65, weight: 0.05, title: 'Baseline', tip: 'x', priority: 2, gearNeeded: [] },
-    { category: 'Eye Contact & Gaze',    score: 75, weight: 0.05, title: 'Baseline', tip: 'x', priority: 2, gearNeeded: [] },
+    { category: 'Expression & Mood',    score: 75, weight: 0.05, title: 'Baseline', tip: 'x', priority: 2, gearNeeded: [] },
   ],
 });
 

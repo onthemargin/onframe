@@ -6,13 +6,15 @@ const { createVertexClient, DEFAULT_MODEL } = require('./vertex.js');
 
 const PORT = process.env.PORT || 3004;
 const HOST = process.env.HOST || '127.0.0.1';
+// Family/candid weighting: Expression is the heart of a family photo; technical
+// capture (sharp + lit) and framing come next; pose is de-emphasized (candid).
 const CATEGORY_CONFIG = [
-  { category: 'Lighting', weight: 0.30 },
-  { category: 'Head Angle & Pose', weight: 0.25 },
-  { category: 'Composition & Framing', weight: 0.20 },
-  { category: 'Sharpness & Focus', weight: 0.15 },
-  { category: 'Background', weight: 0.05 },
-  { category: 'Eye Contact & Gaze', weight: 0.05 },
+  { category: 'Expression & Mood', weight: 0.25 },
+  { category: 'Lighting', weight: 0.20 },
+  { category: 'Sharpness & Focus', weight: 0.20 },
+  { category: 'Composition & Framing', weight: 0.15 },
+  { category: 'Background', weight: 0.10 },
+  { category: 'Head Angle & Pose', weight: 0.10 },
 ];
 const CATEGORY_SET = new Set(CATEGORY_CONFIG.map(({ category }) => category));
 
@@ -104,7 +106,7 @@ const FINDING_KEY_TO_CATEGORY = {
   lighting:    { category: 'Lighting',              cap: 10 },
   composition: { category: 'Composition & Framing', cap: 10 },
   background:  { category: 'Background',            cap: 10 },
-  eyecontact:  { category: 'Eye Contact & Gaze',    cap: 10 },
+  expression:  { category: 'Expression & Mood',       cap: 10 },
   headpose:    { category: 'Head Angle & Pose',     cap:  5 },
 };
 

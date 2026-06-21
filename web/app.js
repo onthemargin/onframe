@@ -204,6 +204,13 @@ async function handleFile(file, cachedCoaching = null) {
       return;
     }
 
+    // OnFrame coaches one person at a time. Family group shots aren't the point.
+    if (metrics.faceCount > 1) {
+      lastError = { stage: 'faceDetection', message: `multiple faces (${metrics.faceCount})`, fileInfo: lastFileInfo };
+      showError(`OnFrame is for single-person photos — we found ${metrics.faceCount} people. Try a photo with just one person.`);
+      return;
+    }
+
     if (analyzingLabel) analyzingLabel.textContent = 'Scoring your photo…';
     currentStage = 'synthesize';
     const result = synthesize(metrics);

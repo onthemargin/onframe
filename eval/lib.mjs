@@ -110,14 +110,14 @@ export function medianCards(runs) {
 // can correlate the model's per-category scores against real human ratings.
 // motion_blur is inverted (more blur → lower sharpness). Categories with no
 // contributing attribute present return null (excluded from correlation).
-// Pose / Eye Contact have no AADB equivalent and are always null here.
+// Pose / Expression have no AADB equivalent and are always null here.
 const AADB_CATEGORY_MAP = {
   'Lighting': [['lighting', false]],
   'Background': [['depth_of_field', false], ['object_emphasis', false]],
   'Composition & Framing': [['rule_of_thirds', false], ['balancing_element', false], ['symmetry', false]],
   'Sharpness & Focus': [['motion_blur', true]],
   'Head Angle & Pose': [],
-  'Eye Contact & Gaze': [],
+  'Expression & Mood': [],
 };
 
 export function deriveHumanCategoryScores(attrs) {

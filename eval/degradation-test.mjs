@@ -46,7 +46,7 @@ async function main() {
   }
 
   console.log('Controlled degradation — target should DROP, others should HOLD (tolerance ±12):\n');
-  const SHORT = { 'Lighting': 'Light', 'Head Angle & Pose': 'Pose', 'Composition & Framing': 'Comp', 'Sharpness & Focus': 'Sharp', 'Background': 'Bg', 'Eye Contact & Gaze': 'Eyes' };
+  const SHORT = { 'Lighting': 'Light', 'Head Angle & Pose': 'Pose', 'Composition & Framing': 'Comp', 'Sharpness & Focus': 'Sharp', 'Background': 'Bg', 'Expression & Mood': 'Eyes' };
   let pass = 0;
   for (const v of manifest.variants) {
     const degraded = await scoreFile(join(outDir, v.file));

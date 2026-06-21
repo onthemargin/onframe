@@ -124,6 +124,6 @@ describe('deriveHumanCategoryScores (AADB attrs → OnFrame categories, 0–100)
     const out = deriveHumanCategoryScores({ lighting: 0.5 });
     expect(out['Composition & Framing']).toBeNull();
     expect(out['Head Angle & Pose']).toBeNull();   // no AADB equivalent — never validated
-    expect(out['Eye Contact & Gaze']).toBeNull();
+    expect(out['Expression & Mood']).toBeNull();
   });
 });

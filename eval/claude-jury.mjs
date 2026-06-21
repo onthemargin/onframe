@@ -16,8 +16,8 @@ import { gradeAgreement } from './lib.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CACHE = JSON.parse(readFileSync(resolve(__dirname, '..', 'web', 'sampleCoaching.data.json'), 'utf8'));
-const CATS = ['Lighting', 'Head Angle & Pose', 'Composition & Framing', 'Sharpness & Focus', 'Background', 'Eye Contact & Gaze'];
-const SHORT = { 'Lighting': 'Light', 'Head Angle & Pose': 'Pose', 'Composition & Framing': 'Comp', 'Sharpness & Focus': 'Sharp', 'Background': 'Bg', 'Eye Contact & Gaze': 'Eyes' };
+const CATS = ['Lighting', 'Head Angle & Pose', 'Composition & Framing', 'Sharpness & Focus', 'Background', 'Expression & Mood'];
+const SHORT = { 'Lighting': 'Light', 'Head Angle & Pose': 'Pose', 'Composition & Framing': 'Comp', 'Sharpness & Focus': 'Sharp', 'Background': 'Bg', 'Expression & Mood': 'Eyes' };
 
 // Claude's independent grades [Light, Pose, Comp, Sharp, Bg, Eyes]:
 const CLAUDE = {

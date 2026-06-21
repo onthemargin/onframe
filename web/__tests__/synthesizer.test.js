@@ -102,7 +102,7 @@ describe('synthesize — good portrait baseline', () => {
       'Composition & Framing',
       'Sharpness & Focus',
       'Background',
-      'Eye Contact & Gaze',
+      'Expression & Mood',
     ]);
   });
 
@@ -124,9 +124,12 @@ describe('synthesize — good portrait baseline', () => {
 
   it('overall score is weighted average of card scores', () => {
     const result = synthesize(goodMetrics());
-    const weights = [0.30, 0.25, 0.20, 0.15, 0.05, 0.05];
+    const W = {
+      'Expression & Mood': 0.25, 'Lighting': 0.20, 'Sharpness & Focus': 0.20,
+      'Composition & Framing': 0.15, 'Background': 0.10, 'Head Angle & Pose': 0.10,
+    };
     const expected = Math.round(
-      result.cards.reduce((sum, c, i) => sum + c.score * weights[i], 0)
+      result.cards.reduce((sum, c) => sum + c.score * W[c.category], 0)
     );
     expect(result.overallScore).toBe(expected);
   });

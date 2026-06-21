@@ -14,7 +14,7 @@ function makeLocalResult() {
       { category: 'Composition & Framing', score: 80, title: 'Local frame', tip: 'local tip',  priority: 3, gearNeeded: [] },
       { category: 'Sharpness & Focus',     score: 77, title: 'Local sharp', tip: 'local tip',  priority: 3, gearNeeded: [] },
       { category: 'Background',            score: 60, title: 'Local bg',    tip: 'local tip',  priority: 2, gearNeeded: [] },
-      { category: 'Eye Contact & Gaze',    score: 72, title: 'Local eyes',  tip: 'local tip',  priority: 2, gearNeeded: [] },
+      { category: 'Expression & Mood',    score: 72, title: 'Local eyes',  tip: 'local tip',  priority: 2, gearNeeded: [] },
     ],
     overallScore: 73,
     photoType: { type: 'head-and-shoulders', label: 'Head & shoulders' },
@@ -37,7 +37,7 @@ describe('mergeCoachingResult', () => {
         { category: 'Composition & Framing', score: 75, title: 'Cloud frame', tip: 'tip', priority: 2, gearNeeded: [], aiReason: 'Centered.' },
         { category: 'Sharpness & Focus',     score: 77, title: 'Cloud sharp', tip: 'tip', priority: 3, gearNeeded: [] },
         { category: 'Background',            score: 56, title: 'Cloud bg',    tip: 'tip', priority: 1, gearNeeded: [], aiReason: 'Busy.' },
-        { category: 'Eye Contact & Gaze',    score: 77, title: 'Cloud eyes',  tip: 'tip', priority: 2, gearNeeded: [], aiReason: 'Engaged.' },
+        { category: 'Expression & Mood',    score: 77, title: 'Cloud eyes',  tip: 'tip', priority: 2, gearNeeded: [], aiReason: 'Engaged.' },
       ],
       overallScore: 70,
     };
@@ -55,7 +55,7 @@ describe('mergeCoachingResult', () => {
     expect(lighting.localScore).toBe(70);
     expect(lighting.aiReason).toBe('Reads flat.');
 
-    const eye = merged.cards.find((c) => c.category === 'Eye Contact & Gaze');
+    const eye = merged.cards.find((c) => c.category === 'Expression & Mood');
     expect(eye.score).toBe(77);
     expect(eye.localScore).toBe(72);
 
