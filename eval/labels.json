@@ -1,350 +1,350 @@
 {
-  "_note": "Labels written by Claude (vision-enabled) as a consistent grader for the eval set. NOT professional ground truth — Claude applies portrait-photography heuristics consistently across all 12 photos. ABSOLUTE 0–100 per category (was relative deltas before the cloud-primary rewrite): 90–100 exceptional, 75–89 strong, 60–74 acceptable, 40–59 a problem a viewer registers, 0–39 serious. Converted from the prior delta labels via score≈72+scale·delta, plus independently-assigned Sharpness scores. Every score has a one-line reason so a human reviewer can disagree with specific items. Replace when a real photographer reviews.",
+  "_note": "Claude (vision) grades for the candid-family sample set — consistent heuristic ground truth, NOT professional review. Absolute 0-100 per category. Expression & Mood is the family axis (genuine moment). Family weighting: expression .25, lighting/sharpness .20, composition .15, background/headpose .10.",
   "sample1.jpg": {
-    "note": "NASA studio portrait of Kalpana Chawla in orange flight suit. US flag intrudes from left edge. Flat agency studio lighting. Direct warm smile. Mottled gray backdrop.",
+    "note": "B&W senior man, long grey hair, weathered warm half-smile, workshop backdrop.",
     "expected": {
       "lighting": {
-        "score": 70,
-        "reason": "Competent studio key but flat — no modeling, no flattering shape on face."
+        "score": 76,
+        "reason": "Soft B&W light, gentle modeling on a craggy face."
       },
       "headpose": {
-        "score": 76,
-        "reason": "Subtle right turn, slight chin-tuck — approachable."
+        "score": 80,
+        "reason": "Natural slight turn, relaxed."
       },
       "composition": {
-        "score": 72,
-        "reason": "Three-quarter framing acceptable; head close to top edge but not clipped."
+        "score": 80,
+        "reason": "Centered, face fills frame well."
       },
       "sharpness": {
-        "score": 85,
-        "reason": "Eyes and face in focus; agency studio capture is crisp."
+        "score": 88,
+        "reason": "Eyes and hair texture crisp."
       },
       "background": {
-        "score": 58,
-        "reason": "Two competing elements: cropped flag on left + mottled studio backdrop; subject doesn't pop."
+        "score": 70,
+        "reason": "Workshop clutter behind is blurred but a little busy."
       },
-      "eyecontact": {
-        "score": 81,
-        "reason": "Direct warm smile with engaged eyes; natural agency-portrait confidence."
+      "expression": {
+        "score": 84,
+        "reason": "Warm, genuine, characterful smile."
       }
     }
   },
   "sample2.jpg": {
-    "note": "Tight headshot of smiling man on grey marble wall. Soft directional light with clear catchlights. Top of head clipped (intentional headshot crop). Warm natural skin.",
+    "note": "Woman laughing, head tilted up, forest golden-hour bokeh.",
     "expected": {
       "lighting": {
-        "score": 86,
-        "reason": "Soft directional key, strong catchlights, natural skin texture — top-quality natural-light portrait."
+        "score": 88,
+        "reason": "Warm soft natural light, clean catchlights."
       },
       "headpose": {
-        "score": 80,
-        "reason": "Slight angle, relaxed natural smile."
+        "score": 88,
+        "reason": "Natural upward tilt suits the laugh."
       },
       "composition": {
-        "score": 77,
-        "reason": "Eyes on upper third; tight crop is the correct casting-headshot pattern even with hair clipped."
+        "score": 85,
+        "reason": "Eyes upper third, pleasing low angle."
       },
       "sharpness": {
-        "score": 88,
-        "reason": "Eyes sharp with clear catchlights; clean focus."
+        "score": 90,
+        "reason": "Face tack sharp against bokeh."
       },
       "background": {
-        "score": 77,
-        "reason": "Mottled marble blurred enough not to compete; neutral and works with subject."
+        "score": 92,
+        "reason": "Dreamy forest bokeh, great separation."
       },
-      "eyecontact": {
-        "score": 84,
-        "reason": "Direct, warm, friendly; catchlights make eyes pop."
+      "expression": {
+        "score": 95,
+        "reason": "Genuine, joyful laugh — fully alive."
       }
     }
   },
   "sample3.jpg": {
-    "note": "Young woman with hair bun and freckles on solid pink background. Even soft beauty light. Direct neutral expression, slightly parted lips. Natural makeup.",
+    "note": "B&W senior man in cap and glasses, candid mid-speech, dark backdrop, foreground blur.",
     "expected": {
       "lighting": {
-        "score": 77,
-        "reason": "Even soft beauty light with catchlights; slight shadow under jaw but flattering overall."
+        "score": 74,
+        "reason": "Directional light, readable but a touch flat."
       },
       "headpose": {
-        "score": 72,
-        "reason": "Frontal, neutral — pleasant but unremarkable pose."
+        "score": 78,
+        "reason": "Easy three-quarter, natural."
       },
       "composition": {
-        "score": 81,
-        "reason": "Tight crop, eyes upper third, bun creates pleasing shape at top of frame."
+        "score": 68,
+        "reason": "Out-of-focus foreground shoulder intrudes."
       },
       "sharpness": {
-        "score": 88,
-        "reason": "Eyes and freckles crisply rendered; well focused."
+        "score": 84,
+        "reason": "Face sharp, eyes clear behind glasses."
       },
       "background": {
-        "score": 84,
-        "reason": "Solid clean pink complements skin/hair — strong styling choice that doesn't compete."
+        "score": 80,
+        "reason": "Dark, non-competing background."
       },
-      "eyecontact": {
-        "score": 79,
-        "reason": "Direct engaging gaze; neutral expression rather than warm smile — confident but cooler."
+      "expression": {
+        "score": 72,
+        "reason": "Engaged but mid-word, not a settled moment."
       }
     }
   },
   "sample4.jpg": {
-    "note": "Brooding man in grey knit shawl-collar sweater on black backdrop. Stylized moody low-key lighting with one shadowed eye. Intense neutral expression.",
+    "note": "Woman candid laugh in dappled green light, side-lit.",
     "expected": {
       "lighting": {
-        "score": 90,
-        "reason": "Deliberate low-key with soft falloff; flattering modeling and mood."
+        "score": 64,
+        "reason": "Hard side light leaves harsh shadow on one cheek."
       },
       "headpose": {
-        "score": 76,
-        "reason": "Frontal with slight downward look that adds gravity."
+        "score": 85,
+        "reason": "Natural relaxed turn."
       },
       "composition": {
-        "score": 84,
-        "reason": "Tight headshot, ideal headroom, head centered; sweater texture adds interest below."
+        "score": 80,
+        "reason": "Well framed, eyes upper third."
       },
       "sharpness": {
-        "score": 92,
-        "reason": "Tack-sharp eyes and hair detail; precise focus."
+        "score": 88,
+        "reason": "Sharp face."
       },
       "background": {
-        "score": 86,
-        "reason": "Pure black, subject pops crisply; absolute clean separation."
+        "score": 90,
+        "reason": "Lush green bokeh separates her."
       },
-      "eyecontact": {
-        "score": 79,
-        "reason": "Direct piercing gaze, neutral — works for the editorial vibe even without smile."
+      "expression": {
+        "score": 92,
+        "reason": "Genuine, infectious laugh."
       }
     }
   },
   "sample5.jpg": {
-    "note": "Golden-hour outdoor portrait, woman in striped shirt. Warm rim/side light. Dark out-of-focus landscape background. Half-length, slight 3/4 pose.",
+    "note": "B&W moody man, dramatic rim light, gazing off, denim shirt.",
     "expected": {
       "lighting": {
-        "score": 86,
-        "reason": "Beautiful golden-hour direction; flattering warm rim with romantic modeling on face."
+        "score": 88,
+        "reason": "Deliberate dramatic B&W light, strong modeling."
       },
       "headpose": {
         "score": 84,
-        "reason": "Subtle 3/4 angle, natural; slight chin-tuck adds intimacy."
+        "reason": "Dynamic forward lean."
       },
       "composition": {
         "score": 84,
-        "reason": "Well-placed, eyes upper third, hair frames jawline, half-length crop is strong."
+        "reason": "Strong off-center lean, intentional."
       },
       "sharpness": {
         "score": 90,
-        "reason": "Face sharp against soft bokeh; eyes in focus."
+        "reason": "Crisp on the eyes."
       },
       "background": {
-        "score": 79,
-        "reason": "Heavy bokeh dark landscape — could be brighter but separation is generous."
+        "score": 86,
+        "reason": "Dark, moody, clean separation."
       },
-      "eyecontact": {
-        "score": 84,
-        "reason": "Direct, slight closed-lip smile, strong catchlights — very engaging."
+      "expression": {
+        "score": 70,
+        "reason": "Intense, brooding — intentional but not warm."
       }
     }
   },
   "sample6.jpg": {
-    "note": "B&W heavy-bearded man on plain medium-grey backdrop. Soft even studio light. Warm smile through beard.",
+    "note": "B&W man laughing hard, hand near chin, bright studio.",
     "expected": {
       "lighting": {
-        "score": 77,
-        "reason": "Soft even studio light; flat in B&W but exposure is clean and skin reads natural."
+        "score": 84,
+        "reason": "Soft bright B&W studio light, clean."
       },
       "headpose": {
-        "score": 76,
-        "reason": "Frontal with very slight tilt — natural."
+        "score": 80,
+        "reason": "Frontal, natural."
       },
       "composition": {
-        "score": 81,
-        "reason": "Tight headshot, eyes upper third, head fills frame well."
+        "score": 80,
+        "reason": "Centered, hands add energy."
       },
       "sharpness": {
         "score": 92,
-        "reason": "High micro-detail in beard and eyes; very sharp."
+        "reason": "Very sharp."
       },
       "background": {
-        "score": 79,
-        "reason": "Plain grey gradient — clean, doesn't compete."
+        "score": 88,
+        "reason": "Clean light backdrop."
       },
-      "eyecontact": {
-        "score": 81,
-        "reason": "Direct, warm smile through beard, engaging eyes."
+      "expression": {
+        "score": 95,
+        "reason": "Huge, unguarded laugh."
       }
     }
   },
   "sample7.jpg": {
-    "note": "Young Asian man on plain grey. Subject heavily off-center to right with empty negative space on left. Direct neutral expression, no smile.",
+    "note": "Woman laughing eyes-closed, hand to cheek, hard streak of light across face.",
     "expected": {
       "lighting": {
-        "score": 74,
-        "reason": "Soft directional from upper-right, lights nose and forehead; flat-ish but clean."
+        "score": 62,
+        "reason": "A hard light streak cuts across the face unevenly."
       },
       "headpose": {
-        "score": 72,
-        "reason": "Subtle tilt toward the empty space — neutral overall."
+        "score": 84,
+        "reason": "Natural hand-to-face gesture."
       },
       "composition": {
-        "score": 63,
-        "reason": "Subject too far right with awkward dead space on left; not deliberate lead room since subject looks straight at camera."
+        "score": 82,
+        "reason": "Tight, well placed."
       },
       "sharpness": {
         "score": 88,
-        "reason": "Eyes and skin texture sharp; clean focus."
+        "reason": "Sharp."
       },
       "background": {
         "score": 74,
-        "reason": "Plain grey is clean but the empty half highlights the framing problem rather than separates subject."
+        "reason": "Patterned screen behind, mildly busy."
       },
-      "eyecontact": {
-        "score": 72,
-        "reason": "Direct gaze but neutral/disengaged expression — not unfriendly, not warm."
+      "expression": {
+        "score": 92,
+        "reason": "Eyes-shut, genuine delight."
       }
     }
   },
   "sample8.jpg": {
-    "note": "Stylized blue-gel + magenta-rim lighting, young woman, lavender backdrop. Editorial/fashion lighting setup, not standard portrait. Direct confident gaze, neutral expression.",
+    "note": "Young man laughing, striped shirt, soft outdoor bokeh.",
     "expected": {
       "lighting": {
-        "score": 77,
-        "reason": "Intentional artistic colored gels — striking but heavy color cast moves it away from a flattering classical portrait."
+        "score": 85,
+        "reason": "Even soft outdoor light, nice catchlights."
       },
       "headpose": {
-        "score": 72,
-        "reason": "Frontal with very slight tilt — neutral."
+        "score": 78,
+        "reason": "Straight-on, a touch static."
       },
       "composition": {
-        "score": 79,
-        "reason": "Centered, head fills frame well; clean crop."
+        "score": 82,
+        "reason": "Centered, balanced."
       },
       "sharpness": {
-        "score": 85,
-        "reason": "Face in focus despite gel lighting; eyes sharp."
+        "score": 90,
+        "reason": "Sharp eyes and teeth."
       },
       "background": {
-        "score": 84,
-        "reason": "Clean lavender gradient complements the gel lighting — strong cohesive styling."
+        "score": 85,
+        "reason": "Soft daylight bokeh."
       },
-      "eyecontact": {
-        "score": 79,
-        "reason": "Direct intense gaze, confident; neutral expression works for the editorial register."
+      "expression": {
+        "score": 92,
+        "reason": "Open, genuine laugh."
       }
     }
   },
   "sample9.jpg": {
-    "note": "Office-style headshot, woman in striped blazer. Soft window/key light from front-left. Glass wall background with reflections and window squares. Direct warm smile.",
+    "note": "Woman with afro laughing, seated outdoors, warm light.",
     "expected": {
       "lighting": {
-        "score": 79,
-        "reason": "Soft even window light, gentle modeling on cheek, natural skin."
+        "score": 85,
+        "reason": "Warm natural light, soft."
       },
       "headpose": {
-        "score": 84,
-        "reason": "Slight 3/4 angle, confident, natural."
+        "score": 88,
+        "reason": "Relaxed seated lean, easy."
       },
       "composition": {
-        "score": 84,
-        "reason": "Three-quarter framing well-balanced, slight body angle adds dynamism, eyes upper third."
+        "score": 82,
+        "reason": "Half-length, well balanced."
       },
       "sharpness": {
-        "score": 88,
-        "reason": "Eyes sharp with good catchlights; well focused."
+        "score": 90,
+        "reason": "Sharp face."
       },
       "background": {
-        "score": 65,
-        "reason": "Glass wall with mottled reflections and window square pattern — patterned and distracting."
+        "score": 85,
+        "reason": "Warm green setting, supportive."
       },
-      "eyecontact": {
-        "score": 84,
-        "reason": "Direct, warm full smile, natural connection — strong engagement."
+      "expression": {
+        "score": 92,
+        "reason": "Big, genuine laugh."
       }
     }
   },
   "sample10.jpg": {
-    "note": "Laughing woman in red mock-neck, urban heavy-bokeh background. Soft diffused natural light. Big genuine smile with teeth, eyes squinting from laughter.",
+    "note": "B&W man with round glasses laughing, head up, wristwatch.",
     "expected": {
       "lighting": {
-        "score": 84,
-        "reason": "Soft natural diffused light, strong catchlights, even exposure with slight warmth."
+        "score": 82,
+        "reason": "Soft B&W window light."
       },
       "headpose": {
-        "score": 80,
-        "reason": "Frontal, slight right tilt, very natural relaxed."
+        "score": 84,
+        "reason": "Upward, candid angle."
       },
       "composition": {
-        "score": 84,
-        "reason": "Half-length well-balanced, hair flow adds motion, eyes upper third."
+        "score": 78,
+        "reason": "Slightly off-center but works."
       },
       "sharpness": {
         "score": 90,
-        "reason": "Eyes and lips crisply in focus; bokeh is intentional, not soft focus."
+        "reason": "Sharp."
       },
       "background": {
-        "score": 79,
-        "reason": "Heavy urban bokeh, strong separation; slight busyness at edges keeps it from +5."
+        "score": 85,
+        "reason": "Plain wall, clean."
       },
-      "eyecontact": {
-        "score": 88,
-        "reason": "Genuine laugh, big authentic smile, eyes engaged through the squint — unusually strong connection."
+      "expression": {
+        "score": 90,
+        "reason": "Bright, genuine joy."
       }
     }
   },
   "sample11.jpg": {
-    "note": "Suited man in dark suit + red tie, arms crossed, urban dusk backdrop with bare branches. Low-key moody lighting. Confident slight-smirk expression.",
+    "note": "Woman laughing, hand on forehead, warm hard sunlight.",
     "expected": {
       "lighting": {
-        "score": 74,
-        "reason": "Low-key dusk lighting, fairly flat with mild shadow on face; eyes are well-lit."
+        "score": 70,
+        "reason": "Hard warm sun, hand casts a shadow on the face."
       },
       "headpose": {
-        "score": 76,
-        "reason": "Frontal with very slight tilt, formal stance."
+        "score": 84,
+        "reason": "Natural hand-to-head gesture."
       },
       "composition": {
-        "score": 81,
-        "reason": "Three-quarter to full-body framing, vertical aspect strong, formal pose composed well."
+        "score": 82,
+        "reason": "Tight, well framed."
       },
       "sharpness": {
-        "score": 82,
-        "reason": "Face sharp; low dusk light slightly softens fine detail."
+        "score": 88,
+        "reason": "Sharp."
       },
       "background": {
-        "score": 74,
-        "reason": "Urban backdrop slightly busy with branches but toned down — doesn't pull focus."
+        "score": 82,
+        "reason": "Simple warm backdrop."
       },
-      "eyecontact": {
-        "score": 77,
-        "reason": "Direct neutral-confident gaze with slight smirk; commanding but not warm."
+      "expression": {
+        "score": 92,
+        "reason": "Spontaneous, genuine laugh."
       }
     }
   },
   "sample12.jpg": {
-    "note": "Young man in field with bare teasels, golden-hour backlight. Big joyful smile. NOT looking at camera (eyes up-left). Candid lifestyle shot rather than headshot.",
+    "note": "Woman in patterned headwrap, chin on hands, warm smile to camera, autumn bokeh.",
     "expected": {
       "lighting": {
-        "score": 88,
-        "reason": "Beautiful golden-hour rim light, warm tones, well-exposed face despite backlight — exceptional."
+        "score": 80,
+        "reason": "Warm natural light, gentle."
       },
       "headpose": {
-        "score": 84,
-        "reason": "Natural relaxed 3/4 looking up-left, joyful candid."
+        "score": 82,
+        "reason": "Chin-on-hands, engaging."
       },
       "composition": {
-        "score": 86,
-        "reason": "Off-center subject with negative space + lead room into where he's looking; natural lifestyle composition."
+        "score": 82,
+        "reason": "Eyes upper third, hands frame the face."
       },
       "sharpness": {
-        "score": 85,
-        "reason": "Subject face in focus against blurred field; eyes sharp."
+        "score": 92,
+        "reason": "Critically sharp."
       },
       "background": {
-        "score": 84,
-        "reason": "Wild grass + teasels with sunset glow and strong bokeh — natural and beautiful."
+        "score": 75,
+        "reason": "Autumn foliage behind is a little busy."
       },
-      "eyecontact": {
-        "score": 63,
-        "reason": "Not making eye contact with camera — judged by strict portrait standard, this is a deduction even though the moment is genuine."
+      "expression": {
+        "score": 88,
+        "reason": "Warm, direct, genuine smile."
       }
     }
   }
