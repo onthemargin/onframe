@@ -5,7 +5,7 @@
   --surface:  #161b22;
   --border:   #30363d;
   --text:     #e6edf3;
-  --muted:    #8b949e;
+  --muted:    #a0aab5;
   --pink:     #f472b6;
   --green:    #3fb950;
   --yellow:   #d29922;
@@ -105,15 +105,15 @@ nav { display: none; }
   flex-wrap: wrap; margin-bottom: 12px;
 }
 .sample-thumb {
-  width: 52px; height: 52px; border-radius: 50%; overflow: hidden;
+  width: 60px; height: 76px; border-radius: 12px; overflow: hidden;
   border: 2px solid var(--border); background: var(--surface); padding: 0;
   cursor: pointer; transition: border-color 0.2s, transform 0.15s;
   flex-shrink: 0;
 }
 .sample-thumb img {
-  width: 100%; height: 100%; object-fit: cover; object-position: center 20%; display: block;
+  width: 100%; height: 100%; object-fit: cover; object-position: center 25%; display: block;
 }
-.sample-thumb:hover { border-color: var(--muted); transform: scale(1.08); }
+.sample-thumb:hover { border-color: var(--muted); transform: scale(1.06); }
 .sample-thumb.active { border-color: var(--pink); box-shadow: 0 0 0 2px rgba(244,114,182,0.3); }
 
 .privacy-note {
@@ -163,7 +163,7 @@ nav { display: none; }
   position: relative;
   width: 100%;
   background: #000;
-  flex: 1 1 auto;
+  flex: 0 0 42vh;
   min-height: 0;
   display: flex;
   align-items: center;
@@ -261,13 +261,14 @@ nav { display: none; }
   gap: 6px;
 }
 .photo-score-row .number {
-  font-size: 36px; font-weight: 800; line-height: 1;
+  font-size: 54px; font-weight: 800; line-height: 0.95;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
 }
 .photo-score-row .denom {
-  font-size: 15px; color: rgba(255,255,255,0.6);
+  font-size: 18px; color: rgba(255,255,255,0.7); font-weight: 600;
 }
 .photo-score-row .photo-type-label {
-  font-size: 11px; color: rgba(255,255,255,0.5);
+  font-size: 11px; color: rgba(255,255,255,0.62);
   text-transform: uppercase; letter-spacing: 0.06em;
   margin-left: auto;
 }
@@ -278,68 +279,48 @@ nav { display: none; }
   color: rgba(255,255,255,0.5); font-size: 10px;
 }
 .photo-score-overlay .ai-summary-inline p {
-  color: rgba(255,255,255,0.75); margin-top: 2px;
+  color: rgba(255,255,255,0.88); margin-top: 2px; font-size: 13px;
 }
 .photo-score-overlay .ai-unavailable-banner {
   margin-top: 4px;
   font-size: 11px;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.7);
   font-style: italic;
 }
 .photo-score-overlay .result-id {
   margin-top: 6px;
   font-size: 10px;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.55);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   letter-spacing: 0.02em;
 }
 
 /* ── Bottom area: sized to content; photo expands above ── */
 .bottom-sheet {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
   background: var(--bg);
-  padding: 12px 0 max(16px, env(safe-area-inset-bottom));
+  padding: 0 0 max(16px, env(safe-area-inset-bottom));
 }
 .sheet-handle { display: none; }
 
-/* ── Card carousel (horizontal swipe, snap-to-card) ── */
+/* ── Card list (vertical, all feedback visible by scrolling) ── */
 .card-carousel {
   display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding: 4px 16px 8px;
-  scroll-padding-left: 16px;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 16px 4px;
 }
-.card-carousel::-webkit-scrollbar { display: none; }
 .card-carousel:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
 
-.carousel-dots {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  padding: 6px 16px 4px;
-}
-.carousel-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--border);
-  transition: background 0.18s, transform 0.18s;
-}
-.carousel-dot.active {
-  background: var(--text);
-  transform: scale(1.4);
-}
+.carousel-dots { display: none; }
 
 .card {
-  flex: 0 0 88%;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  width: 100%;
   background: var(--surface);
   border: 1px solid var(--border);
   border-left-width: 4px;
@@ -347,6 +328,11 @@ nav { display: none; }
   overflow: hidden;
   cursor: pointer;
   transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+}
+/* Top-priority (worst-scoring, first) card gets a touch more emphasis. */
+.card-carousel > .card:first-child {
+  box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+  border-color: rgba(255,255,255,0.12);
 }
 .card.score-great { border-left-color: var(--green); }
 .card.score-ok { border-left-color: var(--yellow); }

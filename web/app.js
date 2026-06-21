@@ -170,9 +170,8 @@ async function handleFile(file, cachedCoaching = null) {
   };
   const analysisToken = ++activeAnalysisToken;
   showState('analyzing');
-  // Single stable label — local analysis is too fast to register a separate
-  // 'analyzing' state, so use one message that covers both phases.
-  analyzingLabel.textContent = 'Coaching your photo…';
+  // Progressive labels make the multi-second Vertex round-trip feel intentional.
+  analyzingLabel.textContent = 'Detecting your face…';
 
   let currentStage = 'init';
   try {
@@ -205,6 +204,7 @@ async function handleFile(file, cachedCoaching = null) {
       return;
     }
 
+    if (analyzingLabel) analyzingLabel.textContent = 'Scoring your photo…';
     currentStage = 'synthesize';
     const result = synthesize(metrics);
 
@@ -408,11 +408,9 @@ function setActiveCategory(category) {
 function activateCategory(category) {
   setActiveCategory(category);
   const card = cardElements[category];
-  if (!card || !cardCarousel) return;
-  // Align the chosen card to the carousel's left edge so snap is consistent
-  // with the start-aligned layout. Padding handles visual breathing room.
-  const padLeft = parseFloat(getComputedStyle(cardCarousel).paddingLeft) || 0;
-  cardCarousel.scrollTo({ left: card.offsetLeft - padLeft, behavior: 'smooth' });
+  if (!card) return;
+  // Vertical list: bring the chosen card into view, centered.
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function makeCardInteractive(el, category) {
@@ -541,18 +539,13 @@ function renderResults(file, result, aiSummary) {
     const el = buildCardElement(card, false);
     cardCarousel.appendChild(el);
     cardElements[card.category] = el;
-
-    const dot = document.createElement('span');
-    dot.className = 'carousel-dot';
-    dot.dataset.category = card.category;
-    carouselDots.appendChild(dot);
   }
 
-  // Reset scroll to the first (worst-scoring) card. Run after layout via
-  // rAF so scroll-snap doesn't settle on a different card mid-render.
+  // Reset the card list to the top (worst-scoring card first).
   updateActiveCard(0);
   requestAnimationFrame(() => {
-    cardCarousel.scrollLeft = 0;
+    const sheet = document.getElementById('bottom-sheet');
+    if (sheet) sheet.scrollTop = 0;
     observeCarousel();
   });
 }
@@ -576,8 +569,8 @@ function observeCarousel() {
     const category = best.target.dataset.category;
     if (category) setActiveCategory(category);
   }, {
-    root: cardCarousel,
-    threshold: [0.55, 0.75, 0.95],
+    root: document.getElementById('bottom-sheet'),
+    threshold: [0.4, 0.7, 0.95],
   });
 
   for (const card of Object.values(cardElements)) carouselObserver.observe(card);
