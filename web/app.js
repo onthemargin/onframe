@@ -247,143 +247,17 @@ async function handleFile(file, cachedCoaching = null) {
   }
 }
 
-// ─── Pin positioning utilities ───────────────────────────────────────────────
-
-const PIN_LABELS = {
-  'Lighting':              'Light',
-  'Head Angle & Pose':     'Pose',
-  'Composition & Framing': 'Frame',
-  'Sharpness & Focus':     'Focus',
-  'Background':            'Scene',
-  'Eye Contact & Gaze':    'Eyes',
-};
-
 const PRIORITY_LABELS = {
   1: 'Fix now',
   2: 'Improve',
   3: 'Working',
 };
 
-// Returns { anchor: {x,y}, label: {x,y} } for each category.
-// anchor = point on the face the line points to
-// label  = where the pin sits (outside the face)
-function getPinPositions(metrics) {
-  if (!metrics || !metrics.faceDetected) return {};
-  const fb = metrics.faceBoundingBox;
-  const imgW = metrics.imageWidthPx;
-  const imgH = metrics.imageHeightPx;
-  const faceCX = (fb.x + fb.width / 2) / imgW;
-  const faceCY = (fb.y + fb.height / 2) / imgH;
-  const eyeMidX = (metrics.leftEyeCenter.x + metrics.rightEyeCenter.x) / 2;
-  const eyeMidY = (metrics.leftEyeCenter.y + metrics.rightEyeCenter.y) / 2;
-  // Place pins on the opposite side of the face from center
-  const faceLeft = faceCX < 0.5;
-
-  // Pin side: place on opposite side of face. Avoid top-left (back button zone).
-  const pinSide = faceLeft ? 0.92 : 0.08;
-  const altSide = faceLeft ? 0.08 : 0.92;
-  // If alt side is top-left (x<0.15), push pins to the right side instead
-  const safeSide = altSide < 0.15 ? 0.92 : altSide;
-
-  return distributePinLabels({
-    'Lighting': {
-      anchor: { x: faceCX, y: faceCY },
-      label:  { x: pinSide, y: faceCY - 0.04 },
-    },
-    'Head Angle & Pose': {
-      anchor: { x: faceCX, y: Math.max(0.05, fb.y / imgH) },
-      label:  { x: pinSide, y: 0.14 },
-    },
-    'Composition & Framing': {
-      anchor: { x: eyeMidX, y: eyeMidY - 0.03 },
-      label:  { x: safeSide, y: 0.14 },
-    },
-    'Sharpness & Focus': {
-      // Anchor to cheek area below eyes, not on the eyes
-      anchor: { x: faceCX + (faceLeft ? 0.03 : -0.03), y: faceCY + 0.05 },
-      label:  { x: pinSide, y: faceCY + 0.10 },
-    },
-    'Background': {
-      anchor: { x: faceLeft ? 0.85 : 0.15, y: 0.15 },
-      label:  { x: safeSide, y: 0.26 },
-    },
-    'Eye Contact & Gaze': {
-      // Anchor to forehead/brow area, not directly on eyes
-      anchor: { x: eyeMidX, y: eyeMidY - 0.06 },
-      label:  { x: pinSide, y: eyeMidY - 0.14 },
-    },
-  });
-}
-
-function distributePinLabels(rawPositions) {
-  const positions = Object.fromEntries(
-    Object.entries(rawPositions).map(([category, pos]) => [category, {
-      anchor: { ...pos.anchor },
-      label: { ...pos.label },
-    }])
-  );
-
-  for (const side of ['left', 'right']) {
-    const entries = Object.entries(positions)
-      .filter(([, pos]) => (side === 'left' ? pos.label.x < 0.5 : pos.label.x >= 0.5))
-      .sort((a, b) => a[1].label.y - b[1].label.y);
-    const minGap = 0.115;
-    const minY = 0.12;
-    const maxY = 0.88;
-    let prevY = minY - minGap;
-
-    for (const [, pos] of entries) {
-      pos.label.y = Math.max(minY, Math.min(maxY, pos.label.y));
-      if (pos.label.y - prevY < minGap) {
-        pos.label.y = Math.min(maxY, prevY + minGap);
-      }
-      prevY = pos.label.y;
-    }
-
-    for (let i = entries.length - 2; i >= 0; i--) {
-      const current = entries[i][1].label;
-      const next = entries[i + 1][1].label;
-      if (next.y - current.y < minGap) {
-        current.y = Math.max(minY, next.y - minGap);
-      }
-    }
-  }
-
-  return positions;
-}
-
-function getImageDisplayRect(imgEl) {
-  const cW = imgEl.clientWidth, cH = imgEl.clientHeight;
-  const nW = imgEl.naturalWidth, nH = imgEl.naturalHeight;
-  if (!nW || !nH) return { offsetX: 0, offsetY: 0, displayW: cW, displayH: cH };
-  const scale = Math.min(cW / nW, cH / nH);
-  const dW = nW * scale, dH = nH * scale;
-  return { offsetX: (cW - dW) / 2, offsetY: (cH - dH) / 2, displayW: dW, displayH: dH };
-}
-
-function normToPixel(normX, normY, imgEl) {
-  const { offsetX, offsetY, displayW, displayH } = getImageDisplayRect(imgEl);
-  return {
-    px: offsetX + normX * displayW,
-    py: offsetY + normY * displayH,
-  };
-}
-
-function normToPercent(normX, normY, imgEl) {
-  const { px, py } = normToPixel(normX, normY, imgEl);
-  return {
-    left: (px / imgEl.clientWidth * 100) + '%',
-    top:  (py / imgEl.clientHeight * 100) + '%',
-  };
-}
-
 // ─── Carousel state ──────────────────────────────────────────────────────────
 
 let activeCardIndex = 0;
 let sortedCards = [];
-let pinElements = {};
 let cardElements = {};
-let resizeObserver = null;
 
 function updateActiveCard(index) {
   activeCardIndex = index;
@@ -393,9 +267,7 @@ function updateActiveCard(index) {
 
 function setActiveCategory(category) {
   if (!category) return;
-  Object.values(pinElements).forEach(p => p.classList.remove('active'));
   Object.values(cardElements).forEach(c => c.classList.remove('active'));
-  if (pinElements[category]) pinElements[category].classList.add('active');
   if (cardElements[category]) cardElements[category].classList.add('active');
   if (carouselDots) {
     carouselDots.querySelectorAll('.carousel-dot').forEach(d => {
@@ -473,7 +345,6 @@ function renderResults(file, result, aiSummary) {
   currentThumbUrl = blobUrl;
   photoThumb.src = blobUrl;
   photoThumb.onload = () => {
-    renderPins();
     if (currentThumbUrl === blobUrl) currentThumbUrl = null;
     URL.revokeObjectURL(blobUrl);
   };
@@ -574,66 +445,6 @@ function observeCarousel() {
   });
 
   for (const card of Object.values(cardElements)) carouselObserver.observe(card);
-}
-
-// ─── Pin rendering ───────────────────────────────────────────────────────────
-
-let lineElements = {};
-
-function positionPinAndLine(category, pos, card, imgEl) {
-  const pin = pinElements[category];
-  if (!pin || !pos) return;
-
-  const labelPos = normToPercent(pos.label.x, pos.label.y, imgEl);
-  pin.style.left = labelPos.left;
-  pin.style.top = labelPos.top;
-}
-
-function renderPins() {
-  const pinsContainer = document.getElementById('hotspot-pins');
-  pinsContainer.innerHTML = '';
-  pinElements = {};
-  lineElements = {};
-
-  const positions = getPinPositions(lastMetrics);
-  if (!Object.keys(positions).length) return;
-
-  for (const card of sortedCards) {
-    const pos = positions[card.category];
-    if (!pos) continue;
-
-    const pin = document.createElement('button');
-    const pinClass = card.score >= 75 ? 'pin-great' : card.score >= 55 ? 'pin-ok' : 'pin-poor';
-    pin.className = `hotspot-pin ${pinClass}`;
-    pin.type = 'button';
-    pin.textContent = PIN_LABELS[card.category] || '•';
-    pin.setAttribute('aria-label', `${card.category}: ${card.title}`);
-
-    pinElements[card.category] = pin;
-    positionPinAndLine(card.category, pos, card, photoThumb);
-
-    pin.addEventListener('click', () => activateCategory(card.category));
-
-    pinsContainer.appendChild(pin);
-  }
-
-  // Mark first card's pin as active
-  if (sortedCards[0] && pinElements[sortedCards[0].category]) {
-    pinElements[sortedCards[0].category].classList.add('active');
-  }
-
-  // Reposition on resize
-  if (resizeObserver) resizeObserver.disconnect();
-  const wrap = document.querySelector('.photo-overlay-wrap');
-  if (wrap) {
-    resizeObserver = new ResizeObserver(() => {
-      for (const card of sortedCards) {
-        const pos = positions[card.category];
-        if (pos) positionPinAndLine(card.category, pos, card, photoThumb);
-      }
-    });
-    resizeObserver.observe(wrap);
-  }
 }
 
 // ─── Bottom sheet drag ───────────────────────────────────────────────────────
@@ -754,18 +565,14 @@ function reset() {
   const resultIdEl = document.getElementById('result-id');
   if (resultIdEl) { resultIdEl.textContent = ''; resultIdEl.style.display = 'none'; }
   // Clear pins and sheet state
-  document.getElementById('hotspot-pins').innerHTML = '';
   const sheet = document.getElementById('bottom-sheet');
   if (sheet) {
     sheet.classList.remove('snap-half', 'snap-full');
     sheet.style.top = '';
   }
-  pinElements = {};
   cardElements = {};
-  lineElements = {};
   sortedCards = [];
   activeCardIndex = 0;
-  if (resizeObserver) { resizeObserver.disconnect(); resizeObserver = null; }
   showState('idle');
 }
 
