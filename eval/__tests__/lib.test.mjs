@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mae, spearman, gradeAgreement, checkDegradation, deriveHumanCategoryScores } from '../lib.mjs';
+import { mae, spearman, gradeAgreement, checkDegradation, deriveHumanCategoryScores, medianCards } from '../lib.mjs';
 
 describe('mae', () => {
   it('averages absolute differences over finite pairs', () => {
@@ -72,6 +72,36 @@ describe('checkDegradation', () => {
     const r = checkDegradation(baseline, improved, { target: 'Lighting', direction: 'up', minDelta: 8 });
     expect(r.pass).toBe(true);
     expect(r.targetDelta).toBe(10);
+  });
+});
+
+describe('medianCards (variance-killer for the sample cache)', () => {
+  // 3 runs of the same sample; each run is an array of category cards.
+  const mk = (cat, score, tip) => ({ category: cat, score, tip });
+  const runs = [
+    [mk('Lighting', 60, 'a'), mk('Background', 90, 'x')],
+    [mk('Lighting', 80, 'b'), mk('Background', 70, 'y')],
+    [mk('Lighting', 70, 'c'), mk('Background', 50, 'z')],
+  ];
+
+  it('returns the per-category MEDIAN score across runs', () => {
+    const out = medianCards(runs);
+    const byCat = Object.fromEntries(out.map((c) => [c.category, c.score]));
+    expect(byCat['Lighting']).toBe(70);    // median of 60,80,70
+    expect(byCat['Background']).toBe(70);  // median of 90,70,50
+  });
+
+  it('keeps the TIP from the run that produced the median score (tip matches score)', () => {
+    const out = medianCards(runs);
+    const lighting = out.find((c) => c.category === 'Lighting');
+    expect(lighting.tip).toBe('c');        // run 3 had Lighting 70 (the median)
+    const bg = out.find((c) => c.category === 'Background');
+    expect(bg.tip).toBe('y');              // run 2 had Background 70 (the median)
+  });
+
+  it('handles a single run (returns it unchanged)', () => {
+    const out = medianCards([[mk('Lighting', 42, 'solo')]]);
+    expect(out).toEqual([mk('Lighting', 42, 'solo')]);
   });
 });
 

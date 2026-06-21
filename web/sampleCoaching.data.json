@@ -1,182 +1,20 @@
 {
   "sample1.jpg": {
-    "aiSummary": "The lighting is competent but lacks artistic shaping for depth. However, the eye contact is strong and engaging, and the focus is excellent.",
+    "aiSummary": "The prominent flag in the background competes for attention. However, the subject's eyes are sharply in focus with excellent direct contact.",
     "cards": [
       {
         "category": "Lighting",
-        "score": 70,
-        "title": "Lighting",
-        "tip": "Even, bright light but lacks facial modeling for depth.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Head Angle & Pose",
-        "score": 80,
-        "title": "Head Angle & Pose",
-        "tip": "Slight head turn adds dimension, chin height is flattering.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Composition & Framing",
         "score": 78,
-        "title": "Composition & Framing",
-        "tip": "Centered subject with the flag providing good contextual balance.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Sharpness & Focus",
-        "score": 95,
-        "title": "Sharpness & Focus",
-        "tip": "Eyes and facial features are critically sharp and in focus.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Background",
-        "score": 85,
-        "title": "Background",
-        "tip": "Relevant flag element and clean, non-distracting mottled backdrop.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Eye Contact & Gaze",
-        "score": 95,
-        "title": "Eye Contact & Gaze",
-        "tip": "Direct gaze into the lens with bright, clear catchlights.",
-        "priority": 3,
-        "gearNeeded": []
-      }
-    ],
-    "overallScore": 80
-  },
-  "sample2.jpg": {
-    "aiSummary": "The composition feels a bit tight at the bottom, limiting breathing room. However, the sharpness and direct eye contact are truly outstanding.",
-    "cards": [
-      {
-        "category": "Lighting",
-        "score": 85,
         "title": "Lighting",
-        "tip": "Soft, even light beautifully sculpts the face with clear catchlights.",
+        "tip": "Soft, even light illuminates the face well, with clear catchlights in both eyes.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Head Angle & Pose",
-        "score": 88,
+        "score": 72,
         "title": "Head Angle & Pose",
-        "tip": "Slight head tilt adds dynamism; direct gaze is engaging.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Composition & Framing",
-        "score": 78,
-        "title": "Composition & Framing",
-        "tip": "Centered framing is solid; consider slightly more space below the shoulders.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Sharpness & Focus",
-        "score": 95,
-        "title": "Sharpness & Focus",
-        "tip": "Eyes are perfectly sharp with crisp detail in the irises.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Background",
-        "score": 75,
-        "title": "Background",
-        "tip": "Clean, blurred background provides good separation; consider more texture.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Eye Contact & Gaze",
-        "score": 98,
-        "title": "Eye Contact & Gaze",
-        "tip": "Direct, open gaze with prominent, well-placed catchlights.",
-        "priority": 3,
-        "gearNeeded": []
-      }
-    ],
-    "overallScore": 86
-  },
-  "sample3.jpg": {
-    "aiSummary": "The frontal headpose is a bit static, and the bun is slightly cropped. However, the sharpness and direct eye contact are exceptional, creating a compelling portrait.",
-    "cards": [
-      {
-        "category": "Lighting",
-        "score": 88,
-        "title": "Lighting",
-        "tip": "Soft, even light beautifully illuminates the face and creates clear catchlights.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Head Angle & Pose",
-        "score": 75,
-        "title": "Head Angle & Pose",
-        "tip": "Direct frontal pose is competent, but a slight turn could add dimension.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Composition & Framing",
-        "score": 80,
-        "title": "Composition & Framing",
-        "tip": "Centered framing is strong, but the very top of the bun is slightly cropped.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Sharpness & Focus",
-        "score": 98,
-        "title": "Sharpness & Focus",
-        "tip": "Eyes and facial features are critically sharp with excellent detail.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Background",
-        "score": 95,
-        "title": "Background",
-        "tip": "Clean, uniform pink background provides excellent separation and color harmony.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Eye Contact & Gaze",
-        "score": 98,
-        "title": "Eye Contact & Gaze",
-        "tip": "Direct gaze with bright, clear catchlights creates strong connection.",
-        "priority": 3,
-        "gearNeeded": []
-      }
-    ],
-    "overallScore": 86
-  },
-  "sample4.jpg": {
-    "aiSummary": "The straight-on headpose is competent but could be more dynamic. The dramatic lighting and sharp focus on the eyes create a powerful, engaging portrait.",
-    "cards": [
-      {
-        "category": "Lighting",
-        "score": 95,
-        "title": "Lighting",
-        "tip": "Deliberate split lighting creates strong facial modeling and depth.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Head Angle & Pose",
-        "score": 70,
-        "title": "Head Angle & Pose",
-        "tip": "A slight turn of the head could add more dynamism to the pose.",
+        "tip": "A direct, slightly tilted head position presents the subject clearly.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -184,53 +22,53 @@
         "category": "Composition & Framing",
         "score": 85,
         "title": "Composition & Framing",
-        "tip": "Balanced framing with good headroom and shoulder space.",
+        "tip": "Eyes are perfectly placed in the upper third, creating a balanced frame.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Sharpness & Focus",
-        "score": 98,
+        "score": 95,
         "title": "Sharpness & Focus",
-        "tip": "Eyes are critically sharp with excellent detail in the iris.",
+        "tip": "Eyes are critically sharp, with excellent detail in the iris.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Background",
-        "score": 99,
-        "title": "Background",
-        "tip": "Pure black background provides perfect subject isolation and focus.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Eye Contact & Gaze",
-        "score": 95,
-        "title": "Eye Contact & Gaze",
-        "tip": "Direct gaze with clear, bright catchlights creates strong connection.",
-        "priority": 3,
-        "gearNeeded": []
-      }
-    ],
-    "overallScore": 87
-  },
-  "sample5.jpg": {
-    "aiSummary": "The face is slightly underexposed on one side, but the sharp focus and direct eye contact are strong. The overall composition and background separation are well-executed.",
-    "cards": [
-      {
-        "category": "Lighting",
         "score": 65,
-        "title": "Lighting",
-        "tip": "Camera-left side of the face is underexposed, losing detail and modeling.",
+        "title": "Background",
+        "tip": "The bright, patterned flag on the left competes strongly for viewer attention.",
         "priority": 2,
         "gearNeeded": []
       },
       {
+        "category": "Eye Contact & Gaze",
+        "score": 98,
+        "title": "Eye Contact & Gaze",
+        "tip": "Direct gaze into the lens creates strong connection, enhanced by bright catchlights.",
+        "priority": 3,
+        "gearNeeded": []
+      }
+    ],
+    "overallScore": 81
+  },
+  "sample2.jpg": {
+    "aiSummary": "The headpose is static, and the lighting, while flattering, lacks dimension. Excellent sharpness and direct eye contact create a strong connection.",
+    "cards": [
+      {
+        "category": "Lighting",
+        "score": 80,
+        "title": "Lighting",
+        "tip": "Soft, even front light provides flattering illumination with clear catchlights.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
         "category": "Head Angle & Pose",
-        "score": 88,
+        "score": 70,
         "title": "Head Angle & Pose",
-        "tip": "Subtle head turn and tilt add dimension and a natural, engaging feel.",
+        "tip": "Direct frontal pose is competent but lacks dynamic angle or tilt.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -238,7 +76,7 @@
         "category": "Composition & Framing",
         "score": 85,
         "title": "Composition & Framing",
-        "tip": "Subject is well-framed, using the upper third for the eyes and good headroom.",
+        "tip": "Eyes are perfectly placed in the upper third, with balanced framing.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -246,13 +84,175 @@
         "category": "Sharpness & Focus",
         "score": 95,
         "title": "Sharpness & Focus",
-        "tip": "Eyes are critically sharp and in perfect focus, enhancing the connection.",
+        "tip": "Eyes are critically sharp with clear detail in the iris.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Background",
-        "score": 92,
+        "score": 80,
+        "title": "Background",
+        "tip": "Subtly blurred textured background provides good separation without distraction.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Eye Contact & Gaze",
+        "score": 95,
+        "title": "Eye Contact & Gaze",
+        "tip": "Direct gaze into the lens creates strong connection with the viewer.",
+        "priority": 3,
+        "gearNeeded": []
+      }
+    ],
+    "overallScore": 82
+  },
+  "sample3.jpg": {
+    "aiSummary": "The lighting is soft and even but lacks dimension, making the face appear somewhat flat. However, the sharpness and direct eye contact create a powerful and engaging portrait.",
+    "cards": [
+      {
+        "category": "Lighting",
+        "score": 80,
+        "title": "Lighting",
+        "tip": "Soft, even light illuminates the face with clear catchlights in both eyes.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Head Angle & Pose",
+        "score": 75,
+        "title": "Head Angle & Pose",
+        "tip": "A subtle head tilt adds a touch of dynamism to the direct pose.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Composition & Framing",
+        "score": 90,
+        "title": "Composition & Framing",
+        "tip": "Eyes are perfectly placed on the upper third, creating a strong visual anchor.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Sharpness & Focus",
+        "score": 95,
+        "title": "Sharpness & Focus",
+        "tip": "Both eyes are critically sharp, drawing immediate attention to the subject.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Background",
+        "score": 95,
+        "title": "Background",
+        "tip": "Solid pink background provides clean separation and does not distract.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Eye Contact & Gaze",
+        "score": 95,
+        "title": "Eye Contact & Gaze",
+        "tip": "Direct gaze into the lens creates a powerful and engaging connection.",
+        "priority": 3,
+        "gearNeeded": []
+      }
+    ],
+    "overallScore": 85
+  },
+  "sample4.jpg": {
+    "aiSummary": "The deep shadow on the right side of the face is very strong, almost losing detail. However, the sharpness and clean, uniform background are exceptional.",
+    "cards": [
+      {
+        "category": "Lighting",
+        "score": 88,
+        "title": "Lighting",
+        "tip": "Deep shadow on the right side of the face sculpts well, but detail is nearly lost.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Head Angle & Pose",
+        "score": 70,
+        "title": "Head Angle & Pose",
+        "tip": "Head is straight to camera, which is competent but lacks dynamic angle.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Composition & Framing",
+        "score": 85,
+        "title": "Composition & Framing",
+        "tip": "Subject is well-centered, with eyes placed effectively on the upper third.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Sharpness & Focus",
+        "score": 95,
+        "title": "Sharpness & Focus",
+        "tip": "Both eyes are critically sharp, with excellent detail in the beard and hair.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Background",
+        "score": 98,
+        "title": "Background",
+        "tip": "Uniform black background provides excellent, distraction-free separation.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Eye Contact & Gaze",
+        "score": 90,
+        "title": "Eye Contact & Gaze",
+        "tip": "Direct gaze into the lens creates strong connection, with visible catchlights.",
+        "priority": 3,
+        "gearNeeded": []
+      }
+    ],
+    "overallScore": 85
+  },
+  "sample5.jpg": {
+    "aiSummary": "The composition is strong, though the subject's slight lean creates minor asymmetry. Overall, the portrait excels with beautiful soft lighting, critical sharpness, and engaging eye contact.",
+    "cards": [
+      {
+        "category": "Lighting",
+        "score": 90,
+        "title": "Lighting",
+        "tip": "Soft, warm directional light sculpts the face beautifully with bright catchlights.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Head Angle & Pose",
+        "score": 90,
+        "title": "Head Angle & Pose",
+        "tip": "Subtle head turn and chin angle create flattering dimension for the subject.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Composition & Framing",
+        "score": 85,
+        "title": "Composition & Framing",
+        "tip": "Eyes are perfectly placed on the upper third, creating a balanced frame.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Sharpness & Focus",
+        "score": 95,
+        "title": "Sharpness & Focus",
+        "tip": "Eyes are critically sharp, with excellent detail in the lashes and iris.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Background",
+        "score": 95,
         "title": "Background",
         "tip": "Deeply blurred, dark background provides excellent subject separation.",
         "priority": 3,
@@ -260,23 +260,23 @@
       },
       {
         "category": "Eye Contact & Gaze",
-        "score": 90,
+        "score": 95,
         "title": "Eye Contact & Gaze",
-        "tip": "Direct, engaging gaze meets the lens with clear, though soft, catchlights.",
+        "tip": "Direct gaze into the lens creates a strong, engaging connection.",
         "priority": 3,
         "gearNeeded": []
       }
     ],
-    "overallScore": 82
+    "overallScore": 90
   },
   "sample6.jpg": {
-    "aiSummary": "The lighting is competent but lacks strong artistic shaping. Excellent sharpness and direct eye contact make this a strong portrait.",
+    "aiSummary": "Excellent sharpness and direct eye contact create an engaging connection. The flattering light could benefit from slightly more dramatic modeling for added dimension.",
     "cards": [
       {
         "category": "Lighting",
-        "score": 80,
+        "score": 88,
         "title": "Lighting",
-        "tip": "Even light provides good facial illumination; catchlights are crisp.",
+        "tip": "Soft directional light creates flattering modeling on the face and beard.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -284,15 +284,15 @@
         "category": "Head Angle & Pose",
         "score": 85,
         "title": "Head Angle & Pose",
-        "tip": "Subtle head tilt and turn add dimension and avoid a static feel.",
+        "tip": "Subtle head turn and tilt add dimension and avoid a static feel.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Composition & Framing",
-        "score": 88,
+        "score": 90,
         "title": "Composition & Framing",
-        "tip": "Subject is well-framed with balanced negative space around the head.",
+        "tip": "Eyes are perfectly placed in the upper third, creating a balanced frame.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -300,7 +300,61 @@
         "category": "Sharpness & Focus",
         "score": 95,
         "title": "Sharpness & Focus",
-        "tip": "Eyes are tack sharp, showing excellent detail in the iris and beard.",
+        "tip": "Eyes are tack sharp with excellent detail in the beard and soft background.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Background",
+        "score": 92,
+        "title": "Background",
+        "tip": "Clean, uniform background provides excellent separation and no distractions.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Eye Contact & Gaze",
+        "score": 98,
+        "title": "Eye Contact & Gaze",
+        "tip": "Direct gaze into the lens with bright, visible catchlights.",
+        "priority": 3,
+        "gearNeeded": []
+      }
+    ],
+    "overallScore": 89
+  },
+  "sample7.jpg": {
+    "aiSummary": "The composition feels a bit unbalanced with too much empty space on the left. However, the subject's eyes are critically sharp and maintain strong direct contact.",
+    "cards": [
+      {
+        "category": "Lighting",
+        "score": 78,
+        "title": "Lighting",
+        "tip": "Soft, even light illuminates the face well with clear catchlights.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Head Angle & Pose",
+        "score": 70,
+        "title": "Head Angle & Pose",
+        "tip": "Head is straight-on, which is neutral but lacks dynamic angle.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Composition & Framing",
+        "score": 65,
+        "title": "Composition & Framing",
+        "tip": "The subject is off-center, leaving unbalanced empty space on the left.",
+        "priority": 2,
+        "gearNeeded": []
+      },
+      {
+        "category": "Sharpness & Focus",
+        "score": 95,
+        "title": "Sharpness & Focus",
+        "tip": "Eyes are critically sharp with excellent detail on the face.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -308,7 +362,7 @@
         "category": "Background",
         "score": 90,
         "title": "Background",
-        "tip": "Clean, neutral grey background effectively isolates the subject.",
+        "tip": "Clean, uniform grey background provides excellent separation.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -316,145 +370,91 @@
         "category": "Eye Contact & Gaze",
         "score": 95,
         "title": "Eye Contact & Gaze",
-        "tip": "Direct gaze with clear, bright catchlights creates strong viewer connection.",
+        "tip": "Direct gaze into the lens creates strong, engaging connection.",
+        "priority": 3,
+        "gearNeeded": []
+      }
+    ],
+    "overallScore": 77
+  },
+  "sample8.jpg": {
+    "aiSummary": "The highly stylized lighting with strong color gels creates a dramatic effect, though it heavily alters skin tones. Excellent sharpness and direct eye contact anchor the portrait.",
+    "cards": [
+      {
+        "category": "Lighting",
+        "score": 85,
+        "title": "Lighting",
+        "tip": "Strong blue and magenta gels create a dramatic, intentional color cast.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Head Angle & Pose",
+        "score": 75,
+        "title": "Head Angle & Pose",
+        "tip": "The direct, neutral head position suits the stylized aesthetic.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Composition & Framing",
+        "score": 88,
+        "title": "Composition & Framing",
+        "tip": "Subject is well-centered with eyes placed effectively on the upper third.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Sharpness & Focus",
+        "score": 95,
+        "title": "Sharpness & Focus",
+        "tip": "Eyes are critically sharp, with clear detail on the face and hair.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Background",
+        "score": 95,
+        "title": "Background",
+        "tip": "Smooth, color-matched gradient background provides excellent separation.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Eye Contact & Gaze",
+        "score": 95,
+        "title": "Eye Contact & Gaze",
+        "tip": "Direct gaze into the lens creates strong connection with the viewer.",
         "priority": 3,
         "gearNeeded": []
       }
     ],
     "overallScore": 86
   },
-  "sample7.jpg": {
-    "aiSummary": "The composition is unbalanced with excessive headroom and empty space. However, the subject's eyes are critically sharp and maintain strong direct contact.",
-    "cards": [
-      {
-        "category": "Lighting",
-        "score": 70,
-        "title": "Lighting",
-        "tip": "Even light, but lacks intentional shaping to add dimension to the face.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Head Angle & Pose",
-        "score": 70,
-        "title": "Head Angle & Pose",
-        "tip": "Straight-on pose feels static; a slight turn could add more dimension.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Composition & Framing",
-        "score": 65,
-        "title": "Composition & Framing",
-        "tip": "Excessive headroom and empty space on the left create an unbalanced composition.",
-        "priority": 2,
-        "gearNeeded": []
-      },
-      {
-        "category": "Sharpness & Focus",
-        "score": 95,
-        "title": "Sharpness & Focus",
-        "tip": "Eyes are critically sharp with excellent detail across the face.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Background",
-        "score": 70,
-        "title": "Background",
-        "tip": "Plain gray background is unobtrusive but offers no visual interest.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Eye Contact & Gaze",
-        "score": 90,
-        "title": "Eye Contact & Gaze",
-        "tip": "Direct gaze meets the lens, creating a strong connection with the viewer.",
-        "priority": 3,
-        "gearNeeded": []
-      }
-    ],
-    "overallScore": 74
-  },
-  "sample8.jpg": {
-    "aiSummary": "The strong blue lighting and deep shadows on the face detract from readability. However, the eyes are perfectly sharp, and the direct gaze creates strong engagement.",
-    "cards": [
-      {
-        "category": "Lighting",
-        "score": 65,
-        "title": "Lighting",
-        "tip": "The strong blue cast and deep shadow on the right cheek obscure facial detail.",
-        "priority": 2,
-        "gearNeeded": []
-      },
-      {
-        "category": "Head Angle & Pose",
-        "score": 70,
-        "title": "Head Angle & Pose",
-        "tip": "A slight head turn could add more dimension to the face.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Composition & Framing",
-        "score": 75,
-        "title": "Composition & Framing",
-        "tip": "The centered framing is balanced but could be more dynamic.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Sharpness & Focus",
-        "score": 95,
-        "title": "Sharpness & Focus",
-        "tip": "Eyes are perfectly sharp with clear detail.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Background",
-        "score": 90,
-        "title": "Background",
-        "tip": "The smooth color gradient background supports the mood well.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Eye Contact & Gaze",
-        "score": 90,
-        "title": "Eye Contact & Gaze",
-        "tip": "Direct gaze with clear catchlights creates strong connection.",
-        "priority": 3,
-        "gearNeeded": []
-      }
-    ],
-    "overallScore": 75
-  },
   "sample9.jpg": {
-    "aiSummary": "The lighting is flat and the background is generic. However, the sharpness and direct eye contact are excellent.",
+    "aiSummary": "The lighting is soft but lacks dimension, making the face appear flat. However, the portrait features excellent sharpness and strong, direct eye contact.",
     "cards": [
       {
         "category": "Lighting",
-        "score": 70,
+        "score": 78,
         "title": "Lighting",
-        "tip": "Add directional light to create more shape and dimension on the face.",
+        "tip": "Soft, even front light illuminates the face well with bright catchlights.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Head Angle & Pose",
-        "score": 80,
+        "score": 85,
         "title": "Head Angle & Pose",
-        "tip": "The subtle head tilt adds a natural and engaging quality to the pose.",
+        "tip": "Subtle head tilt adds dimension and approachability to the pose.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Composition & Framing",
-        "score": 75,
+        "score": 88,
         "title": "Composition & Framing",
-        "tip": "Centered framing is safe; try the rule of thirds for a more dynamic composition.",
+        "tip": "Eyes are well-placed on the upper third, with balanced framing.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -462,45 +462,45 @@
         "category": "Sharpness & Focus",
         "score": 95,
         "title": "Sharpness & Focus",
-        "tip": "Eyes are perfectly sharp with crisp detail and bright catchlights.",
+        "tip": "Eyes are tack sharp with clear detail, indicating precise focus.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Background",
-        "score": 65,
+        "score": 88,
         "title": "Background",
-        "tip": "The blurred office setting is generic; choose a background that complements the subject.",
-        "priority": 2,
+        "tip": "Softly blurred background provides excellent separation from the subject.",
+        "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Eye Contact & Gaze",
-        "score": 98,
+        "score": 92,
         "title": "Eye Contact & Gaze",
-        "tip": "Direct, open gaze with clear catchlights creates an excellent connection.",
+        "tip": "Direct gaze into the lens creates strong connection with the viewer.",
         "priority": 3,
         "gearNeeded": []
       }
     ],
-    "overallScore": 78
+    "overallScore": 86
   },
   "sample10.jpg": {
-    "aiSummary": "The portrait features excellent sharpness and strong eye contact, making the subject truly pop. The lighting and background separation are top-tier, creating a vibrant and engaging image.",
+    "aiSummary": "The soft, flat lighting lacks dimension on the face. However, the sharp focus and direct, joyful eye contact create a highly engaging portrait.",
     "cards": [
       {
         "category": "Lighting",
-        "score": 95,
+        "score": 80,
         "title": "Lighting",
-        "tip": "Soft, even light beautifully illuminates the face with clear catchlights.",
+        "tip": "Soft, even light illuminates the face well with bright catchlights.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Head Angle & Pose",
-        "score": 90,
+        "score": 75,
         "title": "Head Angle & Pose",
-        "tip": "Dynamic head tilt and genuine expression create an engaging, flattering pose.",
+        "tip": "Direct frontal pose works well with the subject's open expression.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -508,23 +508,23 @@
         "category": "Composition & Framing",
         "score": 85,
         "title": "Composition & Framing",
-        "tip": "Centered framing effectively highlights the subject's expressive face.",
+        "tip": "Subject is well-centered with eyes placed effectively on the upper third.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Sharpness & Focus",
-        "score": 98,
+        "score": 95,
         "title": "Sharpness & Focus",
-        "tip": "Eyes and face are perfectly sharp, with excellent detail in the hair.",
+        "tip": "Eyes are critically sharp, with excellent detail in the lashes.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Background",
-        "score": 92,
+        "score": 90,
         "title": "Background",
-        "tip": "Deeply blurred background effectively isolates the subject without distraction.",
+        "tip": "Soft, blurred background provides excellent separation from the subject.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -532,37 +532,37 @@
         "category": "Eye Contact & Gaze",
         "score": 95,
         "title": "Eye Contact & Gaze",
-        "tip": "Direct, open gaze with bright catchlights creates strong connection.",
+        "tip": "Direct gaze into the lens creates a strong, engaging connection.",
         "priority": 3,
         "gearNeeded": []
       }
     ],
-    "overallScore": 92
+    "overallScore": 83
   },
   "sample11.jpg": {
-    "aiSummary": "The overall exposure is too dark, especially the suit, which loses detail. However, the sharpness and direct eye contact are excellent.",
+    "aiSummary": "The lower half of the subject is significantly underexposed, losing detail in the suit and hands. However, the sharp focus on the eyes and direct gaze create a compelling connection with the viewer.",
     "cards": [
       {
         "category": "Lighting",
-        "score": 65,
+        "score": 88,
         "title": "Lighting",
-        "tip": "The suit is underexposed, losing detail; lift shadows for better texture.",
-        "priority": 2,
+        "tip": "Well-defined facial modeling with crisp catchlights in both eyes.",
+        "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Head Angle & Pose",
-        "score": 80,
+        "score": 85,
         "title": "Head Angle & Pose",
-        "tip": "Confident, direct pose; a slight turn could add more dimension.",
+        "tip": "Slight head tilt adds dimension and avoids a static, flat appearance.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Composition & Framing",
-        "score": 85,
+        "score": 88,
         "title": "Composition & Framing",
-        "tip": "Strong vertical framing with good head room and balanced subject placement.",
+        "tip": "Subject well-centered with eyes placed effectively on the upper third.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -570,7 +570,7 @@
         "category": "Sharpness & Focus",
         "score": 95,
         "title": "Sharpness & Focus",
-        "tip": "Eyes are perfectly sharp with clear detail and pleasing background blur.",
+        "tip": "Eyes are tack sharp with excellent detail and clarity.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -578,7 +578,7 @@
         "category": "Background",
         "score": 90,
         "title": "Background",
-        "tip": "Dark, blurred urban background effectively isolates the subject.",
+        "tip": "Dark, blurred background provides excellent subject separation.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -586,53 +586,53 @@
         "category": "Eye Contact & Gaze",
         "score": 95,
         "title": "Eye Contact & Gaze",
-        "tip": "Direct gaze with clear, bright catchlights creates strong viewer connection.",
+        "tip": "Direct, confident gaze into the lens with clear, bright catchlights.",
         "priority": 3,
         "gearNeeded": []
       }
     ],
-    "overallScore": 80
+    "overallScore": 89
   },
   "sample12.jpg": {
-    "aiSummary": "The prominent foreground elements are quite distracting and detract from the subject. However, the lighting on the face is beautifully executed, providing warmth and excellent modeling.",
+    "aiSummary": "Foreground elements slightly distract, and eye contact is off-camera. However, the sharpness is excellent, and the warm lighting creates a pleasant mood.",
     "cards": [
       {
         "category": "Lighting",
-        "score": 92,
+        "score": 78,
         "title": "Lighting",
-        "tip": "Beautiful golden hour light provides excellent modeling and warmth on the face.",
+        "tip": "Warm backlight creates a pleasant glow, but face lacks strong directional modeling.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Head Angle & Pose",
-        "score": 88,
+        "score": 82,
         "title": "Head Angle & Pose",
-        "tip": "Natural head turn adds dimension and suits the candid, looking-away expression.",
+        "tip": "Natural head turn and chin height flatter the subject well.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Composition & Framing",
-        "score": 68,
+        "score": 72,
         "title": "Composition & Framing",
-        "tip": "The prominent dried plant in the foreground obstructs the subject's body.",
-        "priority": 2,
+        "tip": "Good look space to the right, but foreground plant partially obstructs the subject.",
+        "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Sharpness & Focus",
-        "score": 95,
+        "score": 92,
         "title": "Sharpness & Focus",
-        "tip": "Eyes and face are perfectly sharp, with good detail and clear focus.",
+        "tip": "Eyes are sharp and in focus, with pleasing background blur.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Background",
-        "score": 65,
+        "score": 68,
         "title": "Background",
-        "tip": "Foreground elements are distracting and compete with the subject for attention.",
+        "tip": "Effective background blur, but dried plants are a minor distraction.",
         "priority": 2,
         "gearNeeded": []
       },
@@ -640,11 +640,11 @@
         "category": "Eye Contact & Gaze",
         "score": 60,
         "title": "Eye Contact & Gaze",
-        "tip": "Gaze is clearly directed off-camera, not engaging with the viewer.",
+        "tip": "Subject's gaze is directed off-camera, not engaging the viewer directly.",
         "priority": 2,
         "gearNeeded": []
       }
     ],
-    "overallScore": 84
+    "overallScore": 79
   }
 }

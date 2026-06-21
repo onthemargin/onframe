@@ -12,15 +12,19 @@ Score ALL SIX categories 0–100 (absolute). Use the FULL range — reward real 
   0–39   : a serious fault that defines the photo.
 If a photo is average on an axis, score it average. Standouts earn 90+; weak work earns below 50.
 
-LIGHTING — judge INTENT and execution, not brightness. This is where most graders go wrong in BOTH directions:
-- First read the intent: soft/even, dramatic low-key, hard/directional, creative-gel, flat on-camera, or underexposed.
-- Shadow and contrast are TOOLS, not errors. Deliberate dramatic / short / split / low-key / gel lighting scores 85+ ONLY when the face stays READABLE and the shadow is clearly SHAPED — you can see modeling, a catchlight, and intentional, controlled falloff across the face. Mood or darkness alone is NOT enough.
-- Judge the exposure of the FACE, not the overall brightness of the frame. A well-lit, modeled face on a black or dark background is excellent low-key (85+) — a dark background is not a fault. The test is whether the FACE itself is correctly exposed and shaped.
-- CRITICAL — do not over-reward mere darkness. If the FACE ITSELF is largely buried in shadow, underexposed, muddy, or just dark because it was under-lit (ambient dark, not sculpted), cap it 55–70 no matter how "moody" it looks. That is underexposure, not low-key craft. A dusk/backlit shot where the face loses detail is ~60, not 90 — but a deliberately lit face against darkness is not penalized.
-- Deduct for genuine faults: unflattering placement (raccoon-eye sockets, hotspots, blown/clipped highlights), a muddy or sickly color cast on skin, truly flat dimensionless on-camera light, or underexposure that buries facial detail.
-- "Even and bright" with no shaping is merely competent — cap flat, modeling-free light around 70 unless it's genuinely beautiful soft light with clear catchlights.
+LIGHTING — the hardest axis; be consistent. Judge the lighting PATTERN and whether it flatters THIS subject. Directional and flat light are BOTH valid — they trade dimension for forgiveness, so don't treat one as "right":
+- DIRECTIONAL light (side / 45° / loop / Rembrandt / short / window light) SCULPTS the face — it reveals bone structure and gives the portrait dimension. A soft, shaped shadow that models the face is a STRENGTH, not a fault — NEVER call a flattering directional shadow "underexposed." Deeper, controlled shadow reads as strength on male/editorial portraits. Well-executed directional/dramatic lighting is 85+.
+- FLAT, even front light (key on the lens axis) is flattering but TWO-DIMENSIONAL — the beauty/headshot default. Score it competent (≈75–82) when it's soft with clear catchlights; do NOT rate flat even light ABOVE well-executed directional modeling, and drop it to ~65–70 when it's flat with weak catchlights and no shaping ("safe but lacks dimension").
+- CATCHLIGHTS make eyes live — reward visible catchlights (most natural high in the iris). Their absence (face turned from the light, dead/flat eyes) is a real fault.
+- Judge the FACE's exposure, not the frame's: a well-lit, modeled face on a black/dark background is excellent low-key (85+); a dusk/backlit face that genuinely LOSES detail is ~60.
+- Deduct to 40–59 for real faults ONLY: facial detail buried in shadow / underexposure, blown or clipped highlights, hard hotspots, a muddy or sickly color cast on skin, or light from BELOW ("monster" lighting).
+- There is no universal "best" — flattery is subject-dependent. Clean pattern + catchlights + shaped (not buried) shadow = 85+; soft flat beauty light with catchlights = high-70s; flat with no shaping = low-70s; buried/harsh/cast = 40s–50s.
 
 POSE/HEADPOSE — a dead-straight frontal pose is NOT automatically strong. Judge whether the angle and chin height flatter THIS subject: reward an angle that adds dimension or suits the mood; mark frontal as merely fine (≈70) when it reads static.
+
+COMPOSITION & FRAMING — judge where the EYES sit. Eyes on or near the upper third = well-framed (80+); most tight portraits are fine — do NOT invent problems. Only flag "excessive headroom" when the eyes fall at or BELOW the vertical middle of the frame with a clear empty void above the head; a normal portrait with a little space above the hair is NOT excessive headroom. Weigh all framing factors equally — clipped top of head, cut-off hands, subject too small, accidental one-sided dead space, off-center without intentional "look space" — and pick the SINGLE most salient one; never default to the same complaint. If the framing is clean and balanced, score it 80+ and say so.
+
+BACKGROUND — every element must SUPPORT the subject, never COMPETE for attention. Judge by COMPETITION, not by whether an element is "relevant" to the subject's story: a flag, sign, or busy detail that pulls the eye is a distraction even if contextually fitting. Reward clean separation — shallow-DoF blur, tonal contrast (light subject on dark or vice-versa), a clean uniform backdrop. Deduct for clutter, a merger behind the head, or a busy competing field.
 
 SHARPNESS — judge whether the EYES/face are in focus, NOT how much skin texture there is. A smooth, evenly-lit, in-focus face is sharp (high). Intentional background blur (bokeh) is good craft, never a focus problem. Deduct only when the face/eyes are genuinely soft or missed-focus.
 

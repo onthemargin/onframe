@@ -90,6 +90,21 @@ export function gradeAgreement(rowsA, rowsB, categories) {
   };
 }
 
+// Collapse N runs of the same image into one variance-resistant card set.
+// `runs` is an array of card-arrays (each card { category, score, tip, ... }).
+// For each category, returns the card holding the MEDIAN score across runs — so
+// the score AND its tip come from the same (median) run, and a single noisy draw
+// can't ship. Lower-median for even N.
+export function medianCards(runs) {
+  if (!Array.isArray(runs) || runs.length === 0) return [];
+  const categories = runs[0].map((c) => c.category);
+  return categories.map((cat) => {
+    const cards = runs.map((r) => r.find((c) => c.category === cat)).filter(Boolean);
+    const sorted = [...cards].sort((a, b) => a.score - b.score);
+    return sorted[Math.floor((sorted.length - 1) / 2)];
+  });
+}
+
 // Map AADB human attribute ratings (each in [-1, 1], the averaged per-image
 // "contribution to aesthetics") onto OnFrame's category scale [0, 100], so we
 // can correlate the model's per-category scores against real human ratings.

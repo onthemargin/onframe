@@ -20,12 +20,15 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import { medianCards } from './lib.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(join(__dirname, '..', 'web-server', 'package.json'));
 
 const { createVertexClient } = require(resolve(__dirname, '..', 'web-server', 'vertex.js'));
-const { normalizeAiResponse } = require(resolve(__dirname, '..', 'web-server', 'server.js'));
+const { normalizeAiResponse, computeOverallScore } = require(resolve(__dirname, '..', 'web-server', 'server.js'));
+
+const RUNS = Number(process.env.CACHE_RUNS) || 3; // median-of-N kills run-to-run variance
 
 const PROJECT = process.env.VERTEX_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
 if (!PROJECT) { console.error('Set VERTEX_PROJECT (or GOOGLE_CLOUD_PROJECT) to your GCP project id.'); process.exit(2); }
@@ -48,20 +51,40 @@ async function main() {
   const client = createVertexClient({ project: PROJECT, location: LOCATION, model: MODEL });
   const out = {};
 
+  // Median-of-N fires 3x per sample; back off on 429 / transient errors.
+  async function analyzeWithRetry(args, tries = 5) {
+    let delay = 3000;
+    for (let i = 0; i < tries; i++) {
+      try {
+        const r = await client.analyze(args);
+        if (!Array.isArray(r.cards) || !r.cards.length) throw new Error('no cards returned');
+        return r;
+      } catch (err) {
+        if (i === tries - 1) throw err;
+        await new Promise((res) => setTimeout(res, delay));
+        delay *= 2;
+      }
+    }
+  }
+
   for (const file of samples) {
     const photoBuffer = readFileSync(join(SAMPLE_DIR, file));
     try {
-      const result = await client.analyze({ photoBuffer, metricsText: METRICS_TEXT, photoMimeType: 'image/jpeg' });
-      if (!Array.isArray(result.cards) || !result.cards.length) {
-        throw new Error('no cards returned');
+      // Run N times and take the per-category median so one noisy draw can't ship.
+      const runs = [];
+      for (let i = 0; i < RUNS; i++) {
+        const result = await analyzeWithRetry({ photoBuffer, metricsText: METRICS_TEXT, photoMimeType: 'image/jpeg' });
+        runs.push(normalizeAiResponse({ cards: result.cards, aiSummary: result.aiSummary }));
+        await new Promise((res) => setTimeout(res, 800)); // gentle pacing between calls
       }
-      const normalized = normalizeAiResponse({ cards: result.cards, aiSummary: result.aiSummary });
-      out[file] = {
-        aiSummary: normalized.aiSummary,
-        cards: normalized.cards,
-        overallScore: normalized.overallScore,
-      };
-      console.log(`  ${file.padEnd(14)} overall=${normalized.overallScore}  "${normalized.aiSummary.slice(0, 60)}"`);
+      const cards = medianCards(runs.map((r) => r.cards));
+      const overallScore = computeOverallScore(cards);
+      // aiSummary from the run whose overall is the median (representative).
+      const byOverall = [...runs].sort((a, b) => a.overallScore - b.overallScore);
+      const aiSummary = byOverall[Math.floor((byOverall.length - 1) / 2)].aiSummary;
+      out[file] = { aiSummary, cards, overallScore };
+      const spread = runs.map((r) => r.overallScore).sort((a, b) => a - b);
+      console.log(`  ${file.padEnd(14)} overall=${overallScore} (runs ${spread.join('/')})  "${aiSummary.slice(0, 50)}"`);
     } catch (err) {
       console.error(`  ${file.padEnd(14)} FAILED: ${err.message}`);
       process.exitCode = 1;
