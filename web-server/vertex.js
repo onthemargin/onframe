@@ -49,22 +49,22 @@ Output ONLY this JSON object (no markdown, no commentary):
   }
 }
 
-TIP RULES (MAX 90 chars each):
-- Name the SPECIFIC thing visible in THIS photo (the shadow under the chin, the cropped fingertip, the catchlight in the iris, the bright sign over the left shoulder).
-- All six tips must be DISTINCT. Never reuse the same praise across categories.
-- If a category is genuinely excellent with nothing to fix, say so concretely ("Crisp catchlights, clean falloff — leave it") — do NOT pad with generic praise ("natural", "engaging", "draws the viewer in").
-- No hedging ("could" / "might" / "consider"). Beginner vocabulary — no "Rembrandt", no f-stops, no clock positions.
+TIP RULES — ONE short sentence, aim for ≤ 70 characters (never exceed 90):
+- If the score is LOW (a fix is needed): give a CONCRETE ACTION the photographer can take, led by an imperative verb (Move, Step, Turn, Tilt, Wait, Reframe, Block, Drop, Raise, Add). Tell them what to DO next time, not just what is wrong — while still naming the specific issue. e.g. "Move into open shade to soften the harsh sun." / "Step closer to throw the busy background out of focus."
+- If the score is HIGH (nothing to fix): name the one specific strength and stop — "Crisp catchlights, clean falloff — leave it." Never pad with generic praise ("natural", "engaging", "draws the viewer in").
+- Name the SPECIFIC thing visible in THIS photo. All six tips must be DISTINCT.
+- Direct imperative — no hedging ("could" / "might" / "consider"). Beginner vocabulary — no "Rembrandt", no f-stops, no clock positions.
 - Critique the PHOTOGRAPH and the photographer's choices (light, framing, focus, timing), NEVER the subject's looks, face, body, or age. Frame every issue as the light/crop/moment, not the person. Never call a person or their face/expression "unflattering," "tired," or similar — say the LIGHT is harsh or the CROP is tight instead. The same rule applies to aiSummary.
 
-Good tips:
-- "Hard shadow cuts across cheek from overhead key."
-- "Top of head clipped; eyeline sits too low."
-- "Deliberate low-key falloff models the face well — leave it."
-Bad tips: "Natural and engaging." (no cause) · the same praise reused on three cards.`;
+Good tips (low score → a fix, led by a verb, short):
+- "Move into open shade to soften the harsh sun."
+- "Step closer to blur the distracting background."
+- "Crisp catchlights, clean falloff — leave it."  (high score: name the strength)
+Bad tips: "Harsh light creates deep shadows on the face." (names the flaw, gives no fix) · "Natural and engaging." (no cause) · the same praise reused on three cards.`;
 
 const VERTEX_TIMEOUT_MS = 25_000;
 const MAX_AI_SUMMARY_LENGTH = 320;
-const MAX_TIP_LENGTH = 120;
+const MAX_TIP_LENGTH = 90;
 const DEFAULT_MODEL = 'gemini-2.5-flash';
 
 // Gemini's short score keys → the canonical category names the synthesizer +
