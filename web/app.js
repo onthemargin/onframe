@@ -6,6 +6,7 @@ import { loadMediaPipe, analyzeImage } from './analysis.js';
 import { synthesize } from './synthesizer.js';
 import { fetchCloudCoaching } from './cloud.js';
 import { mergeCoachingResult } from './merge.js';
+import { evaluateInputGate } from './inputGate.js';
 import { isMobileDevice } from './device.js';
 import { lookupCoaching } from './sampleCoaching.js';
 import sampleCoachingData from './sampleCoaching.data.json';
@@ -192,22 +193,21 @@ async function handleFile(file, cachedCoaching = null) {
     lastMetrics = metrics;
 
     currentStage = 'faceDetection';
-    if (!metrics.faceDetected) {
-      lastError = {
-        stage: 'faceDetection',
-        message: 'no face found',
-        fileInfo: lastFileInfo,
-        imageSize: [metrics.imageWidthPx, metrics.imageHeightPx],
-        debug: metrics._debug,
-      };
-      showError(`No face found (${metrics.imageWidthPx}x${metrics.imageHeightPx}px). Try a photo where the face is well-lit, facing the camera, and not too far away.`);
-      return;
-    }
-
-    // OnFrame coaches one person at a time. Family group shots aren't the point.
-    if (metrics.faceCount > 1) {
-      lastError = { stage: 'faceDetection', message: `multiple faces (${metrics.faceCount})`, fileInfo: lastFileInfo };
-      showError(`OnFrame is for single-person photos — we found ${metrics.faceCount} people. Try a photo with just one person.`);
+    // The no-face / multi-face gate applies to live uploads only. Samples are
+    // curated and carry cached coaching that doesn't depend on MediaPipe, so a
+    // candid the detector can't localize must still render (see inputGate.js).
+    const gate = evaluateInputGate(metrics, { isSample: !!cachedCoaching });
+    if (gate) {
+      lastError = gate.reason === 'no-face'
+        ? {
+            stage: 'faceDetection',
+            message: 'no face found',
+            fileInfo: lastFileInfo,
+            imageSize: [metrics.imageWidthPx, metrics.imageHeightPx],
+            debug: metrics._debug,
+          }
+        : { stage: 'faceDetection', message: `multiple faces (${metrics.faceCount})`, fileInfo: lastFileInfo };
+      showError(gate.message);
       return;
     }
 

@@ -1,6 +1,6 @@
 {
   "sample1.jpg": {
-    "aiSummary": "The lighting beautifully sculpts the subject's face, though one eye is slightly more closed than the other. The genuine, warm expression is the photo's strongest asset.",
+    "aiSummary": "The directional light beautifully sculpts the face, with crisp catchlights in the eyes. The genuine, warm expression is the photo's strongest asset.",
     "cards": [
       {
         "category": "Expression & Mood",
@@ -324,7 +324,7 @@
     "overallScore": 90
   },
   "sample7.jpg": {
-    "aiSummary": "The harsh stripe of light across the face is distracting and unflattering. However, the genuine, joyful expression makes this a truly authentic moment.",
+    "aiSummary": "The harsh stripe of light across the face is distracting and pulls the eye. Still, the genuine, joyful expression makes this a truly authentic moment.",
     "cards": [
       {
         "category": "Expression & Mood",
@@ -338,7 +338,7 @@
         "category": "Lighting",
         "score": 45,
         "title": "Lighting",
-        "tip": "The harsh stripe of light across the face is distracting and unflattering.",
+        "tip": "The harsh stripe of light across the face is distracting and pulls focus from the eyes.",
         "priority": 1,
         "gearNeeded": []
       },
@@ -540,7 +540,7 @@
     "overallScore": 92
   },
   "sample11.jpg": {
-    "aiSummary": "The harsh, direct lighting creates unflattering shadows and blown highlights on the face. However, the photo captures a truly genuine and joyful expression.",
+    "aiSummary": "The harsh, direct lighting creates deep shadows and blown highlights on the face. Still, the photo captures a truly genuine and joyful expression.",
     "cards": [
       {
         "category": "Expression & Mood",
