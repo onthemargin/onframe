@@ -110,6 +110,28 @@ const FINDING_KEY_TO_CATEGORY = {
   headpose:    { category: 'Head Angle & Pose',     cap:  5 },
 };
 
+// Compact category->score map for analyze logs, keyed by short queryable names
+// (so you can query e.g. jsonPayload.scores.sharpness < 40 to find bad results).
+// Scores only — never photo/PII. Same privacy class as the report-log scores.
+const CATEGORY_TO_SCORE_KEY = {
+  'Expression & Mood': 'expression',
+  'Lighting': 'lighting',
+  'Sharpness & Focus': 'sharpness',
+  'Composition & Framing': 'composition',
+  'Background': 'background',
+  'Head Angle & Pose': 'headpose',
+};
+function summarizeCardScores(cards) {
+  const out = {};
+  if (!Array.isArray(cards)) return out;
+  for (const card of cards) {
+    if (!card || typeof card.category !== 'string') continue;
+    const key = CATEGORY_TO_SCORE_KEY[card.category] || card.category.split(' ')[0].toLowerCase();
+    out[key] = Math.round(Number(card.score) || 0);
+  }
+  return out;
+}
+
 function clamp(value, min, max) {
   if (value < min) return min;
   if (value > max) return max;
@@ -445,12 +467,25 @@ function createApp({
         // (summary-only response, or Vertex unavailable).
         if (Array.isArray(result.cards) && result.cards.length > 0) {
           const normalized = normalizeAiResponse({ cards: result.cards, aiSummary: result.aiSummary });
-          console.log(`[onframe] analyze OK id=${requestId} cloudScored=true overallScore=${normalized.overallScore}`);
+          // Structured so per-category scores are queryable (jsonPayload.scores.*)
+          // — lets you spot bad results from logs (e.g. scores.sharpness < 40)
+          // without ever logging the photo. Scores only, no PII.
+          console.log(JSON.stringify({
+            type: 'onframe_analyze',
+            id: requestId,
+            ts: requestTs,
+            cloudScored: true,
+            overallScore: normalized.overallScore,
+            scores: summarizeCardScores(normalized.cards),
+          }));
           return res.json({ id: requestId, ts: requestTs, aiSummary: normalized.aiSummary, cards: normalized.cards, overallScore: normalized.overallScore });
         }
 
         const aiSummary = result.aiSummary.slice(0, 500);
-        console.log(`[onframe] analyze OK id=${requestId} cloudScored=false`);
+        console.log(JSON.stringify({
+          type: 'onframe_analyze', id: requestId, ts: requestTs,
+          cloudScored: false, overallScore: null, scores: {},
+        }));
         return res.json({ id: requestId, ts: requestTs, aiSummary });
       } catch (vertexErr) {
         // Structured warning so we can observe the parse-failure rate over
@@ -567,4 +602,5 @@ module.exports = {
   secureClearBuffer,
   sniffImageMime,
   startServer,
+  summarizeCardScores,
 };
