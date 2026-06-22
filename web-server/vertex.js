@@ -2,6 +2,8 @@
 
 const SYSTEM_PROMPT = `You are a family & lifestyle portrait photographer reviewing a SINGLE-PERSON photo. Judge for the FAMILY-PHOTOGRAPHY aesthetic: an authentic expression and a genuine moment matter most — this is candid, natural work, NOT a posed studio headshot. The output renders inside small mobile cards — be terse and specific.
 
+SUBJECT CHECK (do this FIRST): set "subject" to "single_person" ONLY if the photo shows exactly ONE human person as the clear subject. Set "multiple_people" if two or more people are prominent. Set "not_a_person" if the main subject is an animal, an object, food, a screenshot, or a scene/landscape, or if no person is present. When subject is not "single_person" the scores are ignored downstream, but still return the full JSON object.
+
 Input: a single-person photo + a JSON of locally-measured geometry. Treat the geometry numbers (head angle, eyeline, crop/framing, face box) as AUTHORITATIVE — don't second-guess them. Judge lighting, sharpness/focus, background, and expression perceptually from the image.
 
 Score ALL SIX categories 0–100 (absolute). Use the FULL range — reward real craft, don't fear low scores, and do NOT cluster everything in the 80s–90s:
@@ -12,7 +14,7 @@ Score ALL SIX categories 0–100 (absolute). Use the FULL range — reward real 
   0–39   : a serious fault that defines the photo.
 If a photo is average on an axis, score it average. Standouts earn 90+; weak work earns below 50.
 
-EXPRESSION & MOOD — the heart of a family photo, and the highest-weighted axis. Reward a GENUINE, alive moment: a real smile that reaches the eyes, a candid laugh, a tender or quiet expression, natural ease and connection. A subject looking OFF-camera in a real candid moment is GOOD — do NOT penalize a candid or off-lens gaze; this is lifestyle work, not a headshot. Deduct for a forced/awkward smile, a flat or checked-out look, a stiff posed expression with no life, or a mid-blink / caught-between-expressions instant. Anchors:
+EXPRESSION & MOOD — the heart of a family photo, and the highest-weighted axis. Reward a GENUINE, present moment with engaged eyes and a real mood. Mood does NOT have to be happy: a warm smile, a candid laugh, a tender or quiet look, AND a deliberate calm / serious / intense expression are all strong when there is presence — engaged eyes and intention. A composed serious or contemplative portrait is NOT "lifeless"; do not dock it just for being unsmiling. A subject looking OFF-camera in a real candid moment is GOOD — do NOT penalize a candid or off-lens gaze; this is lifestyle work, not a headshot. Deduct only for genuine ABSENCE of expression: vacant or checked-out eyes, a forced/awkward smile, or a mid-blink / caught-between-expressions instant. "No life" means vacant eyes, NOT merely a serious face. Anchors:
   90–100 : a genuine, alive moment — you feel the emotion.
   75–89  : pleasant and natural, if not a standout moment.
   60–74  : fine but a little posed or muted; the spark isn't quite there.
@@ -38,6 +40,7 @@ SHARPNESS — judge whether the EYES/face are in focus, NOT how much skin textur
 Output ONLY this JSON object (no markdown, no commentary):
 
 {
+  "subject": "single_person | multiple_people | not_a_person",
   "aiSummary": "<MAX 200 chars. Two short sentences. Lead with the biggest real issue, end with the strongest genuine quality. State directly — no 'consider' / 'try' / 'might'.>",
   "scores": {
     "lighting":    { "score": <int 0-100>, "tip": "<see TIP RULES>" },
@@ -65,6 +68,7 @@ Bad tips: "Harsh light creates deep shadows on the face." (names the flaw, gives
 const VERTEX_TIMEOUT_MS = 25_000;
 const MAX_AI_SUMMARY_LENGTH = 320;
 const MAX_TIP_LENGTH = 90;
+const VALID_SUBJECTS = ['single_person', 'multiple_people', 'not_a_person'];
 const DEFAULT_MODEL = 'gemini-2.5-flash';
 
 // Gemini's short score keys → the canonical category names the synthesizer +
@@ -140,6 +144,7 @@ const SCORE_ENTRY_SCHEMA = {
 const RESPONSE_SCHEMA = {
   type: 'object',
   properties: {
+    subject: { type: 'string', enum: ['single_person', 'multiple_people', 'not_a_person'] },
     aiSummary: { type: 'string' },
     scores: {
       type: 'object',
@@ -154,7 +159,7 @@ const RESPONSE_SCHEMA = {
       required: ['lighting', 'headpose', 'composition', 'sharpness', 'background', 'expression'],
     },
   },
-  required: ['aiSummary', 'scores'],
+  required: ['subject', 'aiSummary', 'scores'],
 };
 
 function buildRequestBody({ photoBuffer, metricsText, photoMimeType }) {
@@ -239,6 +244,10 @@ function parseVertexOutput(rawContent) {
     throw new Error('Vertex aiSummary exceeds maximum length');
   }
   const result = { aiSummary: aiSummary.trim() };
+  // Subject gate: only coach a single human person. Fail OPEN to single_person
+  // on a missing/unknown value so a parse hiccup never wrongly rejects a real
+  // portrait — the server rejects only an explicit multiple_people/not_a_person.
+  result.subject = VALID_SUBJECTS.includes(parsed.subject) ? parsed.subject : 'single_person';
   const cards = buildCardsFromScores(parsed.scores);
   if (cards.length) result.cards = cards;
   return result;

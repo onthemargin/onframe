@@ -1,252 +1,36 @@
 {
   "sample1.jpg": {
-    "aiSummary": "The genuine, warm expression is the heart of this strong portrait. Excellent technical execution supports the authentic moment.",
-    "cards": [
-      {
-        "category": "Expression & Mood",
-        "score": 90,
-        "title": "Expression & Mood",
-        "tip": "A genuine, warm smile that feels truly authentic.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Lighting",
-        "score": 88,
-        "title": "Lighting",
-        "tip": "Clean directional light sculpts the face with soft shadows and bright catchlights.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Sharpness & Focus",
-        "score": 95,
-        "title": "Sharpness & Focus",
-        "tip": "Pin-sharp focus on the eyes ensures the subject's expression is captured clearly.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Composition & Framing",
-        "score": 90,
-        "title": "Composition & Framing",
-        "tip": "The tight crop and central placement effectively highlight the subject's expression.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Background",
-        "score": 92,
-        "title": "Background",
-        "tip": "The dark, blurred background provides excellent separation and keeps focus on the subject.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Head Angle & Pose",
-        "score": 85,
-        "title": "Head Angle & Pose",
-        "tip": "A natural head tilt and turn create a relaxed and engaging pose.",
-        "priority": 3,
-        "gearNeeded": []
-      }
-    ],
-    "overallScore": 90
-  },
-  "sample2.jpg": {
-    "aiSummary": "The genuine, joyful expression is the strongest element, capturing a truly alive moment. However, the lighting could be improved to add more sparkle to the eyes.",
+    "aiSummary": "The genuine, warm expression is the photo's greatest strength, capturing an authentic moment. The lighting is a bit flat, but the overall composition and sharpness are strong.",
     "cards": [
       {
         "category": "Expression & Mood",
         "score": 95,
         "title": "Expression & Mood",
-        "tip": "A genuine, joyful laugh that lights up the entire face.",
+        "tip": "The genuine, warm smile and engaged eyes create a truly alive moment.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Lighting",
-        "score": 80,
-        "title": "Lighting",
-        "tip": "Position the subject to capture catchlights in the eyes for more sparkle.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Sharpness & Focus",
-        "score": 90,
-        "title": "Sharpness & Focus",
-        "tip": "The subject's face is crisp and in sharp focus.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Composition & Framing",
-        "score": 85,
-        "title": "Composition & Framing",
-        "tip": "The framing effectively highlights the subject's joyful expression.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Background",
-        "score": 90,
-        "title": "Background",
-        "tip": "The soft, blurred background beautifully isolates the subject.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Head Angle & Pose",
-        "score": 90,
-        "title": "Head Angle & Pose",
-        "tip": "The natural tilt and upward gaze perfectly complement the joyful expression.",
-        "priority": 3,
-        "gearNeeded": []
-      }
-    ],
-    "overallScore": 89
-  },
-  "sample3.jpg": {
-    "aiSummary": "The distracting foreground elements compete for attention and obscure the subject. However, the genuine expression and excellent lighting capture a truly alive moment.",
-    "cards": [
-      {
-        "category": "Expression & Mood",
-        "score": 95,
-        "title": "Expression & Mood",
-        "tip": "A genuine, engaged expression captures a truly alive moment.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Lighting",
-        "score": 90,
-        "title": "Lighting",
-        "tip": "Clean directional light sculpts the face with bright, clear catchlights.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Sharpness & Focus",
-        "score": 95,
-        "title": "Sharpness & Focus",
-        "tip": "The eyes are perfectly sharp, capturing every detail of the moment.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Composition & Framing",
-        "score": 55,
-        "title": "Composition & Framing",
-        "tip": "Reframe to eliminate the distracting, bright foreground elements.",
-        "priority": 2,
-        "gearNeeded": []
-      },
-      {
-        "category": "Background",
-        "score": 45,
-        "title": "Background",
-        "tip": "Block the bright, out-of-focus foreground elements that distract.",
-        "priority": 1,
-        "gearNeeded": []
-      },
-      {
-        "category": "Head Angle & Pose",
-        "score": 90,
-        "title": "Head Angle & Pose",
-        "tip": "The natural head turn and tilt create an authentic, relaxed feel.",
-        "priority": 3,
-        "gearNeeded": []
-      }
-    ],
-    "overallScore": 83
-  },
-  "sample4.jpg": {
-    "aiSummary": "Deep shadows on the face obscure detail, making the lighting uneven. However, the subject's genuine, joyful expression is beautifully captured.",
-    "cards": [
-      {
-        "category": "Expression & Mood",
-        "score": 95,
-        "title": "Expression & Mood",
-        "tip": "A genuine, joyful expression that truly lights up the moment.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Lighting",
-        "score": 55,
-        "title": "Lighting",
-        "tip": "Add a reflector to lift the deep shadows on the right side of the face.",
-        "priority": 2,
-        "gearNeeded": []
-      },
-      {
-        "category": "Sharpness & Focus",
-        "score": 95,
-        "title": "Sharpness & Focus",
-        "tip": "Crisp focus on the eyes captures the subject's expression perfectly.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Composition & Framing",
-        "score": 65,
-        "title": "Composition & Framing",
-        "tip": "Reframe to include the top of the head and balance the dark space.",
-        "priority": 2,
-        "gearNeeded": []
-      },
-      {
-        "category": "Background",
-        "score": 90,
-        "title": "Background",
-        "tip": "Pleasingly blurred green background keeps focus on the subject.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Head Angle & Pose",
-        "score": 90,
-        "title": "Head Angle & Pose",
-        "tip": "Relaxed and natural head tilt adds to the authentic moment.",
-        "priority": 3,
-        "gearNeeded": []
-      }
-    ],
-    "overallScore": 82
-  },
-  "sample5.jpg": {
-    "aiSummary": "Reframe to remove the distracting bright edge. The dramatic lighting and thoughtful expression create a compelling portrait.",
-    "cards": [
-      {
-        "category": "Expression & Mood",
-        "score": 90,
-        "title": "Expression & Mood",
-        "tip": "The thoughtful, off-camera gaze creates a genuine and engaging moment.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Lighting",
-        "score": 92,
-        "title": "Lighting",
-        "tip": "Crisp catchlights and strong directional light sculpt the face well.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Sharpness & Focus",
-        "score": 95,
-        "title": "Sharpness & Focus",
-        "tip": "The eyes and face are perfectly sharp, capturing the moment clearly.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Composition & Framing",
         "score": 78,
+        "title": "Lighting",
+        "tip": "Add a soft light source to one side to create more facial dimension.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Sharpness & Focus",
+        "score": 92,
+        "title": "Sharpness & Focus",
+        "tip": "The eyes and face are perfectly sharp, capturing every detail.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Composition & Framing",
+        "score": 88,
         "title": "Composition & Framing",
-        "tip": "Reframe slightly to exclude the bright, distracting element on the left edge.",
+        "tip": "The tight crop and eye placement create a strong, focused portrait.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -262,21 +46,75 @@
         "category": "Head Angle & Pose",
         "score": 85,
         "title": "Head Angle & Pose",
-        "tip": "The natural turn of the head creates an engaging, candid feel.",
+        "tip": "The natural tilt and turn of the head create a relaxed, engaging pose.",
         "priority": 3,
         "gearNeeded": []
       }
     ],
-    "overallScore": 89
+    "overallScore": 88
   },
-  "sample6.jpg": {
-    "aiSummary": "The genuine, joyful expression is the clear strength of this image. The clean background and sharp focus further enhance this authentic moment.",
+  "sample2.jpg": {
+    "aiSummary": "The lighting leaves the face a bit dim, but the genuine, joyful expression is truly captivating.",
     "cards": [
       {
         "category": "Expression & Mood",
         "score": 95,
         "title": "Expression & Mood",
-        "tip": "This genuine, joyful laugh is the heart of the photo.",
+        "tip": "A genuine, joyful laugh captures a beautiful, authentic moment.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Lighting",
+        "score": 55,
+        "title": "Lighting",
+        "tip": "Turn the subject to face the light for brighter, more even light on the face.",
+        "priority": 2,
+        "gearNeeded": []
+      },
+      {
+        "category": "Sharpness & Focus",
+        "score": 90,
+        "title": "Sharpness & Focus",
+        "tip": "The eyes and face are crisply in focus, capturing the moment clearly.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Composition & Framing",
+        "score": 60,
+        "title": "Composition & Framing",
+        "tip": "Reframe to place the eyes higher, reducing the empty space above the head.",
+        "priority": 2,
+        "gearNeeded": []
+      },
+      {
+        "category": "Background",
+        "score": 95,
+        "title": "Background",
+        "tip": "The background is beautifully blurred, creating excellent subject separation.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Head Angle & Pose",
+        "score": 70,
+        "title": "Head Angle & Pose",
+        "tip": "Encourage a slight forward head tilt to better define the jawline.",
+        "priority": 3,
+        "gearNeeded": []
+      }
+    ],
+    "overallScore": 78
+  },
+  "sample3.jpg": {
+    "aiSummary": "The strong foreground blur significantly distracts from the subject. However, the natural expression and well-executed lighting create an engaging portrait.",
+    "cards": [
+      {
+        "category": "Expression & Mood",
+        "score": 92,
+        "title": "Expression & Mood",
+        "tip": "Engaged eyes and a natural, open expression capture a genuine moment.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -284,7 +122,169 @@
         "category": "Lighting",
         "score": 88,
         "title": "Lighting",
-        "tip": "Soft, even light with good catchlights illuminates the face beautifully.",
+        "tip": "Well-exposed face with clear catchlights and good facial modeling.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Sharpness & Focus",
+        "score": 95,
+        "title": "Sharpness & Focus",
+        "tip": "Crisp focus on the eyes and face captures the moment clearly.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Composition & Framing",
+        "score": 45,
+        "title": "Composition & Framing",
+        "tip": "Reframe to remove the distracting, out-of-focus foreground elements.",
+        "priority": 1,
+        "gearNeeded": []
+      },
+      {
+        "category": "Background",
+        "score": 40,
+        "title": "Background",
+        "tip": "Block or move the bright, blurry foreground elements that compete.",
+        "priority": 1,
+        "gearNeeded": []
+      },
+      {
+        "category": "Head Angle & Pose",
+        "score": 85,
+        "title": "Head Angle & Pose",
+        "tip": "Natural head turn and relaxed posture create an easy, authentic feel.",
+        "priority": 3,
+        "gearNeeded": []
+      }
+    ],
+    "overallScore": 79
+  },
+  "sample4.jpg": {
+    "aiSummary": "Harsh, uneven lighting creates deep shadows on the face. However, the genuine smile and natural expression create a truly authentic moment.",
+    "cards": [
+      {
+        "category": "Expression & Mood",
+        "score": 95,
+        "title": "Expression & Mood",
+        "tip": "The genuine smile and engaged off-camera gaze are truly authentic.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Lighting",
+        "score": 45,
+        "title": "Lighting",
+        "tip": "Move the subject into even, open shade to soften the light.",
+        "priority": 1,
+        "gearNeeded": []
+      },
+      {
+        "category": "Sharpness & Focus",
+        "score": 90,
+        "title": "Sharpness & Focus",
+        "tip": "The eyes and face are crisply in focus, capturing the moment well.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Composition & Framing",
+        "score": 55,
+        "title": "Composition & Framing",
+        "tip": "Reframe to include the top of the head and balance the negative space.",
+        "priority": 2,
+        "gearNeeded": []
+      },
+      {
+        "category": "Background",
+        "score": 90,
+        "title": "Background",
+        "tip": "The blurred green background provides excellent separation and no distraction.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Head Angle & Pose",
+        "score": 85,
+        "title": "Head Angle & Pose",
+        "tip": "The natural tilt and off-camera gaze create an authentic moment.",
+        "priority": 3,
+        "gearNeeded": []
+      }
+    ],
+    "overallScore": 77
+  },
+  "sample5.jpg": {
+    "aiSummary": "This portrait features dramatic lighting and a compelling, intense expression. The sharp focus and clean background enhance the subject's presence.",
+    "cards": [
+      {
+        "category": "Expression & Mood",
+        "score": 93,
+        "title": "Expression & Mood",
+        "tip": "A genuine, intense gaze captures a compelling moment.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Lighting",
+        "score": 92,
+        "title": "Lighting",
+        "tip": "Crisp catchlights and sculpted shadows create a dramatic look.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Sharpness & Focus",
+        "score": 95,
+        "title": "Sharpness & Focus",
+        "tip": "Eyes and facial features are perfectly sharp and clear.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Composition & Framing",
+        "score": 90,
+        "title": "Composition & Framing",
+        "tip": "Intentional off-center framing with good look space.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Background",
+        "score": 95,
+        "title": "Background",
+        "tip": "The dark, blurred background provides excellent subject separation.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Head Angle & Pose",
+        "score": 90,
+        "title": "Head Angle & Pose",
+        "tip": "The natural head turn and gaze create an engaging moment.",
+        "priority": 3,
+        "gearNeeded": []
+      }
+    ],
+    "overallScore": 93
+  },
+  "sample6.jpg": {
+    "aiSummary": "This photo beautifully captures a genuine, joyful expression. The clean lighting and composition enhance the authentic moment.",
+    "cards": [
+      {
+        "category": "Expression & Mood",
+        "score": 95,
+        "title": "Expression & Mood",
+        "tip": "The genuine, joyful laugh captures a truly alive moment.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Lighting",
+        "score": 85,
+        "title": "Lighting",
+        "tip": "Soft, even light beautifully illuminates the subject's face.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -300,15 +300,15 @@
         "category": "Composition & Framing",
         "score": 90,
         "title": "Composition & Framing",
-        "tip": "The tight crop effectively emphasizes the subject's joyful expression.",
+        "tip": "The tight crop and eye placement create an intimate, engaging portrait.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Background",
-        "score": 98,
+        "score": 95,
         "title": "Background",
-        "tip": "The clean, blurred background provides excellent separation for the subject.",
+        "tip": "The clean, simple background keeps all focus on the subject.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -316,83 +316,83 @@
         "category": "Head Angle & Pose",
         "score": 90,
         "title": "Head Angle & Pose",
-        "tip": "The natural tilt of the head perfectly captures the moment of laughter.",
+        "tip": "The natural head tilt perfectly complements the joyful expression.",
         "priority": 3,
         "gearNeeded": []
       }
     ],
-    "overallScore": 93
+    "overallScore": 92
   },
   "sample7.jpg": {
-    "aiSummary": "The harsh, patterned light creates distracting shadows and highlights on the face. However, the photo beautifully captures a genuine, joyful moment.",
+    "aiSummary": "Harsh, patterned light creates unflattering shadows and a distracting background competes for attention. However, the photo captures a truly genuine and joyful expression.",
     "cards": [
       {
         "category": "Expression & Mood",
         "score": 95,
         "title": "Expression & Mood",
-        "tip": "A genuine, joyful laugh captured perfectly in the moment.",
+        "tip": "A truly genuine and joyful moment, full of life.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Lighting",
-        "score": 45,
+        "score": 30,
         "title": "Lighting",
-        "tip": "Move the subject or yourself to avoid harsh, direct light on the face.",
+        "tip": "Move the subject into even, open shade to avoid harsh light patterns.",
         "priority": 1,
         "gearNeeded": []
       },
       {
         "category": "Sharpness & Focus",
-        "score": 85,
+        "score": 80,
         "title": "Sharpness & Focus",
-        "tip": "The face is sharp and clearly in focus, capturing fine details.",
+        "tip": "The face and hand are crisp, capturing the moment clearly.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Composition & Framing",
-        "score": 80,
+        "score": 70,
         "title": "Composition & Framing",
-        "tip": "The close crop effectively emphasizes the subject's joyful expression.",
+        "tip": "Reframe to show more of the face while maintaining the candid moment.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Background",
-        "score": 55,
+        "score": 45,
         "title": "Background",
-        "tip": "Find a simpler, less patterned background to keep focus on the subject.",
-        "priority": 2,
+        "tip": "Find a simpler, more uniform background to keep focus on the subject.",
+        "priority": 1,
         "gearNeeded": []
       },
       {
         "category": "Head Angle & Pose",
-        "score": 90,
+        "score": 85,
         "title": "Head Angle & Pose",
-        "tip": "The natural tilt and expression perfectly convey the moment.",
+        "tip": "A natural and relaxed head position that suits the moment.",
         "priority": 3,
         "gearNeeded": []
       }
     ],
-    "overallScore": 76
+    "overallScore": 69
   },
   "sample8.jpg": {
-    "aiSummary": "The background has a minor distracting element on the left. However, the genuine, joyful expression is perfectly captured.",
+    "aiSummary": "The genuine, joyful expression is the clear strength of this portrait. The overall execution is clean, with good focus and background separation.",
     "cards": [
       {
         "category": "Expression & Mood",
         "score": 95,
         "title": "Expression & Mood",
-        "tip": "The genuine, joyful laugh is perfectly captured.",
+        "tip": "A genuine, alive moment with engaged eyes.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Lighting",
-        "score": 85,
+        "score": 80,
         "title": "Lighting",
-        "tip": "Clean, soft light illuminates the face with good catchlights.",
+        "tip": "Even, soft light illuminates the face well.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -400,7 +400,7 @@
         "category": "Sharpness & Focus",
         "score": 90,
         "title": "Sharpness & Focus",
-        "tip": "The eyes and face are tack sharp, perfectly capturing the moment.",
+        "tip": "Eyes and face are crisp and perfectly in focus.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -408,91 +408,37 @@
         "category": "Composition & Framing",
         "score": 85,
         "title": "Composition & Framing",
-        "tip": "Well-framed with the subject centered and eyes in the upper third.",
+        "tip": "Well-framed with eyes placed nicely in the upper third.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Background",
-        "score": 70,
+        "score": 88,
         "title": "Background",
-        "tip": "Reframe slightly to avoid the brighter, distracting element on the left.",
+        "tip": "Softly blurred background provides excellent subject separation.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Head Angle & Pose",
-        "score": 88,
+        "score": 85,
         "title": "Head Angle & Pose",
-        "tip": "The natural head tilt adds to the candid feel of the moment.",
+        "tip": "Natural head tilt adds to the relaxed feel.",
         "priority": 3,
         "gearNeeded": []
       }
     ],
-    "overallScore": 87
+    "overallScore": 88
   },
   "sample9.jpg": {
-    "aiSummary": "The harsh lighting creates unflattering shadows on the face. However, the genuine, joyful expression is truly captivating and the strongest element.",
+    "aiSummary": "The lighting on the face is a bit harsh and uneven, creating strong shadows. However, the subject's expression is genuinely joyful and alive.",
     "cards": [
       {
         "category": "Expression & Mood",
         "score": 95,
         "title": "Expression & Mood",
-        "tip": "A genuine, joyful laugh that truly lights up the face.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Lighting",
-        "score": 55,
-        "title": "Lighting",
-        "tip": "Move into open shade to soften the harsh shadows on the face.",
-        "priority": 2,
-        "gearNeeded": []
-      },
-      {
-        "category": "Sharpness & Focus",
-        "score": 95,
-        "title": "Sharpness & Focus",
-        "tip": "Crisp focus on the eyes and face ensures the expression shines through.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Composition & Framing",
-        "score": 85,
-        "title": "Composition & Framing",
-        "tip": "Well-balanced framing with the subject placed effectively in the frame.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Background",
-        "score": 70,
-        "title": "Background",
-        "tip": "Find a simpler, more uniform background to reduce visual clutter.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Head Angle & Pose",
-        "score": 90,
-        "title": "Head Angle & Pose",
-        "tip": "A natural, relaxed head turn that captures a candid moment.",
-        "priority": 3,
-        "gearNeeded": []
-      }
-    ],
-    "overallScore": 83
-  },
-  "sample10.jpg": {
-    "aiSummary": "The deep shadows on the face make it a bit underexposed. However, the genuine, joyful expression is beautifully captured.",
-    "cards": [
-      {
-        "category": "Expression & Mood",
-        "score": 95,
-        "title": "Expression & Mood",
-        "tip": "A genuine, joyful laugh captured perfectly.",
+        "tip": "A genuine, alive moment with infectious joy.",
         "priority": 3,
         "gearNeeded": []
       },
@@ -500,121 +446,13 @@
         "category": "Lighting",
         "score": 65,
         "title": "Lighting",
-        "tip": "Add a reflector to lift the deep shadows on the face.",
+        "tip": "Move the subject into softer, more even light to avoid harsh shadows.",
         "priority": 2,
         "gearNeeded": []
       },
       {
         "category": "Sharpness & Focus",
-        "score": 95,
-        "title": "Sharpness & Focus",
-        "tip": "The subject's face and eyes are perfectly sharp.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Composition & Framing",
-        "score": 88,
-        "title": "Composition & Framing",
-        "tip": "Balanced framing with the subject well-placed in the frame.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Background",
         "score": 90,
-        "title": "Background",
-        "tip": "A clean, simple background that keeps focus on the subject.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Head Angle & Pose",
-        "score": 90,
-        "title": "Head Angle & Pose",
-        "tip": "A natural, relaxed head tilt that perfectly suits the candid moment.",
-        "priority": 3,
-        "gearNeeded": []
-      }
-    ],
-    "overallScore": 87
-  },
-  "sample11.jpg": {
-    "aiSummary": "The harsh direct light creates unflattering shadows across the face. However, the genuine, joyful expression makes this a truly authentic moment.",
-    "cards": [
-      {
-        "category": "Expression & Mood",
-        "score": 95,
-        "title": "Expression & Mood",
-        "tip": "A genuine, joyful laugh captured perfectly.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Lighting",
-        "score": 45,
-        "title": "Lighting",
-        "tip": "Move into open shade to soften the harsh shadows on the face.",
-        "priority": 1,
-        "gearNeeded": []
-      },
-      {
-        "category": "Sharpness & Focus",
-        "score": 88,
-        "title": "Sharpness & Focus",
-        "tip": "The face is sharp and clearly in focus.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Composition & Framing",
-        "score": 85,
-        "title": "Composition & Framing",
-        "tip": "The subject is well-framed, filling the shot effectively.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Background",
-        "score": 78,
-        "title": "Background",
-        "tip": "The plain background provides good separation without distraction.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Head Angle & Pose",
-        "score": 90,
-        "title": "Head Angle & Pose",
-        "tip": "The natural head tilt and hand gesture create an authentic moment.",
-        "priority": 3,
-        "gearNeeded": []
-      }
-    ],
-    "overallScore": 80
-  },
-  "sample12.jpg": {
-    "aiSummary": "The face is underexposed, leading to muddy skin tones. However, the subject's expression is genuine and the focus is sharp.",
-    "cards": [
-      {
-        "category": "Expression & Mood",
-        "score": 85,
-        "title": "Expression & Mood",
-        "tip": "Pleasant and natural, with good eye contact.",
-        "priority": 3,
-        "gearNeeded": []
-      },
-      {
-        "category": "Lighting",
-        "score": 65,
-        "title": "Lighting",
-        "tip": "Add more light to the face to brighten skin tones and reduce muddiness.",
-        "priority": 2,
-        "gearNeeded": []
-      },
-      {
-        "category": "Sharpness & Focus",
-        "score": 95,
         "title": "Sharpness & Focus",
         "tip": "Eyes are crisp and in sharp focus, capturing the moment clearly.",
         "priority": 3,
@@ -622,29 +460,191 @@
       },
       {
         "category": "Composition & Framing",
-        "score": 90,
+        "score": 80,
         "title": "Composition & Framing",
-        "tip": "Well-framed, with the subject's eyes placed effectively in the upper third.",
+        "tip": "Well-framed with the subject prominently placed in the shot.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Background",
-        "score": 70,
+        "score": 88,
         "title": "Background",
-        "tip": "Increase separation from the background to make the subject stand out more.",
+        "tip": "Softly blurred background provides excellent separation from the subject.",
         "priority": 3,
         "gearNeeded": []
       },
       {
         "category": "Head Angle & Pose",
-        "score": 88,
+        "score": 85,
         "title": "Head Angle & Pose",
-        "tip": "Natural and relaxed, with an engaging forward tilt.",
+        "tip": "Relaxed head turn and engaged gaze create a natural feel.",
         "priority": 3,
         "gearNeeded": []
       }
     ],
-    "overallScore": 83
+    "overallScore": 84
+  },
+  "sample10.jpg": {
+    "aiSummary": "The genuine, joyful expression is a strong asset. Improve facial lighting to better reveal details and add dimension.",
+    "cards": [
+      {
+        "category": "Expression & Mood",
+        "score": 95,
+        "title": "Expression & Mood",
+        "tip": "The genuine, joyful expression is perfectly captured.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Lighting",
+        "score": 55,
+        "title": "Lighting",
+        "tip": "Add more light to the face to reveal details and create better dimension.",
+        "priority": 2,
+        "gearNeeded": []
+      },
+      {
+        "category": "Sharpness & Focus",
+        "score": 90,
+        "title": "Sharpness & Focus",
+        "tip": "The face and eyes are crisply in focus, capturing every detail.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Composition & Framing",
+        "score": 88,
+        "title": "Composition & Framing",
+        "tip": "The subject is well-framed with eyes placed effectively in the upper third.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Background",
+        "score": 92,
+        "title": "Background",
+        "tip": "The clean, blurred background provides excellent separation for the subject.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Head Angle & Pose",
+        "score": 85,
+        "title": "Head Angle & Pose",
+        "tip": "The natural tilt and turn of the head perfectly convey the candid moment.",
+        "priority": 3,
+        "gearNeeded": []
+      }
+    ],
+    "overallScore": 84
+  },
+  "sample11.jpg": {
+    "aiSummary": "Harsh, uneven lighting creates strong shadows and blown highlights on the face. The subject's genuine, joyful expression is the photo's strongest asset.",
+    "cards": [
+      {
+        "category": "Expression & Mood",
+        "score": 95,
+        "title": "Expression & Mood",
+        "tip": "The genuine, joyful expression creates a truly authentic and engaging moment.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Lighting",
+        "score": 45,
+        "title": "Lighting",
+        "tip": "Move into softer, more even light to avoid harsh shadows.",
+        "priority": 1,
+        "gearNeeded": []
+      },
+      {
+        "category": "Sharpness & Focus",
+        "score": 80,
+        "title": "Sharpness & Focus",
+        "tip": "The face is sharp, capturing the details of the genuine moment.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Composition & Framing",
+        "score": 85,
+        "title": "Composition & Framing",
+        "tip": "The tight crop effectively focuses attention on the subject's expression.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Background",
+        "score": 90,
+        "title": "Background",
+        "tip": "The clean, simple background keeps all focus on the subject.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Head Angle & Pose",
+        "score": 80,
+        "title": "Head Angle & Pose",
+        "tip": "The natural tilt and relaxed pose contribute to an authentic moment.",
+        "priority": 3,
+        "gearNeeded": []
+      }
+    ],
+    "overallScore": 79
+  },
+  "sample12.jpg": {
+    "aiSummary": "The expression is genuinely warm and engaging, making the subject feel present. The background, while blurred, has a texture that slightly competes for attention.",
+    "cards": [
+      {
+        "category": "Expression & Mood",
+        "score": 93,
+        "title": "Expression & Mood",
+        "tip": "The genuine smile and engaged eyes create a truly authentic and warm moment.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Lighting",
+        "score": 78,
+        "title": "Lighting",
+        "tip": "Add a soft light source slightly to the side to create more facial dimension.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Sharpness & Focus",
+        "score": 95,
+        "title": "Sharpness & Focus",
+        "tip": "The eyes are perfectly sharp, drawing the viewer directly into the portrait.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Composition & Framing",
+        "score": 90,
+        "title": "Composition & Framing",
+        "tip": "The tight framing and eye placement create an intimate and engaging portrait.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Background",
+        "score": 75,
+        "title": "Background",
+        "tip": "Increase the aperture or step closer to blur the background more completely.",
+        "priority": 3,
+        "gearNeeded": []
+      },
+      {
+        "category": "Head Angle & Pose",
+        "score": 92,
+        "title": "Head Angle & Pose",
+        "tip": "The natural tilt and hand placement create a relaxed, engaging pose.",
+        "priority": 3,
+        "gearNeeded": []
+      }
+    ],
+    "overallScore": 88
   }
 }

@@ -132,6 +132,23 @@ function summarizeCardScores(cards) {
   return out;
 }
 
+// Cloud-side subject gate: OnFrame only coaches a single human person. Gemini
+// classifies the subject; anything else (a crowd, an animal, an object, a scene)
+// is denied with a clear message instead of nonsensical coaching. Backstops the
+// client-side MediaPipe gate, which can miss (turned/partial faces, false hits).
+const SUBJECT_REJECT_MESSAGES = {
+  multiple_people: 'OnFrame coaches one person at a time — this photo has more than one. Try a solo portrait.',
+  not_a_person: "OnFrame coaches a single person's portrait — I couldn't find one person to coach here.",
+};
+function subjectRejection(subject) {
+  if (!subject || subject === 'single_person') return null;
+  return {
+    rejected: true,
+    subject,
+    message: SUBJECT_REJECT_MESSAGES[subject] || SUBJECT_REJECT_MESSAGES.not_a_person,
+  };
+}
+
 function clamp(value, min, max) {
   if (value < min) return min;
   if (value > max) return max;
@@ -459,6 +476,12 @@ function createApp({
           console.log(`[onframe] analyze unavailable id=${requestId} reason=empty-summary`);
           return res.json({ id: requestId, ts: requestTs, aiUnavailable: true });
         }
+        // Subject gate: deny coaching on crowds / animals / objects / scenes.
+        const reject = subjectRejection(result.subject);
+        if (reject) {
+          console.log(JSON.stringify({ type: 'onframe_analyze', id: requestId, ts: requestTs, rejected: reject.subject }));
+          return res.json({ id: requestId, ts: requestTs, ...reject });
+        }
         // Cloud-primary scoring: Gemini scores all six categories directly
         // (including Sharpness). Normalize the cards — clamp scores, fill any
         // category Gemini omitted with a fallback card, recompute the weighted
@@ -602,5 +625,6 @@ module.exports = {
   secureClearBuffer,
   sniffImageMime,
   startServer,
+  subjectRejection,
   summarizeCardScores,
 };

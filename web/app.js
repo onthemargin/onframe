@@ -223,6 +223,14 @@ async function handleFile(file, cachedCoaching = null) {
     const cloudPayload = buildCloudPayload(metrics, result.photoType?.type);
     // Cached coaching for samples; live Vertex for uploads.
     const cloudResponse = cachedCoaching || await fetchCloudCoaching(file, cloudPayload);
+
+    // Cloud subject gate: deny coaching on crowds / animals / objects / scenes.
+    if (cloudResponse?.rejected) {
+      lastError = { stage: 'subjectGate', message: `subject:${cloudResponse.subject}`, fileInfo: lastFileInfo };
+      showError(cloudResponse.message || 'OnFrame coaches a single-person portrait — try a solo photo of one person.');
+      return;
+    }
+
     const mergedResult = mergeCoachingResult(result, cloudResponse);
 
     if (analysisToken !== activeAnalysisToken) return;
