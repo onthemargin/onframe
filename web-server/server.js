@@ -293,6 +293,49 @@ function sanitizeReportError(error) {
   };
 }
 
+// Standalone mode only (STATIC_DIR set): with no nginx in front, Express must
+// ship the security headers itself. In the monorepo nginx owns all of these —
+// deploy/nginx.conf — and this code path never runs.
+const STANDALONE_SECURITY_HEADERS = {
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+  'X-Frame-Options': 'DENY',
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Cross-Origin-Opener-Policy': 'same-origin',
+  'Cross-Origin-Resource-Policy': 'same-site',
+  'Permissions-Policy': 'camera=(self), microphone=(), geolocation=(), payment=()',
+  'X-Permitted-Cross-Domain-Policies': 'none',
+};
+
+// CSP hashes for the inline <script> blocks in the built index.html (the
+// synchronous mobile gate). Computed from the file actually being served, at
+// startup, so the hash can never drift from the markup the way a hardcoded
+// value could. Missing/unreadable file → no hashes (CSP still blocks inline).
+function computeInlineScriptHashes(indexHtmlPath) {
+  let html;
+  try {
+    html = require('fs').readFileSync(indexHtmlPath, 'utf8');
+  } catch {
+    return [];
+  }
+  const { createHash } = require('crypto');
+  const hashes = [];
+  for (const [, body] of html.matchAll(/<script>([\s\S]*?)<\/script>/g)) {
+    hashes.push(createHash('sha256').update(body, 'utf8').digest('base64'));
+  }
+  return hashes;
+}
+
+// Mirrors the onframe CSP in deploy/nginx.conf.
+function buildStandaloneCsp(scriptHashes) {
+  const hashSrc = scriptHashes.map((h) => ` 'sha256-${h}'`).join('');
+  return (
+    `default-src 'self'; script-src 'self' 'wasm-unsafe-eval'${hashSrc}; ` +
+    "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; " +
+    "worker-src blob: 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+  );
+}
+
 function buildUpload() {
   return multer({
     storage: multer.memoryStorage(),
@@ -364,6 +407,21 @@ function createApp({
     }
     next();
   });
+
+  // Standalone mode: set the security headers nginx would otherwise own.
+  // Registered before all routes so API and static responses both carry them.
+  if (staticDir) {
+    const csp = buildStandaloneCsp(
+      computeInlineScriptHashes(require('path').join(staticDir, 'index.html'))
+    );
+    app.use((_req, res, next) => {
+      for (const [name, value] of Object.entries(STANDALONE_SECURITY_HEADERS)) {
+        res.setHeader(name, value);
+      }
+      res.setHeader('Content-Security-Policy', csp);
+      next();
+    });
+  }
 
   const limiter = rateLimit({
     windowMs: 60_000,
