@@ -1,6 +1,6 @@
 # OnFrame — Specification
 
-> **Note**: this is the original product spec from when the app was called Portrait Coach and used a Groq text-only cloud path. The current architecture is cloud-only with multimodal photo + metrics sent to Vertex AI Gemini — see [`plan.md`](./plan.md) for the source of truth. The sections below are kept for historical context and have been updated where the underlying behavior changed.
+> **Note**: this is the original product spec from when the app was called Portrait Coach and used a Groq text-only cloud path. The current architecture is cloud-only, with multimodal photo + metrics sent to Vertex AI Gemini; it is tracked in the maintainer's local `plan.md`, which is not published. The sections below are kept for historical context and have been updated where the underlying behavior changed.
 
 ---
 
@@ -1070,7 +1070,7 @@ MEDIAPIPE BLENDSHAPES (requires outputFaceBlendshapes: true)
 
 ## Appendix A — Research Findings & Metric Improvements (2026-04-07)
 
-> **Historical**: this appendix is the research pass that motivated the move from a text-only cloud path to a multimodal vision-LLM path. It analyzed Groq Llama-4 Scout as the candidate provider. The final implementation went with **Vertex AI Gemini 2.5 Flash** instead (per `plan.md`). The portrait-craft findings (FIQA literature, lighting patterns, Duchenne dependency, Hurley vocabulary) are still accurate — only the provider-specific sections (A.3 "Cloud vision architecture", A.4 Groq sources) are obsolete.
+> **Historical**: this appendix is the research pass that motivated the move from a text-only cloud path to a multimodal vision-LLM path. It analyzed Groq Llama-4 Scout as the candidate provider. The final implementation went with **Vertex AI Gemini 2.5 Flash** instead. The portrait-craft findings (FIQA literature, lighting patterns, Duchenne dependency, Hurley vocabulary) are still accurate — only the provider-specific sections (A.3 "Cloud vision architecture", A.4 Groq sources) are obsolete.
 
 Research pass on portrait image metrics. What the literature says, what Portrait Coach currently gets right/wrong, what to change in the text-only path, and how to wire in a cloud vision API.
 
